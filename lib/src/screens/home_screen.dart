@@ -34,6 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _submitForm(BuildContext context) async {
     _formKey.currentState.save();
+    setState(() {
+      isButtonEnabled=false;
+    });
     locationProvider.setHospitalDistance = distance;
     getLocation().then((value) {
       if (value != null) {
@@ -48,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
           if (value.statusCode == 200) {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
+            hospitalListProvider.setHospitalLists=hospitals;
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
-              print(data);
               Hospital h = new Hospital();
               if (data["distance"] != null &&
                   data["lattitude"] != null &&
@@ -64,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 hospitals.add(h);
               }
             }
-            print(hospitals);
             Navigator.pop(context);
             if (hospitals.length == 0) {
               Fluttertoast.showToast(
@@ -117,10 +119,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                height: getDeviceHeight(context) * 0.20,
-                width: getDeviceWidth(context) * 0.20,
-                child: Image.asset('assets/img/splash_bg.png'),
+              Hero(
+                tag: "ico",
+                child: Container(
+                  height: getDeviceHeight(context) * 0.20,
+                  width: getDeviceWidth(context) * 0.20,
+                  child: Image.asset('assets/img/splash_bg.png'),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -172,7 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       keyboardType: TextInputType.phone,
                       onChanged: (String value) {
-                        print(value);
                         if (value.length == 0) {
                           setState(() {
                             isButtonEnabled = false;
