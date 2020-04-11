@@ -1,40 +1,32 @@
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hospital_service/src/providers/location_provider.dart';
 import 'package:location/location.dart';
 
 Location location = Location();
 LocationData locationData;
-LocationProvider locationProvider;
 
 Future<LocationData> getLocation() async {
-  locationData=null;
+  locationData = null;
   await location.hasPermission().then((value) async {
-    if (value==PermissionStatus.denied||value==PermissionStatus.deniedForever) {
+    if (value == PermissionStatus.denied ||
+        value == PermissionStatus.deniedForever) {
       await location.requestPermission().then((value) async {
         Fluttertoast.showToast(
-          msg: "Location is required to show the city data.",
+          msg: "Location is required to show nearest hospital.",
           gravity: ToastGravity.BOTTOM,
-          toastLength: Toast.LENGTH_LONG,
+          toastLength: Toast.LENGTH_SHORT,
         );
-        if (value==PermissionStatus.granted) {
-         await _locationSettings();
+        if (value == PermissionStatus.granted) {
+          await _locationSettings();
         } else {
-            Fluttertoast.showToast(
-                msg: "Location Permission not given!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM);
+          Fluttertoast.showToast(
+              msg: "Location Permission not given!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM);
+          return null;
         }
       });
     } else {
-     await  _locationSettings();
-    }
-  });
-  await location.serviceEnabled().then((value) {
-    if (!value) {
-      Fluttertoast.showToast(
-          msg: "Location Setting not enabled!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM);
+      await _locationSettings();
     }
   });
   return locationData;
@@ -46,34 +38,31 @@ Future<void> _locationSettings() async {
       await location.requestService().then((value) async {
         if (value) {
           await location.getLocation().then((value) {
-              locationData = value;            
-              print(
-                  'Latitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}');
+            locationData = value;
+            print(
+                'Latitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}');
           }).catchError((error) {
-            Fluttertoast.showToast(
-                msg: "Error in getting location",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM);
+            print(error);
+            return null;
           }).timeout(Duration(seconds: 5));
         } else {
-            locationData=null;
+          Fluttertoast.showToast(
+              msg: "Location Settings or GPS not enabled!",
+              toastLength: Toast.LENGTH_SHORT);
+          return null;
         }
       }).catchError((error) {
-        Fluttertoast.showToast(
-            msg: "Error in getting location",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM);
+        print(error);
+        return null;
       }).timeout(Duration(seconds: 5));
     } else {
       await location.getLocation().then((value) {
-          locationData = value;
-          print(
-              'Latitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}');
+        locationData = value;
+        print(
+            'Latitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}');
       }).catchError((error) {
-        Fluttertoast.showToast(
-            msg: "Error in getting location",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM);
+        print(error);
+        return null;
       }).timeout(Duration(seconds: 5));
     }
   });
