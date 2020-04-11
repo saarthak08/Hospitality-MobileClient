@@ -21,23 +21,39 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text(
-                'Choose your Role!',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.white70),
+              Column(
+                children: <Widget>[
+                  Hero(
+                    tag: "ico",
+                    child: Container(
+                      height: getDeviceHeight(context) * 0.30,
+                      width: getDeviceWidth(context) * 0.30,
+                      child: Image.asset('assets/img/splash_bg.png'),
+                    ),
+                  ),
+                  Text(
+                    'Choose your Role!',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.white70),
+                  )
+                ],
               ),
               RaisedButton(
                 child: Text('Patient'),
-                animationDuration: Duration(seconds: 1),
+                elevation: 10,
+                color: Colors.white70,
+                animationDuration: Duration(milliseconds: 200),
                 onPressed: () =>
                     Navigator.pushReplacementNamed(context, '/home'),
               ),
               // SizedBox(height: getDeviceHeight(context) * 0.2),
               RaisedButton(
                 child: Text('Hospital'),
-                animationDuration: Duration(seconds: 1),
+                elevation: 10,
+                color: Colors.white70,
+                animationDuration: Duration(milliseconds: 200),
                 onPressed: () =>
                     Navigator.pushReplacementNamed(context, '/home'),
               ),

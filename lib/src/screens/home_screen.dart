@@ -29,10 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Push button to get your current Location:',
             ),
             Text(
-              'Hello',
+              'Lets Go',
               style: Theme.of(context).textTheme.display1,
             ),
           ],
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.map),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

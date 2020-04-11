@@ -32,10 +32,13 @@ class _SplashPageState extends State<SplashPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                height: getDeviceHeight(context) * 0.50,
-                width: getDeviceWidth(context) * 0.50,
-                child: Image.asset('assets/img/hospital.jpg'),
+              Hero(
+                tag: "ico",
+                child: Container(
+                  height: getDeviceHeight(context) * 0.50,
+                  width: getDeviceWidth(context) * 0.50,
+                  child: Image.asset('assets/img/splash_bg.png'),
+                ),
               ),
               SizedBox(height: getDeviceHeight(context) * 0.01),
               Text(
