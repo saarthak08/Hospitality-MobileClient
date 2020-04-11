@@ -3,6 +3,7 @@ import 'package:hospital_service/src/providers/location_provider.dart';
 import 'package:hospital_service/src/screens/auth_screen.dart';
 import 'package:hospital_service/src/screens/home_screen.dart';
 import 'package:hospital_service/src/screens/splash_screen.dart';
+import 'package:hospital_service/src/screens/map_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
           '/': (BuildContext context) => SplashPage(),
           '/home': (BuildContext context) => HomeScreen(),
           '/auth': (BuildContext context) => AuthScreen(),
+          '/map': (BuildContext context) => MapSample(),
         },
       ),
     );

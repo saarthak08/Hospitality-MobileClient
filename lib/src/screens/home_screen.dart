@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospital_service/src/helpers/current_location.dart';
+import 'package:hospital_service/src/providers/location_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:hospital_service/src/resources/network/network_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -10,16 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  LocationProvider locationProvider;
 
   @override
   Widget build(BuildContext context) {
+    locationProvider = Provider.of<LocationProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('HomeScreen'),
@@ -32,14 +32,33 @@ class _HomeScreenState extends State<HomeScreen> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              'Hello',
               style: Theme.of(context).textTheme.display1,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () async {
+          await getLocation().then((value) async {
+            if (value == null) {
+              Fluttertoast.showToast(
+                  msg: "Error in getting location",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM);
+            } else {
+              Fluttertoast.showToast(
+                  msg:
+                      "Latitude: ${value.latitude}\nLongitude: ${value.longitude}",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM);
+              locationProvider.setLocation = value;
+              await getNetworkRepository.sendCurrentLocation(
+                  latitude: value.latitude, longitude: value.longitude);
+              Navigator.pushNamed(context, "/map");
+            }
+          });
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
