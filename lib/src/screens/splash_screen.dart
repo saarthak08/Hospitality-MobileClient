@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_service/src/widgets/bouncy_page_animation.dart';
 import 'dart:async';
 
 import '../helpers/dimensions.dart';
+import 'auth_screen.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, "/auth");
+      Navigator.push(context, BouncyPageRoute(widget: AuthScreen()));
     });
   }
 
