@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_service/src/providers/hospital_list_provider.dart';
 import 'package:hospital_service/src/providers/location_provider.dart';
 import 'package:hospital_service/src/screens/auth_screen.dart';
 import 'package:hospital_service/src/screens/home_screen.dart';
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => LocationProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => HospitalListProvider(),
         ),
       ],
       child: MaterialApp(
