@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospital_service/src/dialogs/loading_dialog.dart';
 import 'package:hospital_service/src/helpers/current_location.dart';
 import 'package:hospital_service/src/helpers/dimensions.dart';
 import 'package:hospital_service/src/models/hospital.dart';
@@ -21,21 +24,81 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
+  bool isButtonEnabled = false;
 
   final TextStyle dropdownMenuItem =
       TextStyle(color: Colors.black, fontSize: 18);
-  int distance = null;
+  double distance = 0;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _submitForm() async {
+  void _submitForm(BuildContext context) async {
     _formKey.currentState.save();
     setState(() {
-      locationProvider.setHospitalDistance = distance;
-      print('done');
+      isButtonEnabled=false;
     });
-    // Timer(Duration(seconds: 3), () {
-    // });
+    locationProvider.setHospitalDistance = distance;
+    getLocation().then((value) {
+      if (value != null) {
+        locationProvider.setLocation = value;
+        showLoadingDialog(context: context);
+        getNetworkRepository
+            .sendCurrentLocation(
+                latitude: value.latitude,
+                longitude: value.longitude,
+                range: distance)
+            .then((value) {
+          if (value.statusCode == 200) {
+            List<dynamic> response = json.decode(value.body);
+            List<Hospital> hospitals = new List<Hospital>();
+            hospitalListProvider.setHospitalLists=hospitals;
+            for (int i = 0; i < response.length; i++) {
+              Map<String, dynamic> data = response[i].cast<String, dynamic>();
+              Hospital h = new Hospital();
+              if (data["distance"] != null &&
+                  data["lattitude"] != null &&
+                  data["longitude"] != null &&
+                  data["name"] != null) {
+                h.setDistance = data["distance"];
+                h.setEmail = data["contact"].toString();
+                h.setLatitude = data["lattitude"];
+                h.setLongitude = data["longitude"];
+                h.setName = data["name"];
+                hospitals.add(h);
+              }
+            }
+            Navigator.pop(context);
+            if (hospitals.length == 0) {
+              Fluttertoast.showToast(
+                  msg:
+                      "No nearby hospitals found! Try again or change the distance limit!",
+                  toastLength: Toast.LENGTH_SHORT);
+            } else {
+              hospitalListProvider.setHospitalLists = hospitals;
+              Navigator.pushNamed(context, "/map");
+            }
+          } else {
+            print("Send Location: " + value.statusCode.toString());
+            Navigator.pop(context);
+          }
+        }).catchError((error) {
+          print("Send Location: " + error.toString());
+          Navigator.pop(context);
+        });
+      } else {
+        Fluttertoast.showToast(
+            msg: "Error in getting location",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM);
+        Navigator.pop(context);
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(
+          msg: "Error in getting location",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM);
+      Navigator.pop(context);
+    });
   }
 
   @override
@@ -104,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                             onPressed: () {
-                              _submitForm();
+                              _submitForm(context);
                               _formKey.currentState.reset();
                               FocusScope.of(context).requestFocus(FocusNode());
                             }),
@@ -114,22 +177,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       keyboardType: TextInputType.phone,
                       onChanged: (String value) {
-                        distance = int.parse(value);
+                        if (value.length == 0) {
+                          setState(() {
+                            isButtonEnabled = false;
+                          });
+                        } else {
+                          setState(() {
+                            isButtonEnabled = true;
+                          });
+                        }
+                        distance = double.parse(value);
                       },
                       onSaved: (String value) {
-                        distance = int.parse(value);
+                        if (value.length == 0) {
+                          setState(() {
+                            isButtonEnabled = false;
+                          });
+                        } else {
+                          setState(() {
+                            isButtonEnabled = true;
+                          });
+                        }
+                        distance = double.parse(value);
                       },
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: getViewportHeight(context) * 0.06),
               RaisedButton(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)),
-                splashColor: Colors.white,
-                color: Colors.white,
+                splashColor: isButtonEnabled? Colors.blue:null,
+                color: isButtonEnabled ? Colors.white : Colors.grey,
                 child: Container(
                   width: getViewportWidth(context) * 0.35,
                   height: getViewportHeight(context) * 0.06,
@@ -138,7 +219,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     'Search',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Theme.of(context).primaryColor,
+                      color: isButtonEnabled
+                          ? Theme.of(context).primaryColor
+                          : Colors.black,
                       fontFamily: "Ubuntu",
                       fontSize: getViewportHeight(context) * 0.025,
                     ),
@@ -146,53 +229,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  _submitForm();
-                  _formKey.currentState.reset();
-                  FocusScope.of(context).requestFocus(FocusNode());
+                  if (isButtonEnabled) {
+                    _submitForm(context);
+                    _formKey.currentState.reset();
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  }
                 },
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        onPressed: () async {
-          await getLocation().then((value) async {
-            if (value == null) {
-              Fluttertoast.showToast(
-                  msg: "Error in getting location",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM);
-            } else {
-              Hospital h = Hospital();
-              h.setDistance = 123;
-              h.setEmail = "av";
-              h.setName = "Gandhi Eye";
-              h.setLatitude = 27.8894;
-              h.setLongitude = 78.0834;
-              List<Hospital> hospitals = List<Hospital>();
-              hospitals.add(h);
-              hospitalListProvider.setHospitalLists = hospitals;
-              Fluttertoast.showToast(
-                  msg:
-                      "Latitude: ${value.latitude}\nLongitude: ${value.longitude}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM);
-              locationProvider.setLocation = value;
-              await getNetworkRepository.sendCurrentLocation(
-                  latitude: value.latitude, longitude: value.longitude);
-
-              Navigator.pushNamed(context, "/map");
-            }
-          });
-        },
-        tooltip: 'Increment',
-        child: Icon(
-          Icons.map,
-          color: Theme.of(context).primaryColor,
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

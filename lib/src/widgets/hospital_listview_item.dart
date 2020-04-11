@@ -16,6 +16,7 @@ class HospitalListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       margin: EdgeInsets.only(
         top: getViewportHeight(context) * 0.02,
         left: getViewportWidth(context) * 0.04,
@@ -25,9 +26,7 @@ class HospitalListViewItem extends StatelessWidget {
       child: InkWell(
         splashColor: Colors.blue,
         onTap: () async {
-          if (panelController.isPanelOpen) {
-            panelController.close();
-          }
+          panelController.close();
           final GoogleMapController controller2 = await controller.future;
           CameraPosition myPosition = CameraPosition(
             bearing: 192,
@@ -53,7 +52,7 @@ class HospitalListViewItem extends StatelessWidget {
               textAlign: TextAlign.start,
               style: TextStyle(fontSize: 15),
             ),
-            Text("Email: " + hospital.getEmail,
+            Text("Contact Info: " + hospital.getEmail,
                 textAlign: TextAlign.start, style: TextStyle(fontSize: 15)),
           ],
         ),

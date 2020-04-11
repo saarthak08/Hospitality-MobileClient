@@ -16,10 +16,10 @@ class _NetworkRepository implements NetworkCalls {
 
   @override
   Future<Response> sendCurrentLocation(
-      {double latitude, double longitude}) async {
+      {double latitude, double longitude, double range}) async {
     final Response response = await _client
         .get(
-            "$baseURL/api/location?latitude=${latitude.toString()}&longitude=${longitude.toString()}",
+            "$baseURL/users/user/hospital?lattitude=${latitude.toString()}&longitude=${longitude.toString()}&range=$range",
             headers: {HttpHeaders.authorizationHeader: token})
         .timeout(Duration(seconds: 10))
         .catchError((error) {
