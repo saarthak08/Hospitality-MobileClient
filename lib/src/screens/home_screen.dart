@@ -56,12 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
               Hospital h = new Hospital();
               if (data["distance"] != null &&
-                  data["lattitude"] != null &&
+                  data["latitude"] != null &&
                   data["longitude"] != null &&
                   data["name"] != null) {
-                h.setDistance = data["distance"];
+                h.setDistance = double.parse(data["distance"].toStringAsFixed(2));
                 h.setEmail = data["contact"].toString();
-                h.setLatitude = data["lattitude"];
+                h.setLatitude = data["latitude"];
                 h.setLongitude = data["longitude"];
                 h.setName = data["name"];
                 hospitals.add(h);
