@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hospital_service/src/helpers/current_location.dart';
 import 'package:hospital_service/src/helpers/dimensions.dart';
 import 'package:hospital_service/src/models/hospital.dart';
 import 'package:hospital_service/src/providers/hospital_list_provider.dart';
@@ -23,6 +22,7 @@ class MapSampleState extends State<MapSample> {
   LocationData myLocationData;
   LocationProvider locationProvider;
   CameraPosition myPosition;
+  PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
 
   @override
@@ -32,7 +32,6 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    PanelController controller = new PanelController();
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
@@ -40,7 +39,7 @@ class MapSampleState extends State<MapSample> {
       markers.add(Marker(
           visible: true,
           position: LatLng(hospital.getLatitude, hospital.getLongitude),
-          markerId: MarkerId("Taj Mahal"),
+          markerId: MarkerId(hospital.getName),
           infoWindow: InfoWindow(title: hospital.getName)));
     }
     myLocationData = locationProvider.getLocation;
@@ -66,43 +65,20 @@ class MapSampleState extends State<MapSample> {
         controller: controller,
         borderRadius: BorderRadius.circular(20),
         backdropEnabled: true,
-        panel: Column(
-          children: <Widget>[
-            Card(
-              elevation: 2,
-              color: Colors.blueAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40)),
-              child: Container(
+        panelBuilder: (ScrollController sc) => _scrollingList(sc),
+        isDraggable: true,
+        parallaxEnabled: true,
+        collapsed: Card(
+            elevation: 2,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            child: Container(
                 width: getViewportWidth(context),
                 height: getViewportHeight(context) * 0.1,
                 child: Center(
-                  child: Text(
-                    "Hospitals",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontFamily: "Montserrat"),
-                  ),
-                ),
-              ),
-            ),
-            ListView.builder(
-              addAutomaticKeepAlives: false,
-              physics:
-                  BouncingScrollPhysics(), // to disable GridView's scrolling
-              shrinkWrap: true,
-              itemBuilder: (context, int index) {
-                return HospitalListViewItem(
-                  panelController: controller,
-                  controller: _controller,
-                  hospital: hospitals[index],
-                );
-              },
-              itemCount: hospitals.length,
-            )
-          ],
-        ),
+                  child: Text("Hospitals",
+                      style: TextStyle(fontSize: 40, fontFamily: "Montserrat")),
+                ))),
         body: Center(
           child: Container(
               child: GoogleMap(
@@ -127,7 +103,22 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  Future<void> _currentLocation() async {
+  Widget _scrollingList(ScrollController sc) {
+    return ListView.builder(
+      controller: sc,
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, int index) {
+        return HospitalListViewItem(
+          panelController: controller,
+          controller: _controller,
+          hospital: hospitals[index],
+        );
+      },
+      itemCount: hospitals.length,
+    );
+  }
+  /* Future<void> _currentLocation() async {
     final GoogleMapController controller = await _controller.future;
     await getLocation().then((value) {
       if (value != null) {
@@ -142,5 +133,5 @@ class MapSampleState extends State<MapSample> {
         controller.animateCamera(CameraUpdate.newCameraPosition(myPosition));
       }
     });
-  }
+  }*/
 }
