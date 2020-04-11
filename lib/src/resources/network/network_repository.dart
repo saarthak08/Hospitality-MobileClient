@@ -19,7 +19,7 @@ class _NetworkRepository implements NetworkCalls {
       {double latitude, double longitude, double range}) async {
     final Response response = await _client
         .get(
-            "$baseURL/users/user/hospital?lattitude=${latitude.toString()}&longitude=${longitude.toString()}&range=$range",
+            "$baseURL/api/patient/hospitals?latitude=${latitude.toString()}&longitude=${longitude.toString()}&range=$range",
             headers: {HttpHeaders.authorizationHeader: token})
         .timeout(Duration(seconds: 10))
         .catchError((error) {
