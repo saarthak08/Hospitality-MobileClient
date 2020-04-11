@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _submitForm(BuildContext context) async {
     _formKey.currentState.save();
     setState(() {
-      isButtonEnabled=false;
+      isButtonEnabled = false;
     });
     locationProvider.setHospitalDistance = distance;
     getLocation().then((value) {
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (value.statusCode == 200) {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
-            hospitalListProvider.setHospitalLists=hospitals;
+            hospitalListProvider.setHospitalLists = hospitals;
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
               Hospital h = new Hospital();
@@ -59,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   data["latitude"] != null &&
                   data["longitude"] != null &&
                   data["name"] != null) {
-                h.setDistance = double.parse(data["distance"].toStringAsFixed(2));
+                h.setDistance =
+                    double.parse(data["distance"].toStringAsFixed(2));
                 h.setEmail = data["contact"].toString();
                 h.setLatitude = data["latitude"];
                 h.setLongitude = data["longitude"];
@@ -77,12 +78,24 @@ class _HomeScreenState extends State<HomeScreen> {
               hospitalListProvider.setHospitalLists = hospitals;
               Navigator.pushNamed(context, "/map");
             }
+          } else if (value.statusCode == 404) {
+            Fluttertoast.showToast(
+                msg:
+                    "No nearby hospitals found! Try again or change the distance limit!",
+                toastLength: Toast.LENGTH_SHORT);
+            print("Send Location: " + value.statusCode.toString());
+            Navigator.pop(context);
           } else {
+            Fluttertoast.showToast(
+                msg: "Error fetching hospitals! Try again!",
+                toastLength: Toast.LENGTH_SHORT);
             print("Send Location: " + value.statusCode.toString());
             Navigator.pop(context);
           }
         }).catchError((error) {
-          print("Send Location: " + error.toString());
+          Fluttertoast.showToast(
+              msg: "Error fetching hospitals! Try again!",
+              toastLength: Toast.LENGTH_SHORT);
           Navigator.pop(context);
         });
       } else {
@@ -107,139 +120,158 @@ class _HomeScreenState extends State<HomeScreen> {
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('HomeScreen'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.blue.shade300, Colors.blue.shade500]),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Hero(
-                tag: "ico",
-                child: Container(
-                  height: getDeviceHeight(context) * 0.20,
-                  width: getDeviceWidth(context) * 0.20,
-                  child: Image.asset('assets/img/splash_bg.png'),
-                ),
+        appBar: AppBar(
+          title: Text('HomeScreen'),
+          actions: <Widget>[
+            Hero(
+              tag: "ico",
+              child: Container(
+                alignment: Alignment.center,
+                margin:
+                    EdgeInsets.only(right: getViewportWidth(context) * 0.02),
+                height: getDeviceHeight(context) * 0.1,
+                width: getDeviceWidth(context) * 0.1,
+                child: Image.asset('assets/img/splash_bg.png'),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          ],
+        ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              height: getViewportHeight(context),
+              width: getViewportWidth(context),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.blue.shade300, Colors.blue.shade500]),
+              ),
+              child: Column(
                 children: <Widget>[
-                  Icon(
-                    Icons.edit,
-                    color: Colors.white70,
+                  Container(
+                    margin: EdgeInsets.only(top:getViewportHeight(context)*0.1),
+                    height: getDeviceHeight(context) * 0.25,
+                    width: getDeviceWidth(context) * 0.8,
+                    child: Image.asset('assets/img/hosp_doc.png'),
                   ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Input distance for nearby hospital',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white70),
+                  SizedBox(height: getViewportHeight(context)*0.1,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Input distance for nearby hospital',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Montserrat",
+                            fontSize: getViewportWidth(context)*0.04,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: getDeviceHeight(context) * 0.05,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          style: dropdownMenuItem,
+                          decoration: InputDecoration(
+                            hintText: "Search by distance in km",
+                            hintStyle:
+                                TextStyle(color: Colors.black38, fontSize: 16),
+                            prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () {
+                                  _submitForm(context);
+                                  _formKey.currentState.reset();
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                }),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 13),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          onChanged: (String value) {
+                            if (value.length == 0) {
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            } else {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            }
+                            distance = double.parse(value);
+                          },
+                          onSaved: (String value) {
+                            if (value.length == 0) {
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            } else {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            }
+                            distance = double.parse(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: getViewportHeight(context) * 0.06),
+                  RaisedButton(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    splashColor: isButtonEnabled ? Colors.blue : null,
+                    color: isButtonEnabled ? Colors.white : Colors.grey,
+                    child: Container(
+                      width: getViewportWidth(context) * 0.35,
+                      height: getViewportHeight(context) * 0.06,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Search',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: isButtonEnabled
+                              ? Theme.of(context).primaryColor
+                              : Colors.black,
+                          fontFamily: "Ubuntu",
+                          fontSize: getViewportHeight(context) * 0.025,
+                        ),
+                      ),
+                    ),
+                    textColor: Colors.white,
+                    onPressed: () {
+                      if (isButtonEnabled) {
+                        _submitForm(context);
+                        _formKey.currentState.reset();
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      }
+                    },
                   ),
                 ],
               ),
-              SizedBox(
-                height: getDeviceHeight(context) * 0.1,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Material(
-                  elevation: 5.0,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  child: Form(
-                    key: _formKey,
-                    child: TextFormField(
-                      cursorColor: Theme.of(context).primaryColor,
-                      style: dropdownMenuItem,
-                      decoration: InputDecoration(
-                        hintText: "Search by distance in km",
-                        hintStyle:
-                            TextStyle(color: Colors.black38, fontSize: 16),
-                        prefixIcon: IconButton(
-                            icon: Icon(
-                              Icons.search,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              _submitForm(context);
-                              _formKey.currentState.reset();
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            }),
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 25, vertical: 13),
-                      ),
-                      keyboardType: TextInputType.phone,
-                      onChanged: (String value) {
-                        if (value.length == 0) {
-                          setState(() {
-                            isButtonEnabled = false;
-                          });
-                        } else {
-                          setState(() {
-                            isButtonEnabled = true;
-                          });
-                        }
-                        distance = double.parse(value);
-                      },
-                      onSaved: (String value) {
-                        if (value.length == 0) {
-                          setState(() {
-                            isButtonEnabled = false;
-                          });
-                        } else {
-                          setState(() {
-                            isButtonEnabled = true;
-                          });
-                        }
-                        distance = double.parse(value);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: getViewportHeight(context) * 0.06),
-              RaisedButton(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25)),
-                splashColor: isButtonEnabled? Colors.blue:null,
-                color: isButtonEnabled ? Colors.white : Colors.grey,
-                child: Container(
-                  width: getViewportWidth(context) * 0.35,
-                  height: getViewportHeight(context) * 0.06,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Search',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: isButtonEnabled
-                          ? Theme.of(context).primaryColor
-                          : Colors.black,
-                      fontFamily: "Ubuntu",
-                      fontSize: getViewportHeight(context) * 0.025,
-                    ),
-                  ),
-                ),
-                textColor: Colors.white,
-                onPressed: () {
-                  if (isButtonEnabled) {
-                    _submitForm(context);
-                    _formKey.currentState.reset();
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  }
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

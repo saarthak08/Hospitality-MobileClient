@@ -34,30 +34,65 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                   Text(
-                    'Choose your Role!',
+                    'Choose your role!',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                        color: Colors.white70),
+                        fontSize: getViewportHeight(context)*0.04,
+                        fontFamily: "Montserrat",
+                        color: Colors.white),
                   )
                 ],
               ),
               RaisedButton(
-                child: Text('Patient'),
-                elevation: 10,
-                color: Colors.white70,
-                animationDuration: Duration(milliseconds: 200),
-                onPressed: () => Navigator.pushReplacement(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35)),
+                splashColor: Colors.blue,
+                color: Colors.white,
+                child: Container(
+                  width: getViewportWidth(context) * 0.4,
+                  height: getViewportHeight(context) * 0.08,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Patient',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: "Ubuntu",
+                      fontSize: getViewportHeight(context) * 0.025,
+                    ),
+                  ),
+                ),
+                textColor: Colors.white,
+                animationDuration: Duration(milliseconds: 300),
+                onPressed: () => Navigator.push(
                     context, BouncyPageRoute(widget: HomeScreen())),
               ),
+
               // SizedBox(height: getDeviceHeight(context) * 0.2),
               RaisedButton(
-                child: Text('Hospital'),
-                elevation: 10,
-                color: Colors.white70,
-                animationDuration: Duration(milliseconds: 200),
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/home'),
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35)),
+                splashColor: Colors.blue,
+                color: Colors.white,
+                child: Container(
+                  width: getViewportWidth(context) * 0.4,
+                  height: getViewportHeight(context) * 0.08,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Hospital',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: "Ubuntu",
+                      fontSize: getViewportHeight(context) * 0.025,
+                    ),
+                  ),
+                ),
+                textColor: Colors.white,
+                animationDuration: Duration(milliseconds: 300),
+                onPressed: () => Navigator.pushNamed(context, "/home"),
               ),
             ],
           ),
