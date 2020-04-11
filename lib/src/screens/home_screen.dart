@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
-  
+
   final String title;
 
   @override
@@ -23,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('HomeScreen'),
       ),
       body: Center(
         child: Column(

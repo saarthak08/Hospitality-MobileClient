@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_service/src/providers/location_provider.dart';
+import 'package:hospital_service/src/screens/auth_screen.dart';
 import 'package:hospital_service/src/screens/home_screen.dart';
+import 'package:hospital_service/src/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -8,17 +10,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (ctx) => LocationProvider(),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: HomeScreen(title: 'Flutter Demo Home Page'),
-        ));
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => LocationProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          primaryColor: Color(0xff0079f5),
+          accentColor: Colors.blue,
+        ),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (BuildContext context) => SplashPage(),
+          '/home': (BuildContext context) => HomeScreen(),
+          '/auth': (BuildContext context) => AuthScreen(),
+        },
+      ),
+    );
   }
 }
