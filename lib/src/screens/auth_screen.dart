@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_service/src/widgets/bouncy_page_animation.dart';
 import '../helpers/dimensions.dart';
+import 'home_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -45,8 +47,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 elevation: 10,
                 color: Colors.white70,
                 animationDuration: Duration(milliseconds: 200),
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/home'),
+                onPressed: () => Navigator.pushReplacement(
+                    context, BouncyPageRoute(widget: HomeScreen())),
               ),
               // SizedBox(height: getDeviceHeight(context) * 0.2),
               RaisedButton(

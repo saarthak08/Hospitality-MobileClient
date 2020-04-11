@@ -27,8 +27,6 @@ dependencies:
   flutter_polyline_points: ^0.1.0
   sliding_up_panel: ^1.0.1
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -73,8 +71,7 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset : assets/fonts/Montserrat-Regular.ttf
-
+        - asset: assets/fonts/Montserrat-Regular.ttf
 
     - family: CustomIcons
       fonts:
