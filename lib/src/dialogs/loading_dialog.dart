@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/helpers/dimensions.dart';
 
 void showLoadingDialog({@required BuildContext context}) {
   showGeneralDialog(
@@ -15,9 +16,14 @@ void showLoadingDialog({@required BuildContext context}) {
             child: Opacity(
                 opacity: a1.value,
                 child: AlertDialog(
+                  shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0)),
                   title: Text("Please Wait!"),
-                  content: new Container(
-                    child: new Column(
+                  content: Container(
+                    alignment: Alignment.center,
+                    width: getViewportWidth(context),
+                    height: getViewportHeight(context)*0.12,
+                    child: Column(
                       children: <Widget>[
                         Text("Loading..."),
                         Padding(
@@ -28,7 +34,6 @@ void showLoadingDialog({@required BuildContext context}) {
                           padding: EdgeInsets.all(16.0),
                         )
                       ],
-                      mainAxisSize: MainAxisSize.min,
                     ),
                   ),
                   elevation: 8.0,

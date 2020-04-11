@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hospital_service/src/providers/hospital_list_provider.dart';
-import 'package:hospital_service/src/providers/location_provider.dart';
-import 'package:hospital_service/src/screens/auth_screen.dart';
-import 'package:hospital_service/src/screens/home_screen.dart';
-import 'package:hospital_service/src/screens/hospital_info.dart';
-import 'package:hospital_service/src/screens/splash_screen.dart';
-import 'package:hospital_service/src/screens/map_screen.dart';
+import 'package:hospitality/src/screens/hospital_info.dart';
+import 'package:hospitality/src/providers/hospital_list_provider.dart';
+import 'package:hospitality/src/providers/location_provider.dart';
+import 'package:hospitality/src/providers/user_profile_provider.dart';
+import 'package:hospitality/src/screens/auth_screen.dart';
+import 'package:hospitality/src/screens/home_screen.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
+import 'package:hospitality/src/screens/map_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (ctx) => HospitalListProvider(),
+        ),
+         ChangeNotifierProvider(
+          create: (ctx) => UserProfileProvider(),
         ),
       ],
       child: MaterialApp(
