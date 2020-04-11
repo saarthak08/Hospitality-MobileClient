@@ -1,4 +1,4 @@
-package com.rbs.hospital_service
+package com.rbs.hospitality
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

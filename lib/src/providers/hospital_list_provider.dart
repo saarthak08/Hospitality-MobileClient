@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hospital_service/src/models/hospital.dart';
+import 'package:hospitality/src/models/hospital.dart';
 
 class HospitalListProvider extends ChangeNotifier{
   List<Hospital> _hospitals;
