@@ -63,7 +63,7 @@ class MapSampleState extends State<MapSample> {
       ),
       body: SlidingUpPanel(
         controller: controller,
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(20),
         backdropEnabled: true,
         panelBuilder: (ScrollController sc) => _scrollingList(sc),
         isDraggable: true,

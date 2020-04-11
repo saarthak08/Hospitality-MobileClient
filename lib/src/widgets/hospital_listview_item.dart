@@ -16,6 +16,7 @@ class HospitalListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       margin: EdgeInsets.only(
         top: getViewportHeight(context) * 0.02,
