@@ -5,6 +5,8 @@ import 'package:hospital_service/src/helpers/dimensions.dart';
 import 'package:hospital_service/src/models/hospital.dart';
 import 'package:hospital_service/src/providers/hospital_list_provider.dart';
 import 'package:hospital_service/src/providers/location_provider.dart';
+import 'package:hospital_service/src/screens/hospital_info.dart';
+import 'package:hospital_service/src/widgets/bouncy_page_animation.dart';
 import 'package:hospital_service/src/widgets/hospital_listview_item.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -36,11 +38,20 @@ class MapSampleState extends State<MapSample> {
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
     for (Hospital hospital in hospitals) {
-      markers.add(Marker(
+      markers.add(
+        Marker(
           visible: true,
           position: LatLng(hospital.getLatitude, hospital.getLongitude),
           markerId: MarkerId(hospital.getName),
-          infoWindow: InfoWindow(title: hospital.getName)));
+          infoWindow: InfoWindow(title: hospital.getName),
+          onTap: () => Navigator.push(
+            context,
+            BouncyPageRoute(
+              widget: HospitalInfo(),
+            ),
+          ),
+        ),
+      );
     }
     myLocationData = locationProvider.getLocation;
     myPosition = CameraPosition(

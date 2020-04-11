@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomeScreen'),
+        title: Text(widget.title),
       ),
       body: Container(
         decoration: BoxDecoration(
