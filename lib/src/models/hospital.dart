@@ -10,7 +10,7 @@ class Hospital {
       throw FormatException("Null JSON");
     }
     this._email = responseMap["email"];
-    this._latitude= responseMap["latitude"];
+    this._latitude= responseMap["lattitude"];
     this._longitude = responseMap["longitude"];
     this._name = responseMap["name"];
     this._distance = responseMap["distance"];
