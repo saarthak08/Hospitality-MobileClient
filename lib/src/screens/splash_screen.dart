@@ -17,7 +17,8 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: 3), () {
-      Navigator.push(context, BouncyPageRoute(widget: AuthScreen()));
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, BouncyPageRoute(widget: AuthScreen()));
     });
   }
 
@@ -26,19 +27,15 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.blue.shade300, Colors.blue.shade500]),
-        ),
+        decoration: BoxDecoration(color: Colors.white),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Hero(
                 tag: "ico",
                 child: Container(
-                  height: getDeviceHeight(context) * 0.50,
-                  width: getDeviceWidth(context) * 0.50,
+                  height: getDeviceHeight(context) * 0.60,
+                  width: getDeviceWidth(context) * 0.60,
                   child: Image.asset('assets/img/splash_bg.png'),
                 ),
               ),
@@ -46,15 +43,19 @@ class _SplashPageState extends State<SplashPage> {
               Text(
                 'Hospitality',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.blue,
+                    fontFamily: "Montserrat",
                     fontSize: getDeviceHeight(context) * 0.05),
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: getDeviceHeight(context) * 0.01),
+              SizedBox(height: getDeviceHeight(context) * 0.03),
               Text(
-                'We are here to help',
+                '"We are here to help."',
                 style: TextStyle(
-                    color: Colors.white,
+                    fontFamily: "Ubuntu",
+                    color: Colors.blue,
                     fontSize: getDeviceHeight(context) * 0.03),
+                textAlign: TextAlign.center,
               )
             ],
           ),

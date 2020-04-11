@@ -34,23 +34,24 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ),
                   Text(
-                    'Choose your Role!',
+                    'Choose your role!',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                        color: Colors.white70),
+                        fontSize: getViewportHeight(context)*0.04,
+                        fontFamily: "Montserrat",
+                        color: Colors.white),
                   )
                 ],
               ),
               RaisedButton(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25)),
-                splashColor: Colors.white,
+                    borderRadius: BorderRadius.circular(35)),
+                splashColor: Colors.blue,
                 color: Colors.white,
                 child: Container(
-                  width: getViewportWidth(context) * 0.35,
-                  height: getViewportHeight(context) * 0.06,
+                  width: getViewportWidth(context) * 0.4,
+                  height: getViewportHeight(context) * 0.08,
                   alignment: Alignment.center,
                   child: Text(
                     'Patient',
@@ -63,20 +64,21 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 textColor: Colors.white,
-                animationDuration: Duration(milliseconds: 200),
-                onPressed: () => Navigator.pushReplacement(context,
-                    BouncyPageRoute(widget: HomeScreen(title: 'Patient'))),
+                animationDuration: Duration(milliseconds: 300),
+                onPressed: () => Navigator.push(
+                    context, BouncyPageRoute(widget: HomeScreen())),
               ),
+
               // SizedBox(height: getDeviceHeight(context) * 0.2),
               RaisedButton(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25)),
-                splashColor: Colors.white,
+                    borderRadius: BorderRadius.circular(35)),
+                splashColor: Colors.blue,
                 color: Colors.white,
                 child: Container(
-                  width: getViewportWidth(context) * 0.35,
-                  height: getViewportHeight(context) * 0.06,
+                  width: getViewportWidth(context) * 0.4,
+                  height: getViewportHeight(context) * 0.08,
                   alignment: Alignment.center,
                   child: Text(
                     'Hospital',
@@ -89,9 +91,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 textColor: Colors.white,
-                animationDuration: Duration(milliseconds: 200),
-                onPressed: () => Navigator.pushReplacement(context,
-                    BouncyPageRoute(widget: HomeScreen(title: 'Doctor'))),
+                animationDuration: Duration(milliseconds: 300),
+                onPressed: () => Navigator.pushNamed(context, "/home"),
               ),
             ],
           ),
