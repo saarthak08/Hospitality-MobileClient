@@ -44,148 +44,159 @@ class _HomeScreenState extends State<HomeScreen> {
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
     return Scaffold(
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('HomeScreen'),
+        title: Text(widget.title),
       ),
       body: Container(
+        height: getDeviceHeight(context),
         decoration: BoxDecoration(
           gradient: LinearGradient(
               colors: [Colors.blue.shade300, Colors.blue.shade500]),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Hero(
-                tag: "ico",
-                child: Container(
-                  height: getDeviceHeight(context) * 0.20,
-                  width: getDeviceWidth(context) * 0.20,
-                  child: Image.asset('assets/img/splash_bg.png'),
-                ),
-              ),
-              Row(
+        child: SingleChildScrollView(
+          child: Container(
+            height: getDeviceHeight(context) * 0.8,
+            child: Center(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(
-                    Icons.edit,
-                    color: Colors.white70,
+                  Hero(
+                    tag: "ico",
+                    child: Container(
+                      height: getDeviceHeight(context) * 0.20,
+                      width: getDeviceWidth(context) * 0.20,
+                      child: Image.asset('assets/img/splash_bg.png'),
+                    ),
                   ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Input distance for nearby hospital',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white70),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white70,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Input distance for nearby hospital',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.white70),
+                      ),
+                    ],
                   ),
+                  SizedBox(
+                    height: getDeviceHeight(context) * 0.1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          style: dropdownMenuItem,
+                          decoration: InputDecoration(
+                            hintText: "Search by distance in km",
+                            hintStyle:
+                                TextStyle(color: Colors.black38, fontSize: 16),
+                            prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () {
+                                  _submitForm();
+                                  _formKey.currentState.reset();
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                }),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 13),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          onChanged: (String value) {
+                            distance = int.parse(value);
+                          },
+                          onSaved: (String value) {
+                            distance = int.parse(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    splashColor: Colors.white,
+                    color: Colors.white,
+                    child: Container(
+                      width: getViewportWidth(context) * 0.35,
+                      height: getViewportHeight(context) * 0.06,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Search',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontFamily: "Ubuntu",
+                          fontSize: getViewportHeight(context) * 0.025,
+                        ),
+                      ),
+                    ),
+                    textColor: Colors.white,
+                    onPressed: () {
+                      _submitForm();
+                      _formKey.currentState.reset();
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                  ),
+                  SizedBox(height: getDeviceHeight(context) * 0.2)
                 ],
               ),
-              SizedBox(
-                height: getDeviceHeight(context) * 0.1,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Material(
-                  elevation: 5.0,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  child: Form(
-                    key: _formKey,
-                    child: TextFormField(
-                      cursorColor: Theme.of(context).primaryColor,
-                      style: dropdownMenuItem,
-                      decoration: InputDecoration(
-                        hintText: "Search by distance in km",
-                        hintStyle:
-                            TextStyle(color: Colors.black38, fontSize: 16),
-                        prefixIcon: IconButton(
-                            icon: Icon(
-                              Icons.search,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              _submitForm();
-                              _formKey.currentState.reset();
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            }),
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 25, vertical: 13),
-                      ),
-                      keyboardType: TextInputType.phone,
-                      onChanged: (String value) {
-                        distance = int.parse(value);
-                      },
-                      onSaved: (String value) {
-                        distance = int.parse(value);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              RaisedButton(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25)),
-                splashColor: Colors.white,
-                color: Colors.white,
-                child: Container(
-                  width: getViewportWidth(context) * 0.35,
-                  height: getViewportHeight(context) * 0.06,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Search',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontFamily: "Ubuntu",
-                      fontSize: getViewportHeight(context) * 0.025,
-                    ),
-                  ),
-                ),
-                textColor: Colors.white,
-                onPressed: () {
-                  _submitForm();
-                  _formKey.currentState.reset();
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () async {
-          await getLocation().then((value) async {
-            if (value == null) {
-              Fluttertoast.showToast(
-                  msg: "Error in getting location",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM);
-            } else {
-              Hospital h = Hospital();
-              h.setDistance = 123;
-              h.setEmail = "av";
-              h.setName = "Gandhi Eye";
-              h.setLatitude = 27.8894;
-              h.setLongitude = 78.0834;
-              List<Hospital> hospitals = List<Hospital>();
-              hospitals.add(h);
-              hospitalListProvider.setHospitalLists = hospitals;
-              Fluttertoast.showToast(
-                  msg:
-                      "Latitude: ${value.latitude}\nLongitude: ${value.longitude}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM);
-              locationProvider.setLocation = value;
-              await getNetworkRepository.sendCurrentLocation(
-                  latitude: value.latitude, longitude: value.longitude);
+          await getLocation().then(
+            (value) async {
+              if (value == null) {
+                Fluttertoast.showToast(
+                    msg: "Error in getting location",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM);
+              } else {
+                Hospital h = Hospital();
+                h.setDistance = 123;
+                h.setEmail = "av";
+                h.setName = "Gandhi Eye";
+                h.setLatitude = 27.8894;
+                h.setLongitude = 78.0834;
+                List<Hospital> hospitals = List<Hospital>();
+                hospitals.add(h);
+                hospitalListProvider.setHospitalLists = hospitals;
+                Fluttertoast.showToast(
+                    msg:
+                        "Latitude: ${value.latitude}\nLongitude: ${value.longitude}",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM);
+                locationProvider.setLocation = value;
+                await getNetworkRepository.sendCurrentLocation(
+                    latitude: value.latitude, longitude: value.longitude);
 
-              Navigator.pushNamed(context, "/map");
-            }
-          });
+                Navigator.pushNamed(context, "/map");
+              }
+            },
+          );
         },
         tooltip: 'Increment',
         child: Icon(

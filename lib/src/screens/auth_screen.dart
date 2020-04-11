@@ -43,21 +43,55 @@ class _AuthScreenState extends State<AuthScreen> {
                 ],
               ),
               RaisedButton(
-                child: Text('Patient'),
-                elevation: 10,
-                color: Colors.white70,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25)),
+                splashColor: Colors.white,
+                color: Colors.white,
+                child: Container(
+                  width: getViewportWidth(context) * 0.35,
+                  height: getViewportHeight(context) * 0.06,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Patient',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: "Ubuntu",
+                      fontSize: getViewportHeight(context) * 0.025,
+                    ),
+                  ),
+                ),
+                textColor: Colors.white,
                 animationDuration: Duration(milliseconds: 200),
-                onPressed: () => Navigator.pushReplacement(
-                    context, BouncyPageRoute(widget: HomeScreen())),
+                onPressed: () => Navigator.pushReplacement(context,
+                    BouncyPageRoute(widget: HomeScreen(title: 'Patient'))),
               ),
               // SizedBox(height: getDeviceHeight(context) * 0.2),
               RaisedButton(
-                child: Text('Hospital'),
-                elevation: 10,
-                color: Colors.white70,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25)),
+                splashColor: Colors.white,
+                color: Colors.white,
+                child: Container(
+                  width: getViewportWidth(context) * 0.35,
+                  height: getViewportHeight(context) * 0.06,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Hospital',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: "Ubuntu",
+                      fontSize: getViewportHeight(context) * 0.025,
+                    ),
+                  ),
+                ),
+                textColor: Colors.white,
                 animationDuration: Duration(milliseconds: 200),
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/home'),
+                onPressed: () => Navigator.pushReplacement(context,
+                    BouncyPageRoute(widget: HomeScreen(title: 'Doctor'))),
               ),
             ],
           ),

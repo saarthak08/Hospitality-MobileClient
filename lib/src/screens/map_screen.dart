@@ -64,25 +64,33 @@ class MapSampleState extends State<MapSample> {
       ),
       body: SlidingUpPanel(
         controller: controller,
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(20),
         backdropEnabled: true,
         panel: Column(
           children: <Widget>[
             Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)),
-                child: Container(
-                    width: getViewportWidth(context),
-                    height: getViewportHeight(context) * 0.1,
-                    child: Center(
-                      child: Text("Hospitals",
-                          style: TextStyle(
-                              fontSize: 40, fontFamily: "Montserrat")),
-                    ))),
+              elevation: 2,
+              color: Colors.blueAccent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40)),
+              child: Container(
+                width: getViewportWidth(context),
+                height: getViewportHeight(context) * 0.1,
+                child: Center(
+                  child: Text(
+                    "Hospitals",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40,
+                        fontFamily: "Montserrat"),
+                  ),
+                ),
+              ),
+            ),
             ListView.builder(
               addAutomaticKeepAlives: false,
-              physics: ScrollPhysics(), // to disable GridView's scrolling
+              physics:
+                  BouncingScrollPhysics(), // to disable GridView's scrolling
               shrinkWrap: true,
               itemBuilder: (context, int index) {
                 return HospitalListViewItem(
