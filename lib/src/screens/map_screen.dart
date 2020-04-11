@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hospital_service/src/helpers/current_location.dart';
 import 'package:hospital_service/src/providers/location_provider.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class MapSample extends StatefulWidget {
@@ -10,48 +12,80 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  LocationProvider locationProvider;
-
   Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-
+  LocationData myLocationData;
+  LocationProvider locationProvider;
+  CameraPosition myPosition;
+  Set<Marker> markers = Set<Marker>() ;
+  
+  @override
+  void initState() {
+    super.initState();
+    markers.add(Marker(visible: true,position:LatLng(27.8894,78.0834),markerId:MarkerId("Taj Mahal"),infoWindow: InfoWindow(title: "GandhiEye")));
+  }
   @override
   Widget build(BuildContext context) {
     locationProvider = Provider.of<LocationProvider>(context);
-    _kLake = CameraPosition(
-        target: LatLng(locationProvider.getLocation.latitude,
-            locationProvider.getLocation.longitude),
-        bearing: 192.8334901395799,
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414);
+    myLocationData = locationProvider.getLocation;
+    myPosition = CameraPosition(
+      bearing: 192,
+      target: LatLng(myLocationData.latitude, myLocationData.longitude),
+      tilt: 0,
+      zoom: 18,
+    );
     return new Scaffold(
-      body: GoogleMap(
+      appBar: AppBar(
+        title: Text(
+          "Hospital Service",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: "Montserrat",
+            fontSize: 25,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+          child: GoogleMap(
+        buildingsEnabled: true,
+        rotateGesturesEnabled: true,
+        tiltGesturesEnabled: true,
+        scrollGesturesEnabled: true,
+        zoomGesturesEnabled: true,
+        trafficEnabled: true,
         mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
+        compassEnabled: true,
+        myLocationEnabled: true,
+        markers:markers,
+        initialCameraPosition: myPosition,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-      ),
+      )),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
+        onPressed: () async {
+          await _currentLocation();
+        },
+        label: Text('Current Location'),
+        icon: Icon(Icons.my_location),
       ),
     );
   }
 
-  Future<void> _goToTheLake() async {
+  Future<void> _currentLocation() async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+    await getLocation().then((value) {
+      if (value != null) {
+        locationProvider.setLocation = value;
+        myLocationData = value;
+        myPosition = CameraPosition(
+          bearing: 192,
+          target: LatLng(myLocationData.latitude, myLocationData.longitude),
+          tilt: 0,
+          zoom: 18,
+        );
+        controller.animateCamera(CameraUpdate.newCameraPosition(myPosition));
+      }
+    });
   }
 }
