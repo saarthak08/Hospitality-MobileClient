@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart';
 import 'package:hospital_service/src/resources/network/network_calls.dart';
 
@@ -9,24 +10,24 @@ class _NetworkRepository implements NetworkCalls {
 
   @override
   Future<Response> logIn({Map<String, String> loginCredentials}) async {
-   //Sample Login code
-   return null;
+    //Sample Login code
+    return null;
   }
-
 
   @override
-  Future<Response> sendCurrentLocation({double latitude, double longitude}) async {
+  Future<Response> sendCurrentLocation(
+      {double latitude, double longitude}) async {
     final Response response = await _client
-    .get("$baseURL/api/location?latitude=${latitude.toString()}&longitude=${longitude.toString()}")
+        .get(
+            "$baseURL/api/location?latitude=${latitude.toString()}&longitude=${longitude.toString()}",
+            headers: {HttpHeaders.authorizationHeader: token})
         .timeout(Duration(seconds: 10))
         .catchError((error) {
-      print("Launch: ${error.toString()}");
-      throw (error);
-    });
+          print("Launch: ${error.toString()}");
+          throw (error);
+        });
     return response;
   }
-
- 
 }
 
 _NetworkRepository _networkRepository;

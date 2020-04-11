@@ -24,6 +24,8 @@ dependencies:
   google_maps_flutter: ^0.5.25+3
   provider: ^4.0.5
   http: ^0.12.0+4
+  flutter_polyline_points: ^0.1.0
+
 
 dev_dependencies:
   flutter_test:
@@ -65,3 +67,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset : assets/fonts/Montserrat-Regular.ttf
+
+
+    - family: CustomIcons
+      fonts:
+        - asset: assets/fonts/CustomIcons.ttf
