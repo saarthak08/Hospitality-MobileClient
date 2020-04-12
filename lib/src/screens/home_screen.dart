@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/dialogs/loading_dialog.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/dimensions.dart';
+import 'map_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -80,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   toastLength: Toast.LENGTH_SHORT);
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
-              Navigator.pushNamed(context, "/map");
+              Navigator.push(context, BouncyPageRoute(widget: MapSample()));
             }
           } else if (value.statusCode == 404) {
             Fluttertoast.showToast(
@@ -162,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 Container(
                   margin:
-                      EdgeInsets.only(top: getViewportHeight(context) * 0.1),
+                      EdgeInsets.only(top: getViewportHeight(context) * 0.05),
                   height: getDeviceHeight(context) * 0.25,
                   width: getDeviceWidth(context) * 0.8,
                   child: Image.asset('assets/img/hosp_doc.png'),

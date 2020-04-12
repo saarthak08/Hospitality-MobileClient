@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/screens/hospital_dashboard.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/home_screen.dart';
@@ -197,11 +198,11 @@ class _AuthScreenState extends State<AuthScreen> {
                     isLoading = false;
                     errorMsg = "";
                   });
-                  Map<dynamic,dynamic> res = json.decode(response.body);
-                  String token=res["token"].toString().split(" ")[1];
+                  Map<dynamic, dynamic> res = json.decode(response.body);
+                  String token = res["token"].toString().split(" ")[1];
                   User user = userProfileProvider.getUser;
-                  if(user==null) {
-                    user=User();
+                  if (user == null) {
+                    user = User();
                   }
                   user.setEmail = _loginCredentials["email"];
                   userProfileProvider.setUser = user;
@@ -215,7 +216,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   } else {
                     Navigator.pushAndRemoveUntil(
                         context,
-                        BouncyPageRoute(widget: HomeScreen()),
+                        BouncyPageRoute(widget: HospitalDashboard()),
                         (Route<dynamic> route) => false);
                   }
                 } else if (response.statusCode == 403) {
@@ -270,7 +271,7 @@ class _AuthScreenState extends State<AuthScreen> {
               })
               .timeout(Duration(seconds: 10))
               .catchError((error) {
-                print("hello" +error.toString());
+                print("hello" + error.toString());
                 isLoading = false;
                 errorMsg = "an error occurred";
               });
