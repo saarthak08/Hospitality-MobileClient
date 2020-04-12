@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hospital_service/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'dart:async';
 
 import '../helpers/dimensions.dart';

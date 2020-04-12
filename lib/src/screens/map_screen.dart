@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hospital_service/src/helpers/dimensions.dart';
-import 'package:hospital_service/src/models/hospital.dart';
-import 'package:hospital_service/src/providers/hospital_list_provider.dart';
-import 'package:hospital_service/src/providers/location_provider.dart';
-import 'package:hospital_service/src/screens/hospital_info.dart';
-import 'package:hospital_service/src/widgets/bouncy_page_animation.dart';
-import 'package:hospital_service/src/widgets/hospital_listview_item.dart';
+import 'package:hospitality/src/screens/hospital_info.dart';
+import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/helpers/dimensions.dart';
+import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/providers/hospital_list_provider.dart';
+import 'package:hospitality/src/providers/location_provider.dart';
+import 'package:hospitality/src/widgets/hospital_listview_item.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -63,7 +63,7 @@ class MapSampleState extends State<MapSample> {
     return new Scaffold(
       appBar: AppBar(
         title: Text(
-          "Hospital Service",
+          "Hospitality",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: "Montserrat",

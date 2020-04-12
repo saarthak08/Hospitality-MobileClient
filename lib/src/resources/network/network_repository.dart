@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart';
-import 'package:hospital_service/src/resources/network/network_calls.dart';
+import 'package:hospitality/src/resources/network/network_calls.dart';
 
 class _NetworkRepository implements NetworkCalls {
   final Client _client = Client();
@@ -9,9 +10,15 @@ class _NetworkRepository implements NetworkCalls {
   String token = "";
 
   @override
-  Future<Response> logIn({Map<String, String> loginCredentials}) async {
-    //Sample Login code
-    return null;
+  Future<Response> launch({Map<String, String> loginCredentials}) async {
+    final Response response = await _client
+        .post("$baseURL/api/v1/launch", body: jsonEncode(loginCredentials))
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("Launch: ${error.toString()}");
+      throw (error);
+    });
+    return response;
   }
 
   @override
