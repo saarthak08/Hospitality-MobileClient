@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
 import 'package:hospitality/src/screens/hospital_dashboard.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
@@ -28,6 +30,7 @@ class _AuthScreenState extends State<AuthScreen> {
   };
   UserProfileProvider userProfileProvider;
   SharedPreferences _sharedPreferencesInstance;
+  CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
 
   bool isemailValid = true;
   bool ispasswordValid = true;
@@ -199,7 +202,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     errorMsg = "";
                   });
                   Map<dynamic, dynamic> res = json.decode(response.body);
-                  String token = res["token"].toString().split(" ")[1];
+                  String token = res["token"];
                   User user = userProfileProvider.getUser;
                   if (user == null) {
                     user = User();
@@ -210,18 +213,24 @@ class _AuthScreenState extends State<AuthScreen> {
                   getNetworkRepository.token = token;
                   if (_isPatient) {
                     _sharedPreferencesInstance.setBool("isPatient", true);
-                    userProfileProvider.isPatient=true;
+                    userProfileProvider.isPatient = true;
                     Navigator.pushAndRemoveUntil(
                         context,
                         BouncyPageRoute(widget: HomeScreen()),
                         (Route<dynamic> route) => false);
                   } else {
-                     _sharedPreferencesInstance.setBool("isPatient", false);
-                    userProfileProvider.isPatient=false;
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        BouncyPageRoute(widget: HospitalDashboard()),
-                        (Route<dynamic> route) => false);
+                    getNetworkRepository
+                        .getHospitalData(email: _loginCredentials["email"])
+                        .then((value) {
+                      if (value.statusCode == 200) {
+                        _sharedPreferencesInstance.setBool("isPatient", false);
+                        userProfileProvider.isPatient = false;
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            BouncyPageRoute(widget: HospitalDashboard()),
+                            (Route<dynamic> route) => false);
+                      }
+                    });
                   }
                 } else if (response.statusCode == 403) {
                   setState(() {
@@ -328,6 +337,8 @@ class _AuthScreenState extends State<AuthScreen> {
     final double viewportHeight = getViewportHeight(context);
     final double viewportWidth = getViewportWidth(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
+    currentHospitalOnMapProvider =
+        Provider.of<CurrentHospitalOnMapProvider>(context);
 
     return Stack(children: <Widget>[
       Scaffold(

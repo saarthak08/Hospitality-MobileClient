@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/screens/home_screen.dart';
+import 'package:hospitality/src/screens/hospital_dashboard.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
@@ -27,12 +28,17 @@ class _SplashPageState extends State<SplashPage> {
           SharedPreferences instance = await SharedPreferences.getInstance();
           await instance.setString("token", token);
           bool isPatient = instance.getBool("isPatient");
-          if (isPatient) {
-            Navigator.pushReplacement(
-                context, BouncyPageRoute(widget: HomeScreen()));
+          if (isPatient != null) {
+            if (isPatient) {
+              Navigator.pushReplacement(
+                  context, BouncyPageRoute(widget: HomeScreen()));
+            } else {
+              Navigator.pushReplacement(
+                  context, BouncyPageRoute(widget: HospitalDashboard()));
+            }
           } else {
             Navigator.pushReplacement(
-                context, BouncyPageRoute(widget: HomeScreen()));
+                context, BouncyPageRoute(widget: AuthScreen()));
           }
         } else {
           Navigator.pushReplacement(

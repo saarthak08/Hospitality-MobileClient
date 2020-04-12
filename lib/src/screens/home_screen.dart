@@ -82,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pop(context);
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
+              Navigator.pop(context);
               Navigator.push(context, BouncyPageRoute(widget: MapSample()));
             }
           } else if (value.statusCode == 404) {
