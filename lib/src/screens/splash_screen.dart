@@ -26,8 +26,14 @@ class _SplashPageState extends State<SplashPage> {
         if (isLoggedIn) {
           SharedPreferences instance = await SharedPreferences.getInstance();
           await instance.setString("token", token);
-          Navigator.pushReplacement(
-              context, BouncyPageRoute(widget: HomeScreen()));
+          bool isPatient = instance.getBool("isPatient");
+          if (isPatient) {
+            Navigator.pushReplacement(
+                context, BouncyPageRoute(widget: HomeScreen()));
+          } else {
+            Navigator.pushReplacement(
+                context, BouncyPageRoute(widget: HomeScreen()));
+          }
         } else {
           Navigator.pushReplacement(
               context, BouncyPageRoute(widget: AuthScreen()));

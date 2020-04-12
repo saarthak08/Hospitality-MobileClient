@@ -74,49 +74,47 @@ class _HomeScreenState extends State<HomeScreen> {
                 hospitals.add(h);
               }
             }
-            Navigator.pop(context);
             if (hospitals.length == 0) {
               Fluttertoast.showToast(
                   msg:
                       "No nearby hospitals found! Try again or change the distance limit!",
                   toastLength: Toast.LENGTH_SHORT);
+              Navigator.pop(context);
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
               Navigator.push(context, BouncyPageRoute(widget: MapSample()));
             }
           } else if (value.statusCode == 404) {
+            Navigator.pop(context);
             Fluttertoast.showToast(
                 msg:
                     "No nearby hospitals found! Try again or change the distance limit!",
                 toastLength: Toast.LENGTH_SHORT);
             print("Send Location: " + value.statusCode.toString());
-            Navigator.pop(context);
           } else {
+            Navigator.pop(context);
             Fluttertoast.showToast(
                 msg: "Error fetching hospitals! Try again!",
                 toastLength: Toast.LENGTH_SHORT);
             print("Send Location: " + value.statusCode.toString());
-            Navigator.pop(context);
           }
         }).catchError((error) {
+          Navigator.pop(context);
           Fluttertoast.showToast(
               msg: "Error fetching hospitals! Try again!",
               toastLength: Toast.LENGTH_SHORT);
-          Navigator.pop(context);
         });
       } else {
         Fluttertoast.showToast(
             msg: "Error in getting location",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM);
-        Navigator.pop(context);
       }
     }).catchError((error) {
       Fluttertoast.showToast(
           msg: "Error in getting location",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM);
-      Navigator.pop(context);
     });
   }
 
