@@ -22,14 +22,14 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final Map<String, String> _loginCredentials = <String, String>{
-    "Email": "",
-    "Password": ""
+    "email": "",
+    "password": ""
   };
   UserProfileProvider userProfileProvider;
   SharedPreferences _sharedPreferencesInstance;
 
-  bool isEmailValid = true;
-  bool isPasswordValid = true;
+  bool isemailValid = true;
+  bool ispasswordValid = true;
   bool _obscureText = true;
 
   bool isLoading = false;
@@ -37,7 +37,7 @@ class _AuthScreenState extends State<AuthScreen> {
   String _errorEmail = "";
   String _errorPassword = "";
   int _radioValue = 0;
-  bool _isPatient = false;
+  bool _isPatient = true;
 
   Widget _errorMsgContainer(double viewportHeight, double viewportWidth) {
     return Container(
@@ -60,10 +60,10 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _emailInputFieldBuilder(double viewportWidth) {
     return TextFormField(
       onChanged: (String value) {
-        _loginCredentials["Email"] = value;
+        _loginCredentials["email"] = value;
       },
       onSaved: (String value) {
-        _loginCredentials["Email"] = value;
+        _loginCredentials["email"] = value;
       },
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(
@@ -104,10 +104,10 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _passwordInputFieldBuilder(double viewportWidth) {
     return TextFormField(
       onChanged: (String value) {
-        _loginCredentials["Password"] = value;
+        _loginCredentials["password"] = value;
       },
       onSaved: (String value) {
-        _loginCredentials["Password"] = value;
+        _loginCredentials["password"] = value;
       },
       obscureText: _obscureText,
       style: TextStyle(
@@ -162,16 +162,16 @@ class _AuthScreenState extends State<AuthScreen> {
       onPressed: () async {
         if (isLoading) return;
         FocusScope.of(context).requestFocus(FocusNode());
-        if (_loginCredentials["Email"].length == 0 ||
-            _loginCredentials["Password"].length == 0) {
-          if (_loginCredentials["Email"].length == 0) {
+        if (_loginCredentials["email"].length == 0 ||
+            _loginCredentials["password"].length == 0) {
+          if (_loginCredentials["email"].length == 0) {
             setState(() {
               _errorEmail = "please enter an email";
             });
           } else {
             _errorEmail = "";
           }
-          if (_loginCredentials["Password"].length == 0) {
+          if (_loginCredentials["password"].length == 0) {
             setState(() {
               _errorPassword = "please enter a password";
             });
@@ -188,18 +188,22 @@ class _AuthScreenState extends State<AuthScreen> {
             isLoading = true;
             errorMsg = "";
           });
-          /* await getNetworkRepository
-              .launch(loginCredentials: _loginCredentials)
+          await getNetworkRepository
+              .login(loginCredentials: _loginCredentials, isPatient: _isPatient)
               .then((Response response) async {
+                print(response.statusCode);
                 if (response.statusCode == 200) {
                   setState(() {
                     isLoading = false;
                     errorMsg = "";
                   });
-                  String token = response.body;
-
+                  Map<dynamic,dynamic> res = json.decode(response.body);
+                  String token=res["token"].toString().split(" ")[1];
                   User user = userProfileProvider.getUser;
-                  user.setEmail = _loginCredentials["Email"];
+                  if(user==null) {
+                    user=User();
+                  }
+                  user.setEmail = _loginCredentials["email"];
                   userProfileProvider.setUser = user;
                   await _sharedPreferencesInstance.setString("token", token);
                   getNetworkRepository.token = token;
@@ -217,45 +221,59 @@ class _AuthScreenState extends State<AuthScreen> {
                 } else if (response.statusCode == 403) {
                   setState(() {
                     isLoading = false;
+                    errorMsg = "Couldn't sign in";
+                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
+                    if (errorMap.containsKey("email")) {
+                      _errorEmail = errorMap["email"];
+                    }
+                    if (errorMap.containsKey("password")) {
+                      _errorPassword = errorMap["password"];
+                    }
                   });
-                } else if (response.statusCode == 401) {
+                } else if (response.statusCode == 400) {
+                  Map<dynamic, dynamic> errorMap = json.decode(response.body);
                   setState(() {
                     isLoading = false;
                     errorMsg = "Couldn't sign in";
+                    if (errorMap.containsKey("email")) {
+                      _errorEmail = errorMap["email"];
+                    }
+                    if (errorMap.containsKey("password")) {
+                      _errorPassword = errorMap["password"];
+                    }
+                  });
+                } else if (response.statusCode == 404) {
+                  setState(() {
+                    isLoading = false;
+                    errorMsg = "Wrong login!";
+                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
+
+                    if (errorMap.containsKey("email")) {
+                      _errorEmail = errorMap["email"];
+                    }
+                    if (errorMap.containsKey("password")) {
+                      _errorPassword = errorMap["password"];
+                    }
                   });
                 } else {
                   setState(() {
                     isLoading = false;
-                    Map<String, String> errorMap = json.decode(response.body);
-                    if (errorMap.containsKey("Email")) {
-                      _errorEmail = errorMap["Email"];
+                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
+                    if (errorMap.containsKey("email")) {
+                      _errorEmail = errorMap["email"];
                     }
-                    if (errorMap.containsKey("Password")) {
-                      _errorPassword = errorMap["Password"];
+                    if (errorMap.containsKey("password")) {
+                      _errorPassword = errorMap["password"];
                     }
                   });
                 }
               })
               .timeout(Duration(seconds: 10))
               .catchError((error) {
+                print("hello" +error.toString());
                 isLoading = false;
                 errorMsg = "an error occurred";
-              });*/
-          setState(() {
-            isLoading = false;
-            errorMsg = "";
-          });
-          if (_isPatient) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                BouncyPageRoute(widget: HomeScreen()),
-                (Route<dynamic> route) => false);
-          } else {
-            Navigator.pushAndRemoveUntil(
-                context,
-                BouncyPageRoute(widget: HomeScreen()),
-                (Route<dynamic> route) => false);
-          }
+              });
         }
       },
       child: Container(

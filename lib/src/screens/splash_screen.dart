@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/screens/home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'dart:async';
 
 import '../helpers/dimensions.dart';
@@ -13,13 +16,34 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  String token = "";
+
   @override
   void initState() {
     super.initState();
     Timer(Duration(seconds: 3), () {
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, BouncyPageRoute(widget: AuthScreen()));
+      _isLoggedIn().then((isLoggedIn) async {
+        if (isLoggedIn) {
+          SharedPreferences instance = await SharedPreferences.getInstance();
+          await instance.setString("token", token);
+          Navigator.pushReplacement(
+              context, BouncyPageRoute(widget: HomeScreen()));
+        } else {
+          Navigator.pushReplacement(
+              context, BouncyPageRoute(widget: AuthScreen()));
+        }
+      });
     });
+  }
+
+  Future<bool> _isLoggedIn() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    token = sharedPreferences.getString("token");
+    getNetworkRepository.token = token;
+    if (token == null || token.length == 0) {
+      return Future.value(false);
+    }
+    return Future.value(true);
   }
 
   @override

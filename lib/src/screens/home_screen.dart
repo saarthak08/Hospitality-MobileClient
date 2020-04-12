@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
   UserProfileProvider userProfileProvider;
+  User user;
 
   final TextStyle dropdownMenuItem =
       TextStyle(color: Colors.black, fontSize: 18);
@@ -123,6 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     ScrollController controller = new ScrollController();
     userProfileProvider = Provider.of<UserProfileProvider>(context);
+    user = userProfileProvider.getUser;
 
     return Scaffold(
       appBar: AppBar(

@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../helpers/dimensions.dart';
 import '../helpers/dimensions.dart';
 
 class HospitalInfo extends StatefulWidget {
