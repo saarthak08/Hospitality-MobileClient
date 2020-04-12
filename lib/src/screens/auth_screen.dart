@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
 import 'package:hospitality/src/screens/hospital_dashboard.dart';
 import 'package:hospitality/src/models/user.dart';
@@ -13,7 +12,6 @@ import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:provider/provider.dart';
 import 'dart:io' show Platform;
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -219,18 +217,15 @@ class _AuthScreenState extends State<AuthScreen> {
                         BouncyPageRoute(widget: HomeScreen()),
                         (Route<dynamic> route) => false);
                   } else {
-                    getNetworkRepository
-                        .getHospitalData(email: _loginCredentials["email"])
-                        .then((value) {
-                      if (value.statusCode == 200) {
+                   
                         _sharedPreferencesInstance.setBool("isPatient", false);
                         userProfileProvider.isPatient = false;
                         Navigator.pushAndRemoveUntil(
                             context,
                             BouncyPageRoute(widget: HospitalDashboard()),
                             (Route<dynamic> route) => false);
-                      }
-                    });
+                    
+                    
                   }
                 } else if (response.statusCode == 403) {
                   setState(() {
