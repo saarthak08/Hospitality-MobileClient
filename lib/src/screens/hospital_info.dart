@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/dimensions.dart';
+import '../helpers/dimensions.dart';
 
 class HospitalInfo extends StatefulWidget {
   @override
@@ -9,6 +10,97 @@ class HospitalInfo extends StatefulWidget {
 }
 
 class _HospitalInfoState extends State<HospitalInfo> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool formVisible = false;
+
+  final Map<String, dynamic> _formData = {
+    'name': null,
+    'note': null,
+    'location': null,
+  };
+
+  Widget _buildForm() {
+    return Container(
+        margin: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(16.0),
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "Enter Name",
+                border: OutlineInputBorder(),
+              ),
+              onSaved: (String value) {
+                _formData['name'] = value;
+              },
+            ),
+            const SizedBox(height: 10.0),
+            TextFormField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: "Enter password",
+                border: OutlineInputBorder(),
+              ),
+              onSaved: (String value) {
+                _formData['password'] = value;
+              },
+            ),
+            const SizedBox(height: 10.0),
+            TextFormField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: "Confirm password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            SizedBox(height: 10.0),
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: "User Name",
+                border: OutlineInputBorder(),
+              ),
+              validator: (String value) {
+                if (value.isEmpty) {
+                  return 'Username can not be left empty.';
+                }
+                return null;
+              },
+              onSaved: (String value) {
+                _formData['username'] = value;
+              },
+            ),
+            const SizedBox(height: 10.0),
+            RaisedButton(
+              color: Theme.of(context).primaryColor,
+              textColor: Colors.white,
+              splashColor: Colors.white,
+              elevation: 5,
+              padding: const EdgeInsets.all(10.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Text('Submit'),
+              onPressed: () {
+                _submitForm();
+              },
+            ),
+          ],
+        ));
+  }
+
+  void _submitForm() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,89 +118,122 @@ class _HospitalInfoState extends State<HospitalInfo> {
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: <Widget>[
-            SizedBox(
-              height: 15,
-            ),
-            _buildHeader(),
-            Container(
-              margin: const EdgeInsets.all(16.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: Text(
-                  "Our team of over 7000 doctors join us in giving you the best of modern healthcare to ensure you stay healthy, always."),
-            ),
-            _buildTitle("Availability"),
-            SizedBox(height: 10.0),
-            _buildSkillRow("Beds", 0.75),
-            SizedBox(height: 5.0),
-            _buildSkillRow("Doctors", 0.6),
-            SizedBox(height: 5.0),
-            _buildSkillRow("Distance", 0.65),
-            SizedBox(height: 30.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                RaisedButton(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
-                  splashColor: Colors.blue,
-                  color: Theme.of(context).primaryColor,
-                  child: Container(
-                    width: getViewportWidth(context) * 0.42,
-                    height: getViewportHeight(context) * 0.06,
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Book Appointment',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Ubuntu",
-                        fontSize: getViewportHeight(context) * 0.025,
+                SizedBox(
+                  height: 15,
+                ),
+                _buildHeader(),
+                Container(
+                  margin: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(color: Colors.grey.shade200),
+                  child: Text(
+                      "Our team of over 7000 doctors join us in giving you the best of modern healthcare to ensure you stay healthy, always."),
+                ),
+                _buildTitle("Availability"),
+                SizedBox(height: 10.0),
+                _buildSkillRow("Beds", 0.75),
+                SizedBox(height: 5.0),
+                _buildSkillRow("Doctors", 0.6),
+                SizedBox(height: 5.0),
+                _buildSkillRow("Distance", 0.65),
+                SizedBox(height: 30.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25)),
+                      splashColor: Colors.blue,
+                      color: Theme.of(context).primaryColor,
+                      child: Container(
+                        width: getViewportWidth(context) * 0.42,
+                        height: getViewportHeight(context) * 0.06,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Book Appointment',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Ubuntu",
+                            fontSize: getViewportHeight(context) * 0.025,
+                          ),
+                        ),
+                      ),
+                      textColor: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          formVisible = true;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30.0),
+                _buildTitle("Contact"),
+                SizedBox(height: 5.0),
+                Row(
+                  children: <Widget>[
+                    SizedBox(width: 30.0),
+                    Icon(
+                      Icons.mail,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      'website.com',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    SizedBox(width: 30.0),
+                    Icon(
+                      Icons.phone,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      '8374639274',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.0),
+              ],
+            ),
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 200),
+              child: (!formVisible)
+                  ? null
+                  : SingleChildScrollView(
+                      child: Container(
+                        height: getDeviceHeight(context),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                color: Colors.black54,
+                                alignment: Alignment.center,
+                                child: AnimatedSwitcher(
+                                  duration: Duration(milliseconds: 300),
+                                  child: _buildForm(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  textColor: Colors.white,
-                  onPressed: () {},
-                ),
-              ],
             ),
-            SizedBox(height: 30.0),
-            _buildTitle("Contact"),
-            SizedBox(height: 5.0),
-            Row(
-              children: <Widget>[
-                SizedBox(width: 30.0),
-                Icon(
-                  Icons.mail,
-                  color: Colors.black54,
-                ),
-                SizedBox(width: 10.0),
-                Text(
-                  'website.com',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Row(
-              children: <Widget>[
-                SizedBox(width: 30.0),
-                Icon(
-                  Icons.phone,
-                  color: Colors.black54,
-                ),
-                SizedBox(width: 10.0),
-                Text(
-                  '8374639274',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0),
           ],
         ),
       ),

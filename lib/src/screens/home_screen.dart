@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text('HomeScreen'),
           actions: <Widget>[
             Hero(
               tag: "ico",
