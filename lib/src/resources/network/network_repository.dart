@@ -9,6 +9,23 @@ class _NetworkRepository implements NetworkCalls {
 
   String token = "";
 
+  Future<Response> getHospitalData({String email}) async {
+    final Map<String, String> reqBody = Map<String, String>();
+    reqBody["email"] = email;
+    final Response response = await _client
+        .post("$baseURL/api/hospital/", body: json.encode(reqBody), headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: token
+        })
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+          print("Launch: ${error.toString()}");
+          throw (error);
+        });
+    print(response.body);
+    return response;
+  }
+
   @override
   Future<Response> login(
       {Map<String, String> loginCredentials, bool isPatient}) async {

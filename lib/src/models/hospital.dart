@@ -61,12 +61,12 @@ class Hospital {
     this._distance = responseMap["distance"];
     this._address = responseMap["address"];
     this._availability = responseMap["availability"];
-    this._availableBeds = responseMap["availableBeds"];
+    this._availableBeds = responseMap["beds"];
     this._note = responseMap["note"];
     this._totalBeds = responseMap["totalBeds"];
-    this._availableDoctors = responseMap["availableDoctors"];
+    this._availableDoctors = responseMap["doctors"];
     this._totalDoctors = responseMap["totalDoctors"];
-    this._contactNo = responseMap["contactNo"];
+    this._contactNo = responseMap["contact"];
   }
 
   Hospital();
