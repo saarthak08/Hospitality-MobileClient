@@ -28,7 +28,6 @@ dependencies:
   sliding_up_panel: ^1.0.1
   shared_preferences: ^0.5.6+3
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,6 +46,7 @@ flutter:
     - assets/img/hospital.jpg
     - assets/img/splash_bg.png
     - assets/img/hosp_doc.png
+    - assets/img/dashboard_bg.jpg
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
