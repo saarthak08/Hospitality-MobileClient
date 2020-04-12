@@ -10,14 +10,27 @@ class _NetworkRepository implements NetworkCalls {
   String token = "";
 
   @override
-  Future<Response> launch({Map<String, String> loginCredentials}) async {
+  Future<Response> login(
+      {Map<String, String> loginCredentials, bool isPatient}) async {
+    String url;
+    if (isPatient) {
+      url = "$baseURL/api/patient/login";
+    } else {
+      url = "$baseURL/api/hospital/login";
+    }
+
+    print(json.encode(loginCredentials));
+
     final Response response = await _client
-        .post("$baseURL/api/v1/launch", body: jsonEncode(loginCredentials))
+        .post(url, body: json.encode(loginCredentials), headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+        })
         .timeout(Duration(seconds: 10))
         .catchError((error) {
-      print("Launch: ${error.toString()}");
-      throw (error);
-    });
+          print("Launch: ${error.toString()}");
+          throw (error);
+        });
+    print(response.body);
     return response;
   }
 
