@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
 import 'package:hospitality/src/screens/hospital_info.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
@@ -24,6 +25,7 @@ class MapSampleState extends State<MapSample> {
   LocationData myLocationData;
   LocationProvider locationProvider;
   CameraPosition myPosition;
+  CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
   PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
 
@@ -36,6 +38,7 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
+    currentHospitalOnMapProvider= Provider.of<CurrentHospitalOnMapProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
     for (Hospital hospital in hospitals) {
       markers.add(
@@ -44,12 +47,14 @@ class MapSampleState extends State<MapSample> {
           position: LatLng(hospital.getLatitude, hospital.getLongitude),
           markerId: MarkerId(hospital.getName),
           infoWindow: InfoWindow(title: hospital.getName),
-          onTap: () => Navigator.push(
+          onTap: () { 
+            currentHospitalOnMapProvider.setHospital=hospital;
+            Navigator.push(
             context,
             BouncyPageRoute(
               widget: HospitalInfo(),
             ),
-          ),
+          );},
         ),
       );
     }

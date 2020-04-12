@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
+import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
 
 class HospitalInfo extends StatefulWidget {
+
+  HospitalInfo();
+
   @override
   _HospitalInfoState createState() => _HospitalInfoState();
 }
@@ -10,12 +16,16 @@ class HospitalInfo extends StatefulWidget {
 class _HospitalInfoState extends State<HospitalInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool formVisible = false;
+  Hospital hospital;
+  CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
+
 
   final Map<String, dynamic> _formData = {
     'name': null,
     'note': null,
     'location': null,
   };
+  
 
   Widget _buildForm() {
     return Container(
@@ -101,6 +111,11 @@ class _HospitalInfoState extends State<HospitalInfo> {
 
   @override
   Widget build(BuildContext context) {
+    currentHospitalOnMapProvider=Provider.of<CurrentHospitalOnMapProvider>(context);
+    hospital=currentHospitalOnMapProvider.getHospital;
+    if(hospital.getName!=null) {
+      _formData["name"]=hospital.getName;
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -146,12 +161,12 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     RaisedButton(
                       elevation: 5,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
+                          borderRadius: BorderRadius.circular(30)),
                       splashColor: Colors.blue,
                       color: Theme.of(context).primaryColor,
                       child: Container(
                         width: getViewportWidth(context) * 0.42,
-                        height: getViewportHeight(context) * 0.06,
+                        height: getViewportHeight(context) * 0.08,
                         alignment: Alignment.center,
                         child: Text(
                           'Book Appointment',
@@ -184,7 +199,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      'website.com',
+                      hospital.getEmail==null?"website.com":hospital.getEmail,
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -296,7 +311,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Hospital name',
+              hospital.getName,
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10.0),

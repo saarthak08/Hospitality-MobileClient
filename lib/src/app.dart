@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
 import 'package:hospitality/src/screens/hospital_info.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         ),
          ChangeNotifierProvider(
           create: (ctx) => UserProfileProvider(),
+        ),
+         ChangeNotifierProvider(
+          create: (ctx) => CurrentHospitalOnMapProvider(),
         ),
       ],
       child: MaterialApp(

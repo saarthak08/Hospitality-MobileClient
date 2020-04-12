@@ -208,11 +208,15 @@ class _AuthScreenState extends State<AuthScreen> {
                   await _sharedPreferencesInstance.setString("token", token);
                   getNetworkRepository.token = token;
                   if (_isPatient) {
+                    _sharedPreferencesInstance.setBool("isPatient", true);
+                    userProfileProvider.isPatient=true;
                     Navigator.pushAndRemoveUntil(
                         context,
                         BouncyPageRoute(widget: HomeScreen()),
                         (Route<dynamic> route) => false);
                   } else {
+                     _sharedPreferencesInstance.setBool("isPatient", false);
+                    userProfileProvider.isPatient=false;
                     Navigator.pushAndRemoveUntil(
                         context,
                         BouncyPageRoute(widget: HomeScreen()),
