@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
 
 class HospitalInfo extends StatefulWidget {
-
   HospitalInfo();
 
   @override
@@ -19,13 +18,11 @@ class _HospitalInfoState extends State<HospitalInfo> {
   Hospital hospital;
   CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
 
-
   final Map<String, dynamic> _formData = {
     'name': null,
     'note': null,
     'location': null,
   };
-  
 
   Widget _buildForm() {
     return Container(
@@ -51,7 +48,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
             TextFormField(
               obscureText: true,
               decoration: InputDecoration(
-                hintText: "Enter password",
+                hintText: "Enter note",
                 border: OutlineInputBorder(),
               ),
               onSaved: (String value) {
@@ -62,7 +59,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
             TextFormField(
               obscureText: true,
               decoration: InputDecoration(
-                hintText: "Confirm password",
+                hintText: "Status",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -70,12 +67,12 @@ class _HospitalInfoState extends State<HospitalInfo> {
             SizedBox(height: 10.0),
             TextFormField(
               decoration: InputDecoration(
-                hintText: "User Name",
+                hintText: "Address",
                 border: OutlineInputBorder(),
               ),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'Username can not be left empty.';
+                  return 'Address can not be left empty.';
                 }
                 return null;
               },
@@ -111,10 +108,11 @@ class _HospitalInfoState extends State<HospitalInfo> {
 
   @override
   Widget build(BuildContext context) {
-    currentHospitalOnMapProvider=Provider.of<CurrentHospitalOnMapProvider>(context);
-    hospital=currentHospitalOnMapProvider.getHospital;
-    if(hospital.getName!=null) {
-      _formData["name"]=hospital.getName;
+    currentHospitalOnMapProvider =
+        Provider.of<CurrentHospitalOnMapProvider>(context);
+    hospital = currentHospitalOnMapProvider.getHospital;
+    if (hospital.getName != null) {
+      _formData["name"] = hospital.getName;
     }
     return Scaffold(
       appBar: AppBar(
@@ -199,7 +197,9 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      hospital.getEmail==null?"website.com":hospital.getEmail,
+                      hospital.getEmail == null
+                          ? "website.com"
+                          : hospital.getEmail,
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
