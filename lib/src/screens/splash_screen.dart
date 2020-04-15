@@ -80,7 +80,7 @@ class _SplashPageState extends State<SplashPage> {
                 'Hospitality',
                 style: TextStyle(
                     color: Colors.blue,
-                    fontFamily: "Montserrat",
+                    fontFamily: "BalooTamma2",
                     fontSize: getDeviceHeight(context) * 0.05),
                 textAlign: TextAlign.center,
               ),

@@ -71,7 +71,7 @@ class MapSampleState extends State<MapSample> {
           "Hospitality",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontFamily: "Montserrat",
+            fontFamily: "BalooTamma2",
             fontSize: 25,
           ),
         ),
@@ -93,7 +93,7 @@ class MapSampleState extends State<MapSample> {
                 height: getViewportHeight(context) * 0.1,
                 child: Center(
                   child: Text("Hospitals",
-                      style: TextStyle(fontSize: 40, fontFamily: "Montserrat")),
+                      style: TextStyle(fontSize: 40, fontFamily: "BalooTamma2")),
                 ))),
         body: Center(
           child: Container(

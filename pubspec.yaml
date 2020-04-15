@@ -27,6 +27,7 @@ dependencies:
   flutter_polyline_points: ^0.1.0
   sliding_up_panel: ^1.0.1
   shared_preferences: ^0.5.6+3
+  
 
 dev_dependencies:
   flutter_test:
@@ -72,10 +73,18 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat-Regular.ttf
-
     - family: CustomIcons
       fonts:
         - asset: assets/fonts/CustomIcons.ttf
+    - family: BalooTamma2
+      fonts:
+        - asset: assets/fonts/BalooTamma2-Regular.ttf
+    - family: ComicNeue
+      fonts:
+        - asset: assets/fonts/ComicNeue-Regular.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Regular.ttf
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
