@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
-import 'package:hospitality/src/screens/appointment%20_list.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/dimensions.dart';
+import 'appointments _list_screen.dart';
 
 class HospitalDashboard extends StatefulWidget {
   @override
@@ -47,7 +47,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(context,
-                          BouncyPageRoute(widget: AppointmentScreen()));
+                          BouncyPageRoute(widget: AppointmentsListScreen()));
                     },
                     child: Container(
                       height: getDeviceHeight(context) * 0.18,
@@ -80,7 +80,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(context,
-                          BouncyPageRoute(widget: AppointmentScreen()));
+                          BouncyPageRoute(widget: AppointmentsListScreen()));
                     },
                     child: Container(
                       height: getDeviceHeight(context) * 0.18,

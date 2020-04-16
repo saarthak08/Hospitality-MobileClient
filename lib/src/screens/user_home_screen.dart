@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
+import 'package:hospitality/src/screens/appointments%20_list_screen.dart';
 import 'package:hospitality/src/screens/search_hospital_screen.dart';
 import 'package:hospitality/src/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               SearchHospitalScreen(controller: controller, formKey: _formKey),
               UserProfile(),
-              Text("3"),
+              AppointmentsListScreen(),
             ],
           ),
           appBar: AppBar(

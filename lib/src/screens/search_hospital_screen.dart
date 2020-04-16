@@ -61,7 +61,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             width: viewportWidth,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.blue.shade300, Colors.blue.shade500]),
+                  colors: [Colors.blue.shade100, Colors.blue.shade300]),
             ),
             child: Column(
               children: <Widget>[
@@ -79,16 +79,15 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                   children: <Widget>[
                     Icon(
                       Icons.edit,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
-                    SizedBox(width: viewportWidth*0.03),
+                    SizedBox(width: viewportWidth * 0.03),
                     Text(
                       'Input distance for nearby hospital',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontFamily: "Poppins",
                           fontSize: viewportWidth * 0.04,
-                          color: Colors.white),
+                          color: Colors.black),
                     ),
                   ],
                 ),
@@ -96,7 +95,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                   height: viewportHeight * 0.05,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -114,8 +113,9 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                         style: dropdownMenuItem,
                         decoration: InputDecoration(
                           hintText: "Search by distance in km",
-                          hintStyle:
-                              TextStyle(color: Colors.black38, fontSize: viewportWidth*0.045),
+                          hintStyle: TextStyle(
+                              color: Colors.black54,
+                              fontSize: viewportWidth * 0.045),
                           prefixIcon: IconButton(
                               icon: Icon(
                                 Icons.search,
@@ -129,7 +129,8 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                               }),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
-                              horizontal: viewportWidth*0.05, vertical: viewportHeight*0.02),
+                              horizontal: viewportWidth * 0.05,
+                              vertical: viewportHeight * 0.02),
                         ),
                         keyboardType: TextInputType.phone,
                         onChanged: (String value) {
@@ -143,6 +144,13 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                             });
                           }
                           distance = double.parse(value);
+                        },
+                        onFieldSubmitted: (String value) {
+                          controller.animateTo(
+                            0,
+                            curve: Curves.easeOut,
+                            duration: const Duration(milliseconds: 300),
+                          );
                         },
                         onSaved: (String value) {
                           if (value.length == 0) {
@@ -164,9 +172,10 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                 RaisedButton(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
+                      borderRadius: BorderRadius.circular(25),
+                      side: BorderSide(color: Colors.blue, width: 1)),
                   splashColor: isButtonEnabled ? Colors.blue : null,
-                  color: isButtonEnabled ? Colors.white : Colors.grey,
+                  color: isButtonEnabled ? Colors.white : Colors.grey.shade400,
                   child: Container(
                     width: viewportWidth * 0.35,
                     height: viewportHeight * 0.06,

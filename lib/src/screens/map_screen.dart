@@ -8,7 +8,7 @@ import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
-import 'package:hospitality/src/widgets/hospital_listview_item.dart';
+import 'package:hospitality/src/widgets/hospital_list_view_item.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
