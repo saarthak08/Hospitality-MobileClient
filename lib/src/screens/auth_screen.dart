@@ -331,7 +331,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
-    viewportWidth = viewportWidth;
+    viewportWidth = getViewportWidth(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     currentHospitalOnMapProvider =
         Provider.of<CurrentHospitalOnMapProvider>(context);
