@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/dialogs/appointment_list_view_item_dialogs.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/appointment.dart';
 
@@ -15,30 +16,37 @@ class AppointmentsListViewItem extends StatelessWidget {
     viewportWidth = getViewportWidth(context);
     return Card(
         elevation: 3,
-        margin: EdgeInsets.only(bottom: viewportHeight * 0.015,left: viewportWidth*0.01,right: viewportWidth*0.01),
+        margin: EdgeInsets.only(
+            bottom: viewportHeight * 0.015,
+            left: viewportWidth * 0.01,
+            right: viewportWidth * 0.01),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10),
             splashColor: Colors.blue,
             onTap: () {},
             child: ListTile(
                 trailing: Wrap(
                   children: <Widget>[
                     IconButton(
-                      icon:
-                          Icon(Icons.check_circle, size: viewportHeight * 0.04),
-                      color: Colors.green,
-                      onPressed: () {},
-                    ), // icon-1
-                    IconButton(
                       color: Colors.red,
                       icon: Icon(
                         Icons.cancel,
                         size: viewportHeight * 0.04,
                       ),
-                      onPressed: () {},
-                    ), // icon-1
+                      onPressed: () {
+                        declineAppointment(context, appointment);
+                      },
+                    ),
+                    IconButton(
+                      icon:
+                          Icon(Icons.check_circle, size: viewportHeight * 0.04),
+                      color: Colors.green,
+                      onPressed: () {
+                        acceptAppointment(context, appointment);
+                      },
+                    ), //
                   ],
                 ),
                 contentPadding:
