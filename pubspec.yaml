@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -80,7 +80,7 @@ flutter:
       fonts:
         - asset: assets/fonts/BalooTamma2-Regular.ttf
     - family: Satisfy
-      fonts:
+      fonts: 
         - asset: assets/fonts/Satisfy-Regular.ttf
     - family: Manrope
       fonts:

@@ -28,6 +28,7 @@ class MapSampleState extends State<MapSample> {
   CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
   PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
+  GlobalKey listViewKey = new GlobalKey();
 
   @override
   void initState() {
@@ -38,7 +39,8 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
-    currentHospitalOnMapProvider= Provider.of<CurrentHospitalOnMapProvider>(context);
+    currentHospitalOnMapProvider =
+        Provider.of<CurrentHospitalOnMapProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
     for (Hospital hospital in hospitals) {
       markers.add(
@@ -47,14 +49,15 @@ class MapSampleState extends State<MapSample> {
           position: LatLng(hospital.getLatitude, hospital.getLongitude),
           markerId: MarkerId(hospital.getName),
           infoWindow: InfoWindow(title: hospital.getName),
-          onTap: () { 
-            currentHospitalOnMapProvider.setHospital=hospital;
+          onTap: () {
+            currentHospitalOnMapProvider.setHospital = hospital;
             Navigator.push(
-            context,
-            BouncyPageRoute(
-              widget: HospitalInfo(),
-            ),
-          );},
+              context,
+              BouncyPageRoute(
+                widget: HospitalInfo(),
+              ),
+            );
+          },
         ),
       );
     }
@@ -79,21 +82,28 @@ class MapSampleState extends State<MapSample> {
       ),
       body: SlidingUpPanel(
         controller: controller,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(35),
         backdropEnabled: true,
         panelBuilder: (ScrollController sc) => _scrollingList(sc),
         isDraggable: true,
+        defaultPanelState: PanelState.OPEN,
         parallaxEnabled: true,
         collapsed: Card(
+            margin: EdgeInsets.symmetric(
+                horizontal: getViewportWidth(context) * 0.05,
+                vertical: getViewportHeight(context) * 0.01),
             elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+                side: BorderSide(color: Colors.blue)),
             child: Container(
                 width: getViewportWidth(context),
                 height: getViewportHeight(context) * 0.1,
                 child: Center(
                   child: Text("Hospitals",
-                      style: TextStyle(fontSize: 40, fontFamily: "BalooTamma2")),
+                      style: TextStyle(
+                          fontSize: getViewportHeight(context) * 0.05,
+                          fontFamily: "Poppins")),
                 ))),
         body: Center(
           child: Container(
@@ -121,6 +131,7 @@ class MapSampleState extends State<MapSample> {
 
   Widget _scrollingList(ScrollController sc) {
     return ListView.builder(
+      key: listViewKey,
       controller: sc,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,

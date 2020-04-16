@@ -15,13 +15,16 @@ class HospitalListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.symmetric(
+          horizontal: getViewportWidth(context) * 0.05,
+          vertical: getViewportHeight(context) * 0.01),
       elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      margin: EdgeInsets.only(
-        top: getViewportHeight(context) * 0.02,
-        left: getViewportWidth(context) * 0.04,
-        right: getViewportWidth(context) * 0.04,
-      ),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40),
+          side: BorderSide(
+            color: Colors.blue,
+          )),
+
       clipBehavior: Clip.hardEdge, //color: Color(0xffeefdec),
       child: InkWell(
         splashColor: Colors.blue,
