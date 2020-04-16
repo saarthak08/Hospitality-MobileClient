@@ -3,7 +3,7 @@ import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/screens/search_hospital_screen.dart';
-import 'package:hospitality/src/screens/user_profile.dart';
+import 'package:hospitality/src/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
 

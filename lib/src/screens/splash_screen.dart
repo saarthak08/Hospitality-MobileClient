@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hospitality/src/screens/home_screen.dart';
-import 'package:hospitality/src/screens/hospital_dashboard.dart';
+import 'package:hospitality/src/screens/user_home_screen.dart';
+import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
