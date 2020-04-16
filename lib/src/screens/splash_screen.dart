@@ -16,12 +16,27 @@ class SplashPage extends StatefulWidget {
   }
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
   String token = "";
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 2500),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(-0.8, 0),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticInOut,
+    ));
+
     Timer(Duration(seconds: 3), () {
       _isLoggedIn().then((isLoggedIn) async {
         if (isLoggedIn) {
@@ -30,17 +45,21 @@ class _SplashPageState extends State<SplashPage> {
           bool isPatient = instance.getBool("isPatient");
           if (isPatient != null) {
             if (isPatient) {
+              _controller.stop();
               Navigator.pushReplacement(
                   context, BouncyPageRoute(widget: HomeScreen()));
             } else {
+              _controller.stop();
               Navigator.pushReplacement(
                   context, BouncyPageRoute(widget: HospitalDashboard()));
             }
           } else {
+            _controller.stop();
             Navigator.pushReplacement(
                 context, BouncyPageRoute(widget: AuthScreen()));
           }
         } else {
+          _controller.stop();
           Navigator.pushReplacement(
               context, BouncyPageRoute(widget: AuthScreen()));
         }
@@ -61,42 +80,56 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Container(
-        decoration: BoxDecoration(color: Colors.white),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Hero(
-                tag: "ico",
+        backgroundColor: Theme.of(context).primaryColor,
+        body: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          child: Stack(children: <Widget>[
+            SlideTransition(
+                position: _offsetAnimation,
                 child: Container(
-                  height: getDeviceHeight(context) * 0.60,
-                  width: getDeviceWidth(context) * 0.60,
-                  child: Image.asset('assets/img/splash_bg.png'),
+                    alignment: Alignment.topCenter,
+                    child: Hero(
+                      tag: "ico",
+                      child: Container(
+                        height: getDeviceHeight(context) * 0.60,
+                        width: getDeviceWidth(context) * 0.60,
+                        child: Image.asset('assets/img/splash_bg.png'),
+                      ),
+                    ))),
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(top: getViewportHeight(context) * 0.6),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Hospitality',
+                      style: TextStyle(
+                          color: Color(0xff00008b),
+                          fontFamily: "Manrope",
+                          fontSize: getDeviceHeight(context) * 0.06,
+                          fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: getDeviceHeight(context) * 0.05),
+                    Text(
+                      '"We are here to help."',
+                      style: TextStyle(
+                          fontFamily: "Ubuntu",
+                          color: Colors.blue,
+                          fontSize: getDeviceHeight(context) * 0.03),
+                      textAlign: TextAlign.center,
+                    )
+                  ],
                 ),
               ),
-              SizedBox(height: getDeviceHeight(context) * 0.01),
-              Text(
-                'Hospitality',
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontFamily: "BalooTamma2",
-                    fontSize: getDeviceHeight(context) * 0.05),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: getDeviceHeight(context) * 0.03),
-              Text(
-                '"We are here to help."',
-                style: TextStyle(
-                    fontFamily: "Ubuntu",
-                    color: Colors.blue,
-                    fontSize: getDeviceHeight(context) * 0.03),
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            )
+          ]),
+        ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 }

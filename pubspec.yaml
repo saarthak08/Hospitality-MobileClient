@@ -79,9 +79,9 @@ flutter:
     - family: BalooTamma2
       fonts:
         - asset: assets/fonts/BalooTamma2-Regular.ttf
-    - family: ComicNeue
+    - family: Satisfy
       fonts:
-        - asset: assets/fonts/ComicNeue-Regular.ttf
+        - asset: assets/fonts/Satisfy-Regular.ttf
     - family: Manrope
       fonts:
         - asset: assets/fonts/Manrope-Regular.ttf

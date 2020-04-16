@@ -28,6 +28,8 @@ class _AuthScreenState extends State<AuthScreen> {
   UserProfileProvider userProfileProvider;
   SharedPreferences _sharedPreferencesInstance;
   CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
+  double viewportHeight;
+  double viewportWidth;
 
   bool isemailValid = true;
   bool ispasswordValid = true;
@@ -68,7 +70,7 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(
-        fontSize: 22.0,
+        fontSize: viewportHeight * 0.025,
         color: Color(0xff282c34),
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w300,
@@ -78,12 +80,12 @@ class _AuthScreenState extends State<AuthScreen> {
         prefixIcon: Icon(
           Icons.mail,
           color: Colors.black,
-          size: getViewportHeight(context) * 0.03,
+          size: viewportHeight * 0.03,
         ),
         labelText: 'Email',
         labelStyle: TextStyle(
           fontFamily: "Manrope",
-          fontSize: 20.0,
+          fontSize: viewportHeight * 0.025,
           color: Color(0xff282c34),
           fontWeight: FontWeight.w500,
         ),
@@ -109,7 +111,7 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       obscureText: _obscureText,
       style: TextStyle(
-        fontSize: 22.0,
+        fontSize: viewportHeight * 0.025,
         color: Color(0xff282c34),
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w300,
@@ -118,7 +120,7 @@ class _AuthScreenState extends State<AuthScreen> {
         prefixIcon: Icon(
           Icons.lock,
           color: Color(0xff282c34),
-          size: getViewportHeight(context) * 0.03,
+          size: viewportHeight * 0.03,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -140,7 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
         labelText: "Password",
         labelStyle: TextStyle(
           fontFamily: "Manrope",
-          fontSize: 20.0,
+          fontSize: viewportHeight * 0.025,
           color: Color(0xff282c34),
           fontWeight: FontWeight.w500,
         ),
@@ -278,7 +280,7 @@ class _AuthScreenState extends State<AuthScreen> {
       child: Container(
         alignment: Alignment.centerRight,
         width: getViewportWidth(context) * 0.2,
-        height: getViewportHeight(context) * 0.065,
+        height: viewportHeight * 0.065,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
         ),
@@ -328,8 +330,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double viewportHeight = getViewportHeight(context);
-    final double viewportWidth = getViewportWidth(context);
+    viewportHeight = getViewportHeight(context);
+    viewportWidth = getViewportWidth(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     currentHospitalOnMapProvider =
         Provider.of<CurrentHospitalOnMapProvider>(context);
@@ -377,12 +379,23 @@ class _AuthScreenState extends State<AuthScreen> {
                           left: viewportWidth * 0.03,
                           right: viewportWidth * 0.03)),
                   Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Hospitality',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Satisfy",
+                          fontSize: viewportHeight * 0.06,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
+                  Container(
                       child: Column(children: <Widget>[
                     Hero(
                       tag: "ico",
                       child: Container(
                         margin: EdgeInsets.only(top: viewportHeight * 0.15),
-                        height: getDeviceHeight(context) * 0.15,
+                        height: viewportHeight * 0.15,
                         width: viewportWidth,
                         child: Image.asset('assets/img/splash_bg.png'),
                       ),
@@ -390,8 +403,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     _errorMsgContainer(viewportHeight, viewportWidth),
                     Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: viewportWidth * 0.1,
-                            vertical: viewportHeight * 0.015),
+                            horizontal: viewportWidth * 0.1),
                         alignment: Alignment.center,
                         child: Column(children: <Widget>[
                           _emailInputFieldBuilder(viewportHeight),
@@ -434,41 +446,36 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                         ])),
+                    Container(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Radio(
+                          value: 0,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        Text(
+                          "Patient",
+                          style: TextStyle(
+                              fontFamily: "BalooTamma2",
+                              fontSize: getViewportWidth(context) * 0.045),
+                        ),
+                        Radio(
+                          value: 1,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        Text("Hospital",
+                            style: TextStyle(
+                                fontFamily: "BalooTamma2",
+                                fontSize: getViewportWidth(context) * 0.045))
+                      ],
+                    )),
                     SizedBox(
-                      height: viewportHeight * 0.02,
+                      height: viewportHeight * 0.01,
                     ),
                     _signInButtonBuilder(viewportHeight, viewportWidth),
-                    Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(
-                            top: getViewportHeight(context) * 0.02),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Radio(
-                              value: 0,
-                              groupValue: _radioValue,
-                              onChanged: _handleRadioValueChange,
-                            ),
-                            Text(
-                              "Patient",
-                              style: TextStyle(
-                                  fontFamily: "BalooTamma2",
-                                  fontSize: getViewportWidth(context) * 0.045),
-                            ),
-                            Radio(
-                              value: 1,
-                              groupValue: _radioValue,
-                              onChanged: _handleRadioValueChange,
-                            ),
-                            Text("Hospital",
-                                style: TextStyle(
-                                    fontFamily: "BalooTamma2",
-                                    fontSize:
-                                        getViewportWidth(context) * 0.045))
-                          ],
-                        )),
                   ]))
                 ],
               )
