@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
@@ -43,7 +42,7 @@ class HospitalListViewItem extends StatelessWidget {
             Text(
               hospital.getName,
               style: TextStyle(
-                  fontFamily: "Montserrat",
+                  fontFamily: "BalooTamma2",
                   fontSize: 25,
                   fontWeight: FontWeight.w700),
               textAlign: TextAlign.left,

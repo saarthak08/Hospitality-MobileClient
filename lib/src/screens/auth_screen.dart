@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:provider/provider.dart';
-import 'dart:io' show Platform;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -29,6 +28,8 @@ class _AuthScreenState extends State<AuthScreen> {
   UserProfileProvider userProfileProvider;
   SharedPreferences _sharedPreferencesInstance;
   CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
+  double viewportHeight;
+  double viewportWidth;
 
   bool isemailValid = true;
   bool ispasswordValid = true;
@@ -43,7 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _errorMsgContainer(double viewportHeight, double viewportWidth) {
     return Container(
-      margin: EdgeInsets.only(top: viewportHeight * 0.04),
+      margin: EdgeInsets.only(top: viewportHeight * 0.01),
       height: viewportHeight * 0.05,
       width: viewportWidth,
       alignment: Alignment.center,
@@ -51,7 +52,7 @@ class _AuthScreenState extends State<AuthScreen> {
         errorMsg,
         style: TextStyle(
           fontSize: viewportHeight * 0.025,
-          fontFamily: 'Montserrat',
+          fontFamily: 'BalooTamma2',
           color: Colors.red,
         ),
         textAlign: TextAlign.center,
@@ -69,35 +70,32 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(
-        fontSize: 20.0,
+        fontSize: viewportHeight * 0.025,
         color: Color(0xff282c34),
-        fontFamily: 'Montserrat',
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.w300,
       ),
-      cursorWidth: 2,
-      cursorColor: Color(0xff282c34),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(right: 10.0, top: 12.0, bottom: 22.0),
-        prefixIcon: Icon(
-          Icons.email,
-          color: Color(0xff282c34),
-          size: 30.0,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
-        ),
         alignLabelWithHint: false,
-        labelText: "Email",
+        prefixIcon: Icon(
+          Icons.mail,
+          color: Colors.black,
+          size: viewportHeight * 0.03,
+        ),
+        labelText: 'Email',
         labelStyle: TextStyle(
-          fontFamily: "Arial Round",
-          fontSize: 20.0,
+          fontFamily: "Manrope",
+          fontSize: viewportHeight * 0.025,
           color: Color(0xff282c34),
           fontWeight: FontWeight.w500,
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(color: Colors.blue, width: 4),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(color: Colors.blue, width: 2),
         ),
       ),
     );
@@ -113,19 +111,16 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       obscureText: _obscureText,
       style: TextStyle(
-        fontSize: 20.0,
+        fontSize: viewportHeight * 0.025,
         color: Color(0xff282c34),
-        fontFamily: 'Montserrat',
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.w300,
       ),
-      cursorWidth: 2,
-      cursorColor: Color(0xff282c34),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(right: 10.0, top: 12.0, bottom: 22.0),
         prefixIcon: Icon(
-          Icons.vpn_key,
+          Icons.lock,
           color: Color(0xff282c34),
-          size: 30.0,
+          size: viewportHeight * 0.03,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -135,19 +130,19 @@ class _AuthScreenState extends State<AuthScreen> {
           },
           child: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+        enabledBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(color: Colors.blue, width: 4),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide(color: Colors.blue, width: 2),
         ),
         alignLabelWithHint: false,
         labelText: "Password",
         labelStyle: TextStyle(
-          fontFamily: "Arial Round",
-          fontSize: 20.0,
+          fontFamily: "Manrope",
+          fontSize: viewportHeight * 0.025,
           color: Color(0xff282c34),
           fontWeight: FontWeight.w500,
         ),
@@ -158,7 +153,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _signInButtonBuilder(double viewportHeight, double viewportWidth) {
     return RaisedButton(
       elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       color: Colors.blue,
       splashColor: Colors.white,
       onPressed: () async {
@@ -217,15 +212,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         BouncyPageRoute(widget: HomeScreen()),
                         (Route<dynamic> route) => false);
                   } else {
-                   
-                        _sharedPreferencesInstance.setBool("isPatient", false);
-                        userProfileProvider.isPatient = false;
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            BouncyPageRoute(widget: HospitalDashboard()),
-                            (Route<dynamic> route) => false);
-                    
-                    
+                    _sharedPreferencesInstance.setBool("isPatient", false);
+                    userProfileProvider.isPatient = false;
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        BouncyPageRoute(widget: HospitalDashboard()),
+                        (Route<dynamic> route) => false);
                   }
                 } else if (response.statusCode == 403) {
                   setState(() {
@@ -286,11 +278,11 @@ class _AuthScreenState extends State<AuthScreen> {
         }
       },
       child: Container(
-        alignment: Alignment.center,
-        width: getViewportWidth(context) * 0.4,
-        height: getViewportHeight(context) * 0.08,
+        alignment: Alignment.centerRight,
+        width: getViewportWidth(context) * 0.2,
+        height: viewportHeight * 0.065,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
         child: Center(
           child: isLoading
@@ -298,14 +290,23 @@ class _AuthScreenState extends State<AuthScreen> {
                   value: null,
                   backgroundColor: Colors.white,
                 )
-              : Text(
-                  "Launch",
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.white,
-                    fontSize: viewportHeight * 0.025,
-                  ),
-                ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                      Text(
+                        "OK",
+                        style: TextStyle(
+                          fontFamily: 'Manrope',
+                          color: Colors.white,
+                          fontSize: viewportHeight * 0.025,
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: viewportHeight * 0.03,
+                      )
+                    ]),
         ),
       ),
     );
@@ -329,134 +330,157 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double viewportHeight = getViewportHeight(context);
-    final double viewportWidth = getViewportWidth(context);
+    viewportHeight = getViewportHeight(context);
+    viewportWidth = getViewportWidth(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     currentHospitalOnMapProvider =
         Provider.of<CurrentHospitalOnMapProvider>(context);
 
-    return Stack(children: <Widget>[
-      Scaffold(
-          body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-            child: Container(
-                child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Hero(
-              tag: "ico",
-              child: Container(
-                margin: EdgeInsets.only(top: viewportHeight * 0.05),
-                height: getDeviceHeight(context) * 0.30,
-                width: getDeviceWidth(context) * 0.30,
-                child: Image.asset('assets/img/splash_bg.png'),
-              ),
-            ),
-            _errorMsgContainer(viewportHeight, viewportWidth),
-            Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: viewportWidth * 0.1,
-                    vertical: viewportHeight * 0.025),
-                alignment: Alignment.center,
-                child: Column(children: <Widget>[
-                  Material(
-                    child: _emailInputFieldBuilder(viewportHeight),
-                    elevation: 10,
-                    shadowColor: Colors.black,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  Container(
-                    width: viewportWidth,
-                    height: viewportHeight * 0.05,
-                    padding: EdgeInsets.only(
-                        top: viewportHeight * 0.015,
-                        left: viewportWidth * 0.05),
-                    child: Text(
-                      _errorEmail,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: viewportWidth * 0.04,
-                        color: Colors.red,
-                        height: viewportWidth * 0.002,
-                        fontFamily: 'Montserrat',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: viewportHeight * 0.02,
-                  ),
-                  Material(
-                    child: _passwordInputFieldBuilder(viewportHeight),
-                    elevation: 10,
-                    shadowColor: Colors.black,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  Container(
-                    width: viewportWidth,
-                    height: viewportHeight * 0.05,
-                    padding: EdgeInsets.only(
-                        top: viewportHeight * 0.015,
-                        left: viewportWidth * 0.05),
-                    child: Text(
-                      _errorPassword,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: viewportWidth * 0.04,
-                        color: Colors.red,
-                        fontFamily: 'Montserrat',
-                        height: viewportWidth * 0.002,
-                      ),
-                    ),
-                  ),
-                ])),
-            Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.symmetric(
-                    vertical: getViewportHeight(context) * 0.03),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Radio(
-                      value: 0,
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                    Text("Patient"),
-                    new Radio(
-                      value: 1,
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                    Text("Hospital")
-                  ],
-                )),
-            SizedBox(
-              height: getViewportHeight(context) * 0.01,
-            ),
-            _signInButtonBuilder(viewportHeight, viewportWidth),
-          ],
-        ))),
-      )),
-      Visibility(
-          visible: (Platform.isIOS ? true : false),
+    return Scaffold(
+        body: GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
           child: Container(
-            height: viewportHeight * 0.06,
-            margin: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                right: viewportWidth * 0.85),
-            child: FlatButton(
-              child: Icon(Icons.arrow_back_ios,
-                  color: Colors.black, size: viewportWidth * 0.07),
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed("/pre-login");
-              },
-            ),
-            color: Colors.transparent,
-          )),
-    ]);
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [
+                const Color(0xFF00CCFF),
+                const Color(0xFF3366FF),
+              ],
+              begin: const FractionalOffset(0.0, 0.0),
+              end: const FractionalOffset(1.0, 0.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+        ),
+        height: getDeviceHeight(context),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black54,
+                            blurRadius: 3.0,
+                            spreadRadius: 1.0,
+                            // shadow direction: bottom right
+                          )
+                        ],
+                      ),
+                      height: viewportHeight * 0.75,
+                      margin: EdgeInsets.only(
+                          top: viewportHeight * 0.13,
+                          left: viewportWidth * 0.03,
+                          right: viewportWidth * 0.03)),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Hospitality',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Satisfy",
+                          fontSize: viewportHeight * 0.06,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
+                  Container(
+                      child: Column(children: <Widget>[
+                    Hero(
+                      tag: "ico",
+                      child: Container(
+                        margin: EdgeInsets.only(top: viewportHeight * 0.15),
+                        height: viewportHeight * 0.15,
+                        width: viewportWidth,
+                        child: Image.asset('assets/img/splash_bg.png'),
+                      ),
+                    ),
+                    _errorMsgContainer(viewportHeight, viewportWidth),
+                    Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: viewportWidth * 0.1),
+                        alignment: Alignment.center,
+                        child: Column(children: <Widget>[
+                          _emailInputFieldBuilder(viewportHeight),
+                          Container(
+                            width: viewportWidth,
+                            height: viewportHeight * 0.04,
+                            padding: EdgeInsets.only(
+                                top: viewportHeight * 0.015,
+                                left: viewportWidth * 0.05),
+                            child: Text(
+                              _errorEmail,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: viewportWidth * 0.04,
+                                color: Colors.red,
+                                height: viewportWidth * 0.002,
+                                fontFamily: 'BalooTamma2',
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: viewportHeight * 0.02,
+                          ),
+                          _passwordInputFieldBuilder(viewportHeight),
+                          Container(
+                            width: viewportWidth,
+                            height: viewportHeight * 0.04,
+                            padding: EdgeInsets.only(
+                                top: viewportHeight * 0.015,
+                                left: viewportWidth * 0.05),
+                            child: Text(
+                              _errorPassword,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: viewportWidth * 0.04,
+                                color: Colors.red,
+                                fontFamily: 'BalooTamma2',
+                                height: viewportWidth * 0.002,
+                              ),
+                            ),
+                          ),
+                        ])),
+                    Container(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Radio(
+                          value: 0,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        Text(
+                          "Patient",
+                          style: TextStyle(
+                              fontFamily: "BalooTamma2",
+                              fontSize: getViewportWidth(context) * 0.045),
+                        ),
+                        Radio(
+                          value: 1,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                        ),
+                        Text("Hospital",
+                            style: TextStyle(
+                                fontFamily: "BalooTamma2",
+                                fontSize: getViewportWidth(context) * 0.045))
+                      ],
+                    )),
+                    SizedBox(
+                      height: viewportHeight * 0.01,
+                    ),
+                    _signInButtonBuilder(viewportHeight, viewportWidth),
+                  ]))
+                ],
+              )
+            ]),
+      )),
+    ));
   }
 }

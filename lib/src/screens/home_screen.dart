@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           'Search Near-By Hospital',
-          style: TextStyle(fontFamily: "Montserrat"),
+          style: TextStyle(fontFamily: "BalooTamma2"),
         ),
         actions: <Widget>[
           Hero(
@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Input distance for nearby hospital',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontFamily: "Montserrat",
+                          fontFamily: "BalooTamma2",
                           fontSize: getViewportWidth(context) * 0.04,
                           color: Colors.white),
                     ),
