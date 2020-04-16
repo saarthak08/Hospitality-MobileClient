@@ -2,23 +2,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
-import 'package:hospitality/src/screens/hospital_info.dart';
+import 'package:hospitality/src/screens/hospital_info_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
-import 'package:hospitality/src/widgets/hospital_listview_item.dart';
+import 'package:hospitality/src/widgets/hospital_list_view_item.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MapSample extends StatefulWidget {
+class MapView extends StatefulWidget {
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<MapView> createState() => MapViewState();
 }
 
-class MapSampleState extends State<MapSample> {
+class MapViewState extends State<MapView> {
   List<Hospital> hospitals;
   HospitalListProvider hospitalListProvider;
   Completer<GoogleMapController> _controller = Completer();
@@ -29,6 +29,8 @@ class MapSampleState extends State<MapSample> {
   PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
   GlobalKey listViewKey = new GlobalKey();
+  double viewportHeight;
+  double viewportWidth;
 
   @override
   void initState() {
@@ -38,6 +40,8 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     locationProvider = Provider.of<LocationProvider>(context);
+    viewportHeight = getViewportHeight(context);
+    viewportWidth = getViewportWidth(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     currentHospitalOnMapProvider =
         Provider.of<CurrentHospitalOnMapProvider>(context);
@@ -75,7 +79,7 @@ class MapSampleState extends State<MapSample> {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: "BalooTamma2",
-            fontSize: 25,
+            fontSize: viewportHeight * 0.03,
           ),
         ),
         centerTitle: true,
@@ -86,23 +90,22 @@ class MapSampleState extends State<MapSample> {
         backdropEnabled: true,
         panelBuilder: (ScrollController sc) => _scrollingList(sc),
         isDraggable: true,
-        defaultPanelState: PanelState.OPEN,
         parallaxEnabled: true,
         collapsed: Card(
             margin: EdgeInsets.symmetric(
-                horizontal: getViewportWidth(context) * 0.05,
-                vertical: getViewportHeight(context) * 0.01),
+                horizontal: viewportWidth * 0.05,
+                vertical: viewportHeight * 0.01),
             elevation: 2,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
                 side: BorderSide(color: Colors.blue)),
             child: Container(
-                width: getViewportWidth(context),
-                height: getViewportHeight(context) * 0.1,
+                width: viewportWidth,
+                height: viewportHeight * 0.1,
                 child: Center(
-                  child: Text("Hospitals",
+                  child: Text("List of Hospitals\n\t\t\t\t\tDrag up!",
                       style: TextStyle(
-                          fontSize: getViewportHeight(context) * 0.05,
+                          fontSize: viewportHeight * 0.03,
                           fontFamily: "Poppins")),
                 ))),
         body: Center(
