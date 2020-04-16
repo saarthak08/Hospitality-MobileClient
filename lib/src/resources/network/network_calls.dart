@@ -6,8 +6,10 @@ abstract class NetworkCalls {
   Future<Response> login(
       {Map<String, String> loginCredentials, bool isPatient});
 
-  Future<Response> sendCurrentLocation(
+  Future<Response> sendCurrentLocationAndGetHospitalLists(
       {double latitude, double longitude, double range});
 
   Future<Response> getHospitalData({String email});
+
+  Future<Response> getPatientUserData({String email});
 }

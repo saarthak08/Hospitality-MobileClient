@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage>
             if (isPatient) {
               _controller.stop();
               Navigator.pushReplacement(
-                  context, BouncyPageRoute(widget: HomeScreen()));
+                  context, BouncyPageRoute(widget: UserHomeScreen()));
             } else {
               _controller.stop();
               Navigator.pushReplacement(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
+import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_info_screen.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
          ChangeNotifierProvider(
           create: (ctx) => CurrentHospitalOnMapProvider(),
         ),
+         ChangeNotifierProvider(
+          create: (ctx) => HospitalUserProvider(),
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (BuildContext context) => SplashPage(),
           '/info': (BuildContext context) => HospitalInfo(),
-          '/home': (BuildContext context) => HomeScreen(),
+          '/home': (BuildContext context) => UserHomeScreen(),
           '/auth': (BuildContext context) => AuthScreen(),
           '/map': (BuildContext context) => MapView(),
         },

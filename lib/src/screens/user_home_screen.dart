@@ -8,16 +8,16 @@ import 'package:hospitality/src/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key, this.title}) : super(key: key);
+class UserHomeScreen extends StatefulWidget {
+  UserHomeScreen({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _UserHomeScreenState createState() => _UserHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _UserHomeScreenState extends State<UserHomeScreen> {
   LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
@@ -46,17 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           appBar: AppBar(
             centerTitle: true,
-            leading: Hero(
-              tag: "ico",
-              child: Container(
-                margin: EdgeInsets.only(right: viewportWidth * 0.035),
-                child: Image.asset('assets/img/splash_bg.png'),
-              ),
-            ),
             title: Text(
               'Hospitality',
               style: TextStyle(
-                  fontFamily: "BalooTamma2", fontSize: viewportHeight * 0.03),
+                  fontFamily: "BalooTamma2", fontSize: viewportHeight * 0.045),
             ),
             bottom: TabBar(
               labelColor: Colors.white,
@@ -68,7 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   text: 'Search',
                 ),
                 Tab(
-                  icon: Icon(Icons.account_circle),
+                  icon: Hero(
+                    tag: "ico",
+                    child: Container(
+                      height: viewportHeight * 0.045,
+                      child: Image.asset('assets/img/splash_bg.png'),
+                    ),
+                  ),
                   text: 'My Profile',
                 ),
                 Tab(

@@ -44,7 +44,7 @@ class _NetworkRepository implements NetworkCalls {
         })
         .timeout(Duration(seconds: 10))
         .catchError((error) {
-          print("Launch: ${error.toString()}");
+          print("Login: ${error.toString()}");
           throw (error);
         });
     print(response.body);
@@ -52,7 +52,7 @@ class _NetworkRepository implements NetworkCalls {
   }
 
   @override
-  Future<Response> sendCurrentLocation(
+  Future<Response> sendCurrentLocationAndGetHospitalLists(
       {double latitude, double longitude, double range}) async {
     final Response response = await _client
         .get(
@@ -60,9 +60,25 @@ class _NetworkRepository implements NetworkCalls {
             headers: {HttpHeaders.authorizationHeader: token})
         .timeout(Duration(seconds: 10))
         .catchError((error) {
-          print("Launch: ${error.toString()}");
+          print(
+              "Send Current Location And Get Hospital Lists: ${error.toString()}");
           throw (error);
         });
+    return response;
+  }
+
+  @override
+  Future<Response> getPatientUserData({String email}) async {
+   
+    final Response response = await _client
+        .get("$baseURL/api/patient/?email=$email",
+            headers: {HttpHeaders.authorizationHeader: token},
+           )
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("getPatientUserData: ${error.toString}");
+      throw (error);
+    });
     return response;
   }
 }

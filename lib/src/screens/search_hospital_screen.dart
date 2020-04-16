@@ -223,7 +223,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
         locationProvider.setLocation = value;
         showLoadingDialog(context: context);
         getNetworkRepository
-            .sendCurrentLocation(
+            .sendCurrentLocationAndGetHospitalLists(
                 latitude: value.latitude,
                 longitude: value.longitude,
                 range: distance)
@@ -234,19 +234,8 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             hospitalListProvider.setHospitalLists = hospitals;
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
-              Hospital h = new Hospital();
-              if (data["distance"] != null &&
-                  data["latitude"] != null &&
-                  data["longitude"] != null &&
-                  data["name"] != null) {
-                h.setDistance =
-                    double.parse(data["distance"].toStringAsFixed(2));
-                h.setEmail = data["contact"].toString();
-                h.setLatitude = data["latitude"];
-                h.setLongitude = data["longitude"];
-                h.setName = data["name"];
-                hospitals.add(h);
-              }
+              Hospital h = Hospital.fromJSON(data);
+              hospitals.add(h);
             }
             if (hospitals.length == 0) {
               Fluttertoast.showToast(
@@ -265,19 +254,20 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                 msg:
                     "No nearby hospitals found! Try again or change the distance limit!",
                 toastLength: Toast.LENGTH_SHORT);
-            print("Send Location: " + value.statusCode.toString());
+            print("Get Hospitals List: " + value.statusCode.toString());
           } else {
             Navigator.pop(context);
             Fluttertoast.showToast(
                 msg: "Error fetching hospitals! Try again!",
                 toastLength: Toast.LENGTH_SHORT);
-            print("Send Location: " + value.statusCode.toString());
+            print("Get Hospitals List: " + value.statusCode.toString());
           }
         }).catchError((error) {
           Navigator.pop(context);
           Fluttertoast.showToast(
               msg: "Error fetching hospitals! Try again!",
               toastLength: Toast.LENGTH_SHORT);
+          print("Get Hospitals List: " + error.toString());
         });
       } else {
         Fluttertoast.showToast(
@@ -290,6 +280,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
           msg: "Error in getting location",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM);
+      print("Get Hospitals List: " + error.toString());
     });
   }
 }

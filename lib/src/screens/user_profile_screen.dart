@@ -57,8 +57,7 @@ class UserProfile extends StatelessWidget {
                                 fontSize: viewportHeight * 0.022),
                           ),
                           readOnly: true,
-                          initialValue:
-                              "kfajsdlkfjasldkfjklsadjf;aklsdjflsadkjfl",
+                          initialValue: userProfileProvider.getUser.getEmail,
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.022),
@@ -86,6 +85,7 @@ class UserProfile extends StatelessWidget {
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.022),
+                          initialValue: userProfileProvider.getUser.getFullName,
                         ),
                       ),
                       SizedBox(height: viewportHeight * 0.02),
@@ -105,6 +105,7 @@ class UserProfile extends StatelessWidget {
                                 fontFamily: "Poppins",
                                 fontSize: viewportHeight * 0.022),
                           ),
+                          initialValue: userProfileProvider.getUser.getPhoneNumber,
                           keyboardType: TextInputType.phone,
                           style: TextStyle(
                               fontFamily: "Manrope",
@@ -128,6 +129,7 @@ class UserProfile extends StatelessWidget {
                                 fontFamily: "Poppins",
                                 fontSize: viewportHeight * 0.022),
                           ),
+                          initialValue: userProfileProvider.getUser.getAddress,
                           keyboardType: TextInputType.text,
                           style: TextStyle(
                               fontFamily: "Manrope",
@@ -155,7 +157,7 @@ class UserProfile extends StatelessWidget {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                initialValue: "20.0",
+                                initialValue: userProfileProvider.getUser.getLatitude.toString(),
                                 readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
@@ -181,7 +183,7 @@ class UserProfile extends StatelessWidget {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                initialValue: "78.0343",
+                                initialValue: userProfileProvider.getUser.getLongitude.toString(),
                                 readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),

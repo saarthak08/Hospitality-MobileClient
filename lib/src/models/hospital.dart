@@ -55,22 +55,22 @@ class Hospital {
       throw FormatException("Null JSON");
     }
     this._email = responseMap["email"];
-    this._latitude = responseMap["lattitude"];
+    this._latitude = responseMap["latitude"];
     this._longitude = responseMap["longitude"];
     this._name = responseMap["name"];
-    this._distance = responseMap["distance"];
-    this._address = responseMap["address"];
+   // this._distance = responseMap["distance"];
+   // this._address = responseMap["address"];
     this._availability = responseMap["availability"];
     this._availableBeds = responseMap["beds"];
     this._note = responseMap["note"];
     this._totalBeds = responseMap["totalBeds"];
     this._availableDoctors = responseMap["doctors"];
     this._totalDoctors = responseMap["totalDoctors"];
-    this._contactNo = responseMap["contact"];
+    this._contactNo = responseMap["contact"].toString();
   }
 
   Hospital();
-  
+
   String get getName => _name;
 
   set setName(String value) => _name = value;
