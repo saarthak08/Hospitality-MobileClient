@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/loading_dialog.dart';
+import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/user.dart';
+import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserProfile extends StatelessWidget {
   static double viewportHeight;
   static double viewportWidth;
+  static LocationProvider locationProvider;
+
   static UserProfileProvider userProfileProvider;
   static User user;
 
@@ -15,6 +21,7 @@ class UserProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
+    locationProvider = Provider.of<LocationProvider>(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     user = userProfileProvider.getUser;
 
@@ -28,7 +35,7 @@ class UserProfile extends StatelessWidget {
                     padding: EdgeInsets.only(
                         left: viewportHeight * 0.02,
                         right: viewportHeight * 0.02,
-                        top: viewportHeight * 0.04),
+                        top: viewportHeight * 0.02),
                     child: Column(children: <Widget>[
                       Padding(
                         padding: EdgeInsets.fromLTRB(0.0, 0.0,
@@ -127,31 +134,132 @@ class UserProfile extends StatelessWidget {
                               fontSize: viewportHeight * 0.024),
                         ),
                       ),
-                      SizedBox(height: viewportHeight * 0.075),
-                      RaisedButton(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25)),
-                        splashColor: Colors.white,
-                        color: Colors.blue,
-                        child: Container(
-                          width: viewportWidth * 0.5,
-                          height: viewportHeight * 0.06,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Save',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Manrope",
-                              fontSize: viewportHeight * 0.025,
+                      SizedBox(height: viewportHeight * 0.02),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Expanded(
+                                child: Padding(
+                              padding: EdgeInsets.fromLTRB(0.0, 0.0,
+                                  viewportWidth * 0.04, viewportWidth * 0.01),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(
+                                      top: viewportHeight * 0.01,
+                                      bottom: viewportHeight * 0.01),
+                                  icon: Icon(Icons.my_location,
+                                      color: Colors.blue,
+                                      size: viewportHeight * 0.03),
+                                  labelText: "Latitude",
+                                  labelStyle: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: viewportHeight * 0.022),
+                                ),
+                                initialValue: "20.0",
+                                readOnly: true,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true, signed: true),
+                                style: TextStyle(
+                                    fontFamily: "Manrope",
+                                    fontSize: viewportHeight * 0.024),
+                              ),
+                            )),
+                            Expanded(
+                                child: Padding(
+                              padding: EdgeInsets.fromLTRB(0.0, 0.0,
+                                  viewportWidth * 0.04, viewportWidth * 0.01),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(
+                                      top: viewportHeight * 0.01,
+                                      bottom: viewportHeight * 0.01),
+                                  icon: Icon(Icons.my_location,
+                                      color: Colors.blue,
+                                      size: viewportHeight * 0.03),
+                                  labelText: "Longitude",
+                                  labelStyle: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: viewportHeight * 0.022),
+                                ),
+                                initialValue: "78.0343",
+                                readOnly: true,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true, signed: true),
+                                style: TextStyle(
+                                    fontFamily: "Manrope",
+                                    fontSize: viewportHeight * 0.024),
+                              ),
+                            ))
+                          ]),
+                      SizedBox(height: viewportHeight * 0.07),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            RaisedButton(
+                              onPressed: () {
+                                getLocation().then(
+                                  (value) {
+                                    if (value != null) {
+                                      locationProvider.setLocation = value;
+                                      showLoadingDialog(context: context);
+                                      Fluttertoast.showToast(
+                                        msg: "Location Updated",
+                                        //TODO Update Location Variables here!
+                                      );
+                                      Navigator.pop(context);
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg: "Error in fetching location!",
+                                      );
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                );
+                              },
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              splashColor: Colors.white,
+                              color: Colors.green,
+                              child: Container(
+                                  width: viewportWidth * 0.35,
+                                  height: viewportHeight * 0.06,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Update Location',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "Manrope",
+                                      fontSize: viewportHeight * 0.020,
+                                    ),
+                                  )),
+                              textColor: Colors.white,
                             ),
-                          ),
-                        ),
-                        textColor: Colors.white,
-                        onPressed: () {},
-                      ),
-                      SizedBox(height: viewportHeight * 0.1),
+                            RaisedButton(
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                splashColor: Colors.white,
+                                color: Colors.blue,
+                                child: Container(
+                                  width: viewportWidth * 0.3,
+                                  height: viewportHeight * 0.06,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Save',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "Manrope",
+                                      fontSize: viewportHeight * 0.020,
+                                    ),
+                                  ),
+                                ),
+                                textColor: Colors.white,
+                                onPressed: () {})
+                          ]),
+                      SizedBox(height: viewportHeight * 0.05),
                       RaisedButton(
                           color: Colors.white,
                           elevation: 5,
