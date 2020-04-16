@@ -19,7 +19,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           child: Stack(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(top: 145),
+                padding: EdgeInsets.only(top: 20),
                 height: MediaQuery.of(context).size.height,
                 width: double.infinity,
                 child: ListView.builder(
@@ -29,41 +29,41 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       return buildList(context, index);
                     }),
               ),
-              Container(
-                height: 140,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      Text(
-                        "Appointment List",
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.restore,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Container(
+              //   height: 140,
+              //   width: double.infinity,
+              //   decoration: BoxDecoration(
+              //       color: Theme.of(context).primaryColor,
+              //       borderRadius: BorderRadius.only(
+              //           bottomLeft: Radius.circular(30),
+              //           bottomRight: Radius.circular(30))),
+              //   child: Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 30),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: <Widget>[
+              //         IconButton(
+              //           icon: Icon(
+              //             Icons.arrow_back,
+              //             color: Colors.white,
+              //           ),
+              //           onPressed: () => Navigator.pop(context),
+              //         ),
+              //         Text(
+              //           "Appointment List",
+              //           style: TextStyle(color: Colors.white, fontSize: 24),
+              //         ),
+              //         IconButton(
+              //           icon: Icon(
+              //             Icons.restore,
+              //             color: Colors.white,
+              //           ),
+              //           onPressed: () {},
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

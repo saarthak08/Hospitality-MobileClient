@@ -22,7 +22,7 @@ void showLoadingDialog({@required BuildContext context}) {
                   content: Container(
                     alignment: Alignment.center,
                     width: getViewportWidth(context),
-                    height: getViewportHeight(context)*0.12,
+                    height: getViewportHeight(context) * 0.14,
                     child: Column(
                       children: <Widget>[
                         Text("Loading..."),
