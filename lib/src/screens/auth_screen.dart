@@ -279,7 +279,7 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       child: Container(
         alignment: Alignment.centerRight,
-        width: getViewportWidth(context) * 0.2,
+        width: viewportWidth * 0.2,
         height: viewportHeight * 0.065,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
@@ -331,7 +331,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
-    viewportWidth = getViewportWidth(context);
+    viewportWidth = viewportWidth;
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     currentHospitalOnMapProvider =
         Provider.of<CurrentHospitalOnMapProvider>(context);
@@ -459,7 +459,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           "Patient",
                           style: TextStyle(
                               fontFamily: "BalooTamma2",
-                              fontSize: getViewportWidth(context) * 0.045),
+                              fontSize: viewportWidth * 0.045),
                         ),
                         Radio(
                           value: 1,
@@ -469,7 +469,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         Text("Hospital",
                             style: TextStyle(
                                 fontFamily: "BalooTamma2",
-                                fontSize: getViewportWidth(context) * 0.045))
+                                fontSize: viewportWidth * 0.045))
                       ],
                     )),
                     SizedBox(
