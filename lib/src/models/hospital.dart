@@ -70,7 +70,7 @@ class Hospital {
   }
 
   Hospital();
-
+  
   String get getName => _name;
 
   set setName(String value) => _name = value;

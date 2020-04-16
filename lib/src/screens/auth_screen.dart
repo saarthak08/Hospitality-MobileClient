@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
-import 'package:hospitality/src/screens/hospital_dashboard.dart';
+import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
-import 'package:hospitality/src/screens/home_screen.dart';
+import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import "dart:convert";
 import 'package:http/http.dart' show Response;

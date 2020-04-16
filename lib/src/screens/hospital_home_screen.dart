@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/screens/appointment%20_list.dart';
-import 'package:hospitality/src/screens/hospital_info.dart';
+import 'hospital_info_screen.dart';
 import '../helpers/dimensions.dart';
 
 class HospitalDashboard extends StatefulWidget {

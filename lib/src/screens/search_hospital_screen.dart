@@ -48,48 +48,51 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
     return GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
+          controller.animateTo(
+            0,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 300),
+          );
         },
         child: SingleChildScrollView(
           controller: controller,
           child: Container(
-            height: getViewportHeight(context),
-            width: getViewportWidth(context),
+            height: viewportHeight,
+            width: viewportWidth,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.blue.shade300, Colors.blue.shade500]),
+                  colors: [Colors.blue.shade100, Colors.blue.shade300]),
             ),
             child: Column(
               children: <Widget>[
                 Container(
-                  margin:
-                      EdgeInsets.only(top: getViewportHeight(context) * 0.05),
-                  height: getDeviceHeight(context) * 0.25,
-                  width: getDeviceWidth(context) * 0.8,
+                  margin: EdgeInsets.only(top: viewportHeight * 0.05),
+                  height: viewportHeight * 0.25,
+                  width: viewportWidth * 0.8,
                   child: Image.asset('assets/img/hosp_doc.png'),
                 ),
                 SizedBox(
-                  height: getViewportHeight(context) * 0.1,
+                  height: viewportHeight * 0.1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       Icons.edit,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: viewportWidth * 0.03),
                     Text(
                       'Input distance for nearby hospital',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontFamily: "Poppins",
-                          fontSize: getViewportWidth(context) * 0.04,
-                          color: Colors.white),
+                          fontSize: viewportWidth * 0.04,
+                          color: Colors.black),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: getDeviceHeight(context) * 0.05,
+                  height: viewportHeight * 0.05,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -101,7 +104,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                       child: TextFormField(
                         onTap: () {
                           controller.animateTo(
-                            getViewportHeight(context) * 0.2,
+                            viewportHeight * 0.2,
                             curve: Curves.easeOut,
                             duration: const Duration(milliseconds: 300),
                           );
@@ -110,8 +113,9 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                         style: dropdownMenuItem,
                         decoration: InputDecoration(
                           hintText: "Search by distance in km",
-                          hintStyle:
-                              TextStyle(color: Colors.black38, fontSize: 16),
+                          hintStyle: TextStyle(
+                              color: Colors.black54,
+                              fontSize: viewportWidth * 0.045),
                           prefixIcon: IconButton(
                               icon: Icon(
                                 Icons.search,
@@ -125,7 +129,8 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                               }),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 13),
+                              horizontal: viewportWidth * 0.05,
+                              vertical: viewportHeight * 0.02),
                         ),
                         keyboardType: TextInputType.phone,
                         onChanged: (String value) {
@@ -139,6 +144,13 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                             });
                           }
                           distance = double.parse(value);
+                        },
+                        onFieldSubmitted: (String value) {
+                          controller.animateTo(
+                            0,
+                            curve: Curves.easeOut,
+                            duration: const Duration(milliseconds: 300),
+                          );
                         },
                         onSaved: (String value) {
                           if (value.length == 0) {
@@ -156,16 +168,17 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: getViewportHeight(context) * 0.06),
+                SizedBox(height: viewportHeight * 0.06),
                 RaisedButton(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
+                      borderRadius: BorderRadius.circular(25),
+                      side: BorderSide(color: Colors.blue, width: 1)),
                   splashColor: isButtonEnabled ? Colors.blue : null,
-                  color: isButtonEnabled ? Colors.white : Colors.grey,
+                  color: isButtonEnabled ? Colors.white : Colors.grey.shade400,
                   child: Container(
-                    width: getViewportWidth(context) * 0.35,
-                    height: getViewportHeight(context) * 0.06,
+                    width: viewportWidth * 0.35,
+                    height: viewportHeight * 0.06,
                     alignment: Alignment.center,
                     child: Text(
                       'Search',
@@ -175,7 +188,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                             ? Theme.of(context).primaryColor
                             : Colors.black,
                         fontFamily: "Manrope",
-                        fontSize: getViewportHeight(context) * 0.025,
+                        fontSize: viewportHeight * 0.025,
                       ),
                     ),
                   ),
@@ -244,7 +257,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
               Navigator.pop(context);
-              Navigator.push(context, BouncyPageRoute(widget: MapSample()));
+              Navigator.push(context, BouncyPageRoute(widget: MapView()));
             }
           } else if (value.statusCode == 404) {
             Navigator.pop(context);
