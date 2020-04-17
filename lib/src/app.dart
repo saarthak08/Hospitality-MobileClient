@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
          ChangeNotifierProvider(
           create: (ctx) => HospitalUserProvider(),
-        ),
+        ),       
       ],
       child: MaterialApp(
         theme: ThemeData(

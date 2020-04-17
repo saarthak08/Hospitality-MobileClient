@@ -53,12 +53,10 @@ class _UserHomeScreenState extends State<UserHomeScreen>
           body: RefreshIndicator(
               key: refreshIndicatorKey,
               onRefresh: () async {
-                print(UserHomeScreen.tabIndex);
-                if (UserHomeScreen.tabIndex == 1 ||
-                    UserHomeScreen.tabIndex == 0) {
+                if (UserHomeScreen.tabIndex == 1) {
                   await getUserData();
                 } else if (UserHomeScreen.tabIndex == 2) {
-                  print("hello");
+                  print("abe");
                 }
               },
               child: TabBarView(

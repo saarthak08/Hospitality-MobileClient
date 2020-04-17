@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/models/user.dart';
+import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
@@ -13,6 +15,8 @@ import '../helpers/dimensions.dart';
 import 'auth_screen.dart';
 
 class SplashPage extends StatefulWidget {
+    static bool isPatient;
+
   @override
   State<StatefulWidget> createState() {
     return _SplashPageState();
@@ -22,7 +26,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   String token = "";
-  String email = ""; 
+  String email = "";
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
 
@@ -47,14 +51,15 @@ class _SplashPageState extends State<SplashPage>
           SharedPreferences instance = await SharedPreferences.getInstance();
           email = instance.getString("email");
           await instance.setString("token", token);
-          bool isPatient = instance.getBool("isPatient");
-          if (isPatient != null) {
-            if (isPatient) {
+          SplashPage.isPatient = instance.getBool("isPatient");
+          if (SplashPage.isPatient != null) {
+            if (SplashPage.isPatient) {
               _controller.stop();
               setUser();
               Navigator.pushReplacement(
                   context, BouncyPageRoute(widget: UserHomeScreen()));
             } else {
+              setHospital();
               _controller.stop();
               Navigator.pushReplacement(
                   context, BouncyPageRoute(widget: HospitalDashboard()));
@@ -73,10 +78,18 @@ class _SplashPageState extends State<SplashPage>
     });
   }
 
+  Future<void> setHospital() async {
+    Hospital hospital = Hospital();
+    HospitalUserProvider hospitalUserProvider =
+        Provider.of<HospitalUserProvider>(context, listen: false);
+    hospital.setEmail = email;
+    hospitalUserProvider.setHospital = hospital;
+  }
+
   Future<void> setUser() async {
     User user = User();
     UserProfileProvider userProfileProvider =
-        Provider.of<UserProfileProvider>(context,listen: false);
+        Provider.of<UserProfileProvider>(context, listen: false);
     user.setEmail = email;
     userProfileProvider.setUser = user;
   }

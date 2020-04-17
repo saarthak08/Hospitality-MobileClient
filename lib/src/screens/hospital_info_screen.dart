@@ -2,29 +2,43 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/dialogs/confirm_booking_appointment_dialog.dart';
 import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/providers/hospital_user_provider.dart';
+import 'package:hospitality/src/screens/hospital_home_screen.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
+import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/dimensions.dart';
+import 'hospital_profile_edit_screen.dart';
 
 class HospitalInfo extends StatefulWidget {
   final Hospital hospital;
   final int inputDistance;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
-  HospitalInfo({this.hospital, this.inputDistance});
+  HospitalInfo({this.hospital, this.inputDistance, this.refreshIndicatorKey});
 
   @override
-  _HospitalInfoState createState() =>
-      _HospitalInfoState(hospital: hospital, inputDistance: this.inputDistance);
+  _HospitalInfoState createState() => _HospitalInfoState(
+      hospital: hospital,
+      inputDistance: this.inputDistance,
+      refreshIndicatorKey: this.refreshIndicatorKey);
 }
 
 class _HospitalInfoState extends State<HospitalInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
+  HospitalUserProvider hospitalUserProvider;
   bool formVisible = false;
   double viewportHeight;
+  bool isPatient = SplashPage.isPatient;
   double viewportWidth;
   int inputDistance;
   Hospital hospital;
   String noteAppointment;
 
-  _HospitalInfoState({@required this.hospital, this.inputDistance});
+  _HospitalInfoState(
+      {this.hospital, this.inputDistance, this.refreshIndicatorKey});
 
   Widget _buildForm() {
     viewportHeight = getViewportHeight(context);
@@ -94,27 +108,44 @@ class _HospitalInfoState extends State<HospitalInfo> {
   }
 
   @override
+  void initState() {
+    if (!isPatient) {
+      hospital = Hospital();
+      HospitalDashboard.tabIndex = 0;
+      Future.delayed(Duration.zero, () async {
+        refreshIndicatorKey.currentState.show();
+      });
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
-    if (hospital.getName != null) {
-      //  _formData["name"] = hospital.getName;
+    hospitalUserProvider =
+        hospitalUserProvider = Provider.of<HospitalUserProvider>(context);
+    if (!isPatient) {
+      HospitalDashboard.tabIndex = 0;
     }
+
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        title: Text(
-          'Hospital Info',
-          style: TextStyle(fontFamily: "Poppins"),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        elevation: 2,
-        automaticallyImplyLeading: false,
-      ),
+      appBar: isPatient
+          ? AppBar(
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              title: Text(
+                'Hospital Info',
+                style: TextStyle(fontFamily: "Poppins"),
+              ),
+              backgroundColor: Theme.of(context).primaryColor,
+              elevation: 2,
+              automaticallyImplyLeading: false,
+            )
+          : null,
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
@@ -131,41 +162,16 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     padding: EdgeInsets.all(viewportHeight * 0.015),
                     decoration: BoxDecoration(color: Colors.grey.shade200),
                     child: Text(
-                      hospital.getNote,
+                      isPatient
+                          ? hospital.getNote
+                          : hospitalUserProvider.getHospital.getNote,
                       style: TextStyle(
                           fontFamily: "BalooTamma2",
                           fontSize: viewportHeight * 0.02),
                     )),
                 SizedBox(
-                  height: viewportHeight * 0.04,
+                  height: viewportHeight * 0.05,
                 ),
-                _buildTitle("Stats"),
-                SizedBox(height: viewportHeight * 0.015),
-                hospital.getTotalBeds == 0 || hospital.getAvailableBeds == 0
-                    ? _buildSkillRow("Beds", 0, 0, 0)
-                    : _buildSkillRow(
-                        "Beds",
-                        hospital.getAvailableBeds / hospital.getTotalBeds,
-                        hospital.getAvailableBeds,
-                        hospital.getTotalBeds),
-                SizedBox(height: 5.0),
-                hospital.getAvailableDoctors == 0 ||
-                        hospital.getTotalDoctors == 0
-                    ? _buildSkillRow("Doctors", 0, 0, 0)
-                    : _buildSkillRow(
-                        "Doctors",
-                        hospital.getAvailableDoctors / hospital.getTotalDoctors,
-                        hospital.getAvailableDoctors,
-                        hospital.getTotalDoctors),
-                SizedBox(height: 5.0),
-                hospital.getDistance == 0
-                    ? _buildSkillRow("Displacement (km)", 0, 0, inputDistance)
-                    : _buildSkillRow(
-                        "Displacement (km)",
-                        hospital.getDistance / inputDistance,
-                        hospital.getDistance.toInt(),
-                        inputDistance),
-                SizedBox(height: viewportHeight * 0.04),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -173,14 +179,18 @@ class _HospitalInfoState extends State<HospitalInfo> {
                       elevation: 5,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
-                      splashColor: Colors.blue,
+                      splashColor: Colors.white,
                       color: Theme.of(context).primaryColor,
                       child: Container(
-                        width: viewportWidth * 0.4,
+                        width: isPatient
+                            ? viewportWidth * 0.4
+                            : viewportWidth * 0.6,
                         height: viewportHeight * 0.06,
                         alignment: Alignment.center,
                         child: Text(
-                          'Book Appointment',
+                          isPatient
+                              ? 'Book Appointment'
+                              : 'Edit Profile & Availability',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -191,16 +201,82 @@ class _HospitalInfoState extends State<HospitalInfo> {
                       ),
                       textColor: Colors.white,
                       onPressed: () {
-                        setState(() {
-                          formVisible = true;
-                        });
+                        if (isPatient) {
+                          setState(() {
+                            formVisible = true;
+                          });
+                        } else {
+                          Navigator.push(
+                              context,
+                              BouncyPageRoute(
+                                widget: HospitalProfileEditScreen(),
+                              ));
+                        }
                       },
                     ),
                   ],
                 ),
-                SizedBox(height: viewportHeight * 0.06),
-                _buildTitle("Contact Details"),
+                SizedBox(height: viewportHeight * 0.05),
+                _buildTitle("Stats"),
+                SizedBox(height: viewportHeight * 0.015),
+                isPatient
+                    ? hospital.getTotalBeds == 0 ||
+                            hospital.getAvailableBeds == 0
+                        ? _buildSkillRow("Beds", 0, 0, 0)
+                        : _buildSkillRow(
+                            "Beds",
+                            hospital.getAvailableBeds / hospital.getTotalBeds,
+                            hospital.getAvailableBeds,
+                            hospital.getTotalBeds)
+                    : (hospitalUserProvider.getHospital.getTotalBeds == 0 ||
+                            hospitalUserProvider.getHospital.getAvailableBeds ==
+                                0)
+                        ? _buildSkillRow("Beds", 0, 0, 0)
+                        : _buildSkillRow(
+                            "Beds",
+                            hospitalUserProvider.getHospital.getAvailableBeds /
+                                hospitalUserProvider.getHospital.getTotalBeds,
+                            hospitalUserProvider.getHospital.getAvailableBeds,
+                            hospitalUserProvider.getHospital.getTotalBeds),
                 SizedBox(height: 5.0),
+                isPatient
+                    ? hospital.getTotalDoctors == 0 ||
+                            hospital.getAvailableDoctors == 0
+                        ? _buildSkillRow("Doctors", 0, 0, 0)
+                        : _buildSkillRow(
+                            "Doctors",
+                            hospital.getAvailableDoctors /
+                                hospital.getTotalDoctors,
+                            hospital.getAvailableDoctors,
+                            hospital.getTotalDoctors)
+                    : (hospitalUserProvider.getHospital.getTotalDoctors == 0 ||
+                            hospitalUserProvider
+                                    .getHospital.getAvailableDoctors ==
+                                0)
+                        ? _buildSkillRow("Doctors", 0, 0, 0)
+                        : _buildSkillRow(
+                            "Doctors",
+                            hospitalUserProvider
+                                    .getHospital.getAvailableDoctors /
+                                hospitalUserProvider
+                                    .getHospital.getTotalDoctors,
+                            hospitalUserProvider
+                                .getHospital.getAvailableDoctors,
+                            hospitalUserProvider.getHospital.getTotalDoctors),
+                SizedBox(height: 5.0),
+                isPatient
+                    ? hospital.getDistance == 0
+                        ? _buildSkillRow(
+                            "Displacement (km)", 0, 0, inputDistance)
+                        : _buildSkillRow(
+                            "Displacement (km)",
+                            hospital.getDistance / inputDistance,
+                            hospital.getDistance.toInt(),
+                            inputDistance)
+                    : Container(),
+                SizedBox(height: viewportHeight * 0.04),
+                _buildTitle("Contact Details"),
+                SizedBox(height: viewportHeight * 0.015),
                 Row(
                   children: <Widget>[
                     SizedBox(width: viewportWidth * 0.04),
@@ -230,6 +306,68 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     ),
                   ],
                 ),
+                isPatient
+                    ? Container()
+                    : Container(
+                        height: viewportHeight * 0.02,
+                      ),
+                isPatient
+                    ? Container()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                            RaisedButton(
+                              color: Colors.white,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                      color: Colors.blue,
+                                      style: BorderStyle.solid,
+                                      width: 2)),
+                              splashColor: Colors.blue,
+                              onPressed: () {
+                                showLogoutDialog(context);
+                              },
+                              child: Container(
+                                  width: viewportWidth * 0.4,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: viewportWidth * 0.005),
+                                  padding: EdgeInsets.only(
+                                      top: viewportHeight * 0.012,
+                                      bottom: viewportHeight * 0.012),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: viewportWidth * 0.02),
+                                        child: Text(
+                                          "Sign Out",
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: viewportWidth * 0.05,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: "Poppins"),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                      Container(
+                                          child: Icon(
+                                        Icons.power_settings_new,
+                                        size: viewportWidth * 0.075,
+                                        color: Colors.blue,
+                                      )),
+                                    ],
+                                  )),
+                            )
+                          ]),
+                isPatient
+                    ? Container()
+                    : Container(
+                        height: viewportHeight * 0.05,
+                      )
               ],
             ),
             formVisible
@@ -367,7 +505,9 @@ class _HospitalInfoState extends State<HospitalInfo> {
                               fontFamily: "Manrope"),
                           children: <TextSpan>[
                         TextSpan(
-                          text: hospital.getAddress,
+                          text: isPatient
+                              ? hospital.getAddress
+                              : hospitalUserProvider.getHospital.getAddress,
                           style: TextStyle(
                               fontSize: viewportHeight * 0.022,
                               color: Colors.blue,
@@ -400,7 +540,9 @@ class _HospitalInfoState extends State<HospitalInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              hospital.getName,
+              isPatient
+                  ? hospital.getName
+                  : hospitalUserProvider.getHospital.getName,
               style: TextStyle(
                   fontSize: viewportHeight * 0.024,
                   fontWeight: FontWeight.bold,
@@ -418,7 +560,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
                         fontFamily: "Manrope"),
                     children: <TextSpan>[
                       TextSpan(
-                        text: hospital.getAvailability
+                        text: (isPatient
+                                ? hospital.getAvailability
+                                : hospitalUserProvider
+                                    .getHospital.getAvailability)
                             ? "Available"
                             : "Not Available",
                         style: TextStyle(
@@ -433,5 +578,62 @@ class _HospitalInfoState extends State<HospitalInfo> {
         )))
       ],
     );
+  }
+
+  void showLogoutDialog(BuildContext context) {
+    showGeneralDialog(
+        context: context,
+        pageBuilder: (context, anim1, anim2) {
+          return null;
+        },
+        barrierDismissible: true,
+        barrierColor: Colors.black.withOpacity(0.5),
+        barrierLabel: '',
+        transitionBuilder: (context, a1, a2, child) {
+          return Transform.scale(
+              scale: a1.value,
+              child: Opacity(
+                  opacity: a1.value,
+                  child:
+                      StatefulBuilder(builder: (BuildContext build, setState) {
+                    return AlertDialog(
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.0)),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          onPressed: () async {
+                            Hospital hospital = Hospital();
+                            hospitalUserProvider.setHospital = hospital;
+                            SharedPreferences preferences =
+                                await SharedPreferences.getInstance();
+                            await preferences.clear();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                "/auth", (Route<dynamic> route) => false);
+                          },
+                        ),
+                        FlatButton(
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.red, fontSize: 18),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                      title: Text("Sign Out"),
+                      content: Container(
+                        width: viewportWidth,
+                        child: Text("Are you sure want to sign out?"),
+                        padding: EdgeInsets.all(5),
+                      ),
+                    );
+                  })));
+        },
+        transitionDuration: Duration(milliseconds: 200));
   }
 }

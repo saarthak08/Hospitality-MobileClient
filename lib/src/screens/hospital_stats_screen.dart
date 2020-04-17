@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
+import 'package:hospitality/src/screens/hospital_home_screen.dart';
 
 class HospitalStats extends StatefulWidget {
   @override
@@ -165,6 +166,7 @@ class _HospitalStatsState extends State<HospitalStats> {
 
   @override
   Widget build(BuildContext context) {
+    HospitalDashboard.tabIndex = 1;
     return Scaffold(
       backgroundColor: Colors.white,
       body: _buildBody(context),
