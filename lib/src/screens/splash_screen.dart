@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/models/user.dart';
+import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'dart:async';
@@ -19,6 +22,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   String token = "";
+  String email = ""; 
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
 
@@ -41,13 +45,15 @@ class _SplashPageState extends State<SplashPage>
       _isLoggedIn().then((isLoggedIn) async {
         if (isLoggedIn) {
           SharedPreferences instance = await SharedPreferences.getInstance();
+          email = instance.getString("email");
           await instance.setString("token", token);
           bool isPatient = instance.getBool("isPatient");
           if (isPatient != null) {
             if (isPatient) {
               _controller.stop();
+              setUser();
               Navigator.pushReplacement(
-                  context, BouncyPageRoute(widget: HomeScreen()));
+                  context, BouncyPageRoute(widget: UserHomeScreen()));
             } else {
               _controller.stop();
               Navigator.pushReplacement(
@@ -65,6 +71,14 @@ class _SplashPageState extends State<SplashPage>
         }
       });
     });
+  }
+
+  Future<void> setUser() async {
+    User user = User();
+    UserProfileProvider userProfileProvider =
+        Provider.of<UserProfileProvider>(context,listen: false);
+    user.setEmail = email;
+    userProfileProvider.setUser = user;
   }
 
   Future<bool> _isLoggedIn() async {

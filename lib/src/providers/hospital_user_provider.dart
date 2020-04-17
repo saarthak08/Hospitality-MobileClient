@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/models/hospital.dart';
 
-class CurrentHospitalOnMapProvider extends ChangeNotifier {
+class HospitalUserProvider extends ChangeNotifier {
   Hospital _hospital;
 
   Hospital get getHospital {

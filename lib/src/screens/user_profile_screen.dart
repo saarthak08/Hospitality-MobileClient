@@ -6,19 +6,49 @@ import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
+import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserProfile extends StatelessWidget {
-  static double viewportHeight;
-  static double viewportWidth;
-  static LocationProvider locationProvider;
+class UserProfileScreen extends StatefulWidget {
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
-  static UserProfileProvider userProfileProvider;
-  static User user;
+  UserProfileScreen({@required this.refreshIndicatorKey});
+
+  @override
+  State<StatefulWidget> createState() {
+    return UserProfilScreenState(refreshIndicatorKey: refreshIndicatorKey);
+  }
+}
+
+class UserProfilScreenState extends State<UserProfileScreen> {
+  double viewportHeight;
+  double viewportWidth;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
+  LocationProvider locationProvider;
+  UserProfileProvider userProfileProvider;
+  User user;
+  String fullName = "";
+  String phoneNumber = "";
+  String address = "";
+  String email = "";
+  double latitude = 0.0;
+  double longitude = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      refreshIndicatorKey.currentState.show();
+    });
+  }
+
+  UserProfilScreenState({@required this.refreshIndicatorKey});
 
   @override
   Widget build(BuildContext context) {
+    UserHomeScreen.tabIndex = 1;
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
     locationProvider = Provider.of<LocationProvider>(context);
@@ -41,6 +71,8 @@ class UserProfile extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0.0, 0.0,
                             viewportWidth * 0.04, viewportWidth * 0.01),
                         child: TextFormField(
+                          controller: TextEditingController()
+                            ..text = userProfileProvider.getUser.getEmail,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
                                 left: viewportWidth * 0.01,
@@ -57,8 +89,6 @@ class UserProfile extends StatelessWidget {
                                 fontSize: viewportHeight * 0.022),
                           ),
                           readOnly: true,
-                          initialValue:
-                              "kfajsdlkfjasldkfjklsadjf;aklsdjflsadkjfl",
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.022),
@@ -69,6 +99,13 @@ class UserProfile extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0.0, 0.0,
                             viewportWidth * 0.04, viewportWidth * 0.01),
                         child: TextFormField(
+                          onChanged: (String value) {
+                            if (value != null || value.length != 0) {
+                              setState(() {
+                                this.fullName = value;
+                              });
+                            }
+                          },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
                                 top: viewportHeight * 0.01,
@@ -86,6 +123,7 @@ class UserProfile extends StatelessWidget {
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.022),
+                          initialValue: userProfileProvider.getUser.getFullName,
                         ),
                       ),
                       SizedBox(height: viewportHeight * 0.02),
@@ -93,6 +131,11 @@ class UserProfile extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0.0, 0.0,
                             viewportWidth * 0.04, viewportWidth * 0.01),
                         child: TextFormField(
+                          onChanged: (String value) {
+                            setState(() {
+                              this.phoneNumber = value;
+                            });
+                          },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
                                 top: viewportHeight * 0.01,
@@ -105,6 +148,8 @@ class UserProfile extends StatelessWidget {
                                 fontFamily: "Poppins",
                                 fontSize: viewportHeight * 0.022),
                           ),
+                          initialValue:
+                              userProfileProvider.getUser.getPhoneNumber,
                           keyboardType: TextInputType.phone,
                           style: TextStyle(
                               fontFamily: "Manrope",
@@ -116,6 +161,11 @@ class UserProfile extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0.0, 0.0,
                             viewportWidth * 0.04, viewportWidth * 0.01),
                         child: TextFormField(
+                          onChanged: (String value) {
+                            setState(() {
+                              this.address = value;
+                            });
+                          },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
                                 top: viewportHeight * 0.01,
@@ -132,6 +182,7 @@ class UserProfile extends StatelessWidget {
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.024),
+                          initialValue: userProfileProvider.getUser.getAddress,
                         ),
                       ),
                       SizedBox(height: viewportHeight * 0.02),
@@ -143,6 +194,10 @@ class UserProfile extends StatelessWidget {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
+                                controller: TextEditingController()
+                                  ..text = userProfileProvider
+                                      .getUser.getLatitude
+                                      .toString(),
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -155,7 +210,6 @@ class UserProfile extends StatelessWidget {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                initialValue: "20.0",
                                 readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
@@ -169,6 +223,10 @@ class UserProfile extends StatelessWidget {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
+                                controller: TextEditingController()
+                                  ..text = userProfileProvider
+                                      .getUser.getLongitude
+                                      .toString(),
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -181,7 +239,6 @@ class UserProfile extends StatelessWidget {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                initialValue: "78.0343",
                                 readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
@@ -196,16 +253,40 @@ class UserProfile extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             RaisedButton(
-                              onPressed: () {
-                                getLocation().then(
-                                  (value) {
+                              onPressed: () async {
+                                showLoadingDialog(context: context);
+                                await getLocation().then(
+                                  (value) async {
                                     if (value != null) {
                                       locationProvider.setLocation = value;
-                                      showLoadingDialog(context: context);
-                                      Fluttertoast.showToast(
-                                        msg: "Location Updated",
-                                        //TODO Update Location Variables here!
-                                      );
+                                      User user = userProfileProvider.getUser;
+                                      user.setLatitude = value.latitude;
+                                      user.setLongitude = value.longitude;
+                                      await getNetworkRepository
+                                          .updateLocation(
+                                        latitude: value.latitude,
+                                        longitude: value.longitude,
+                                      )
+                                          .then((value) {
+                                        if (value.statusCode == 200) {
+                                          Fluttertoast.showToast(
+                                            msg: "Location Updated",
+                                          );
+                                          userProfileProvider.setUser = user;
+                                        } else {
+                                          Fluttertoast.showToast(
+                                            msg: "Error in updating location",
+                                          );
+                                          print(
+                                              "Update Location: ${value.statusCode.toString() + value.body.toString()}");
+                                        }
+                                      }).catchError((error) {
+                                        Fluttertoast.showToast(
+                                          msg: "Error in updating location",
+                                        );
+                                        print(
+                                            "Update Location: ${error.toString()}");
+                                      });
                                       Navigator.pop(context);
                                     } else {
                                       Fluttertoast.showToast(
@@ -257,7 +338,41 @@ class UserProfile extends StatelessWidget {
                                   ),
                                 ),
                                 textColor: Colors.white,
-                                onPressed: () {})
+                                onPressed: () async {
+                                  showLoadingDialog(context: context);
+                                  User user = userProfileProvider.getUser;
+                                  user.setAddress = address.length == 0
+                                      ? user.getAddress
+                                      : address;
+                                  user.setFullName = fullName.length == 0
+                                      ? user.getFullName
+                                      : fullName;
+                                  user.setPhoneNumber = phoneNumber.length == 0
+                                      ? user.getPhoneNumber
+                                      : phoneNumber;
+                                  print(phoneNumber);
+                                  await getNetworkRepository
+                                      .updatePatientUserData(user: user)
+                                      .then((value) {
+                                    if (value.statusCode == 200) {
+                                      Fluttertoast.showToast(
+                                        msg: "Profile Updated",
+                                      );
+                                      userProfileProvider.setUser = user;
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg: "Error in updating profile",
+                                      );
+                                      print(
+                                          "Update Profile Patient: ${value.statusCode.toString() + value.body.toString()}");
+                                    }
+                                  }).catchError((error) {
+                                    print(
+                                        "Update Profile Patient: ${error.toString()}");
+                                    Navigator.pop(context);
+                                  });
+                                  Navigator.pop(context);
+                                })
                           ]),
                       SizedBox(height: viewportHeight * 0.05),
                       RaisedButton(

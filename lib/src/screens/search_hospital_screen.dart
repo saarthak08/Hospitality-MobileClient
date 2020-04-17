@@ -8,6 +8,7 @@ import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
+import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:provider/provider.dart';
 
@@ -16,17 +17,25 @@ import 'map_screen.dart';
 class SearchHospitalScreen extends StatefulWidget {
   final ScrollController controller;
   final GlobalKey<FormState> formKey;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
-  SearchHospitalScreen({@required this.formKey, @required this.controller});
+  SearchHospitalScreen(
+      {@required this.formKey,
+      @required this.controller,
+      @required this.refreshIndicatorKey});
   @override
   State<StatefulWidget> createState() {
-    return _SearchHospitalScreenState(formKey: formKey, controller: controller);
+    return _SearchHospitalScreenState(
+        formKey: formKey,
+        controller: controller,
+        refreshIndicatorKey: refreshIndicatorKey);
   }
 }
 
 class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   double viewportHeight;
   double viewportWidth;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
   LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
@@ -37,11 +46,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
       TextStyle(color: Colors.black, fontSize: 18);
 
   _SearchHospitalScreenState(
-      {@required this.formKey, @required this.controller});
+      {@required this.formKey,
+      @required this.controller,
+      @required this.refreshIndicatorKey});
 
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
+    UserHomeScreen.tabIndex = 0;
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
@@ -207,6 +219,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
         ));
   }
 
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      refreshIndicatorKey.currentState.show();
+    });
+  }
+
   void _submitForm(BuildContext context) async {
     controller.animateTo(
       0,
@@ -217,13 +237,13 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
     setState(() {
       isButtonEnabled = false;
     });
+    showLoadingDialog(context: context);
     locationProvider.setHospitalDistance = distance;
     getLocation().then((value) {
       if (value != null) {
         locationProvider.setLocation = value;
-        showLoadingDialog(context: context);
         getNetworkRepository
-            .sendCurrentLocation(
+            .sendCurrentLocationAndGetHospitalLists(
                 latitude: value.latitude,
                 longitude: value.longitude,
                 range: distance)
@@ -232,21 +252,11 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
             hospitalListProvider.setHospitalLists = hospitals;
+            print(response);
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
-              Hospital h = new Hospital();
-              if (data["distance"] != null &&
-                  data["latitude"] != null &&
-                  data["longitude"] != null &&
-                  data["name"] != null) {
-                h.setDistance =
-                    double.parse(data["distance"].toStringAsFixed(2));
-                h.setEmail = data["contact"].toString();
-                h.setLatitude = data["latitude"];
-                h.setLongitude = data["longitude"];
-                h.setName = data["name"];
-                hospitals.add(h);
-              }
+              Hospital h = Hospital.fromJSON(data);
+              hospitals.add(h);
             }
             if (hospitals.length == 0) {
               Fluttertoast.showToast(
@@ -265,31 +275,35 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                 msg:
                     "No nearby hospitals found! Try again or change the distance limit!",
                 toastLength: Toast.LENGTH_SHORT);
-            print("Send Location: " + value.statusCode.toString());
+            print("Get Hospitals List: " + value.statusCode.toString());
           } else {
             Navigator.pop(context);
             Fluttertoast.showToast(
                 msg: "Error fetching hospitals! Try again!",
                 toastLength: Toast.LENGTH_SHORT);
-            print("Send Location: " + value.statusCode.toString());
+            print("Get Hospitals List: " + value.statusCode.toString());
           }
         }).catchError((error) {
           Navigator.pop(context);
           Fluttertoast.showToast(
               msg: "Error fetching hospitals! Try again!",
               toastLength: Toast.LENGTH_SHORT);
+          print("Get Hospitals List: " + error.toString());
         });
       } else {
+        Navigator.pop(context);
         Fluttertoast.showToast(
             msg: "Error in getting location",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM);
       }
     }).catchError((error) {
+      Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Error in getting location",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM);
+      print("Get Hospitals List: " + error.toString());
     });
   }
 }

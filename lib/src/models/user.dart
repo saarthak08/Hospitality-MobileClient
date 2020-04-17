@@ -4,8 +4,13 @@ class User {
   int _userId = 0;
   String _address = "";
   String _phoneNumber = "";
-  double _latitude;
-  double _longitude;
+  double _latitude=0.0;
+  double _longitude=0.0;
+  bool _enabled=false;
+
+  bool get getEnabled => _enabled;
+
+  set setEnabled(bool enabled) => this._enabled = enabled;
 
   double get getLatitude => _latitude;
 
@@ -46,4 +51,16 @@ class User {
   int get getUserId {
     return _userId;
   }
+
+  User.fromJSON({Map<String, dynamic> responseMap}) {
+    this._email = responseMap["email"];
+    this._address = responseMap["address"];
+    this._fullName = responseMap["name"];
+    this._phoneNumber = responseMap["phoneNumber"].toString();
+    this._latitude = responseMap["latitude"];
+    this._longitude = responseMap["longitude"];
+    this._enabled = responseMap["enable"];
+  }
+
+  User();
 }

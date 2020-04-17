@@ -1,18 +1,18 @@
 class Hospital {
-  String _name;
-  double _distance;
-  double _latitude;
-  double _longitude;
-  String _email;
-  String _address;
-  String _website;
-  String _contactNo;
-  String _note;
-  bool _availability;
-  int _totalBeds;
-  int _availableBeds;
-  int _totalDoctors;
-  int _availableDoctors;
+  String _name="";
+  double _distance=0.0;
+  double _latitude=0.0;
+  double _longitude=0.0;
+  String _email="";
+  String _address="";
+  String _website="";
+  String _contactNo="";
+  String _note="";
+  bool _availability=false;
+  int _totalBeds=0;
+  int _availableBeds=0;
+  int _totalDoctors=0;
+  int _availableDoctors=0;
 
   String get getAddress => _address;
 
@@ -55,22 +55,22 @@ class Hospital {
       throw FormatException("Null JSON");
     }
     this._email = responseMap["email"];
-    this._latitude = responseMap["lattitude"];
+    this._latitude = responseMap["latitude"];
     this._longitude = responseMap["longitude"];
     this._name = responseMap["name"];
     this._distance = responseMap["distance"];
-    this._address = responseMap["address"];
+    // this._address = responseMap["address"];
     this._availability = responseMap["availability"];
     this._availableBeds = responseMap["beds"];
     this._note = responseMap["note"];
     this._totalBeds = responseMap["totalBeds"];
     this._availableDoctors = responseMap["doctors"];
     this._totalDoctors = responseMap["totalDoctors"];
-    this._contactNo = responseMap["contact"];
+    this._contactNo = responseMap["contact"].toString();
   }
 
   Hospital();
-  
+
   String get getName => _name;
 
   set setName(String value) => _name = value;

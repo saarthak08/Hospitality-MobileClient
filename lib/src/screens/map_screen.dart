@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
-import 'package:hospitality/src/screens/hospital_info_screen.dart';
-import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
@@ -25,7 +22,6 @@ class MapViewState extends State<MapView> {
   LocationData myLocationData;
   LocationProvider locationProvider;
   CameraPosition myPosition;
-  CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
   PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
   GlobalKey listViewKey = new GlobalKey();
@@ -43,8 +39,6 @@ class MapViewState extends State<MapView> {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
-    currentHospitalOnMapProvider =
-        Provider.of<CurrentHospitalOnMapProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
     for (Hospital hospital in hospitals) {
       markers.add(
@@ -53,15 +47,6 @@ class MapViewState extends State<MapView> {
           position: LatLng(hospital.getLatitude, hospital.getLongitude),
           markerId: MarkerId(hospital.getName),
           infoWindow: InfoWindow(title: hospital.getName),
-          onTap: () {
-            currentHospitalOnMapProvider.setHospital = hospital;
-            Navigator.push(
-              context,
-              BouncyPageRoute(
-                widget: HospitalInfo(),
-              ),
-            );
-          },
         ),
       );
     }
@@ -87,27 +72,45 @@ class MapViewState extends State<MapView> {
       body: SlidingUpPanel(
         controller: controller,
         borderRadius: BorderRadius.circular(35),
+        border: Border.all(
+          color: Colors.blue,
+          width: 2,
+        ),
         backdropEnabled: true,
         panelBuilder: (ScrollController sc) => _scrollingList(sc),
         isDraggable: true,
         parallaxEnabled: true,
-        collapsed: Card(
-            margin: EdgeInsets.symmetric(
-                horizontal: viewportWidth * 0.05,
-                vertical: viewportHeight * 0.01),
+        collapsed: Material(
+            borderRadius: BorderRadius.circular(35),
             elevation: 2,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40),
-                side: BorderSide(color: Colors.blue)),
-            child: Container(
-                width: viewportWidth,
-                height: viewportHeight * 0.1,
-                child: Center(
-                  child: Text("List of Hospitals\n\t\t\t\t\tDrag up!",
-                      style: TextStyle(
-                          fontSize: viewportHeight * 0.03,
-                          fontFamily: "Poppins")),
-                ))),
+            child: InkWell(
+                borderRadius: BorderRadius.circular(35),
+                splashColor: Colors.blue,
+                onTap: () {
+
+                },
+                child: Container(
+                    width: viewportWidth,
+                    height: viewportHeight * 0.2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Icon(
+                          Icons.arrow_upward,
+                          size: viewportHeight * 0.06,
+                          color: Colors.blue,
+                        ),
+                        Text("Hospitals!",
+                            style: TextStyle(
+                                fontSize: viewportHeight * 0.04,
+                                fontFamily: "Poppins")),
+                        Icon(
+                          Icons.arrow_upward,
+                          size: viewportHeight * 0.06,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    )))),
         body: Center(
           child: Container(
               child: GoogleMap(
@@ -136,6 +139,7 @@ class MapViewState extends State<MapView> {
     return ListView.builder(
       key: listViewKey,
       controller: sc,
+      padding: EdgeInsets.only(top:viewportHeight*0.03),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, int index) {

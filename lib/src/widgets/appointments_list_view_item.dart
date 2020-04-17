@@ -50,7 +50,7 @@ class AppointmentsListViewItem extends StatelessWidget {
                   ],
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: viewportHeight * 0.01),
+                    EdgeInsets.symmetric(vertical: viewportHeight * 0.01,horizontal: viewportWidth*0.01),
                 leading: Icon(
                   Icons.assignment,
                   size: viewportHeight * 0.05,
