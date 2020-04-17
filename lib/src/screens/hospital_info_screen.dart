@@ -1,30 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/models/hospital.dart';
-import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
-import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
 
 class HospitalInfo extends StatefulWidget {
-  HospitalInfo();
+  final Hospital hospital;
+
+  HospitalInfo({this.hospital});
 
   @override
-  _HospitalInfoState createState() => _HospitalInfoState();
+  _HospitalInfoState createState() => _HospitalInfoState(hospital: hospital);
 }
 
 class _HospitalInfoState extends State<HospitalInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool formVisible = false;
+  double viewportHeight;
+  double viewportWidth;
   Hospital hospital;
-  CurrentHospitalOnMapProvider currentHospitalOnMapProvider;
 
-  final Map<String, dynamic> _formData = {
-    'name': null,
-    'note': null,
-    'location': null,
-  };
+  _HospitalInfoState({@required this.hospital});
 
   Widget _buildForm() {
+    viewportHeight = getViewportHeight(context);
+    viewportWidth = getViewportWidth(context);
+
     return Container(
         margin: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                 border: OutlineInputBorder(),
               ),
               onSaved: (String value) {
-                _formData['name'] = value;
+                //  _formData['name'] = value;
               },
             ),
             const SizedBox(height: 10.0),
@@ -52,7 +52,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                 border: OutlineInputBorder(),
               ),
               onSaved: (String value) {
-                _formData['password'] = value;
+                // _formData['password'] = value;
               },
             ),
             const SizedBox(height: 10.0),
@@ -77,7 +77,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                 return null;
               },
               onSaved: (String value) {
-                _formData['username'] = value;
+                //  _formData['username'] = value;
               },
             ),
             const SizedBox(height: 10.0),
@@ -108,11 +108,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
 
   @override
   Widget build(BuildContext context) {
-    currentHospitalOnMapProvider =
-        Provider.of<CurrentHospitalOnMapProvider>(context);
-    hospital = currentHospitalOnMapProvider.getHospital;
+    viewportHeight = getViewportHeight(context);
+    viewportWidth = getViewportWidth(context);
     if (hospital.getName != null) {
-      _formData["name"] = hospital.getName;
+      //  _formData["name"] = hospital.getName;
     }
     return Scaffold(
       appBar: AppBar(
@@ -123,9 +122,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
             }),
         title: Text(
           'Hospital Info',
+          style: TextStyle(fontFamily: "Poppins"),
         ),
         backgroundColor: Theme.of(context).primaryColor,
-        elevation: 1,
+        elevation: 2,
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -163,8 +163,8 @@ class _HospitalInfoState extends State<HospitalInfo> {
                       splashColor: Colors.blue,
                       color: Theme.of(context).primaryColor,
                       child: Container(
-                        width: getViewportWidth(context) * 0.42,
-                        height: getViewportHeight(context) * 0.08,
+                        width: viewportWidth * 0.42,
+                        height: viewportHeight * 0.08,
                         alignment: Alignment.center,
                         child: Text(
                           'Book Appointment',
@@ -172,7 +172,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: "Ubuntu",
-                            fontSize: getViewportHeight(context) * 0.025,
+                            fontSize: viewportHeight * 0.025,
                           ),
                         ),
                       ),
@@ -228,7 +228,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                   ? null
                   : SingleChildScrollView(
                       child: Container(
-                        height: getDeviceHeight(context),
+                        height: viewportHeight,
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -296,7 +296,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
   Row _buildHeader() {
     return Row(
       children: <Widget>[
-        SizedBox(width: 20.0),
+        SizedBox(width: viewportHeight*0.02),
         Container(
             width: 80.0,
             height: 80.0,
@@ -307,11 +307,12 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     radius: 35.0,
                     backgroundImage: AssetImage('assets/img/splash_bg.png')))),
         SizedBox(width: 20.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Flexible(
+            child: Container(
+                child: Column(
           children: <Widget>[
             Text(
-              hospital.getName,
+              "fjskldjflaksdjfkldfklasdklfjaksdf;asdkfjsdlkfj",
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10.0),
@@ -332,7 +333,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
               ],
             ),
           ],
-        )
+        )))
       ],
     );
   }

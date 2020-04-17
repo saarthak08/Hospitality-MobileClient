@@ -4,9 +4,9 @@ class User {
   int _userId = 0;
   String _address = "";
   String _phoneNumber = "";
-  double _latitude;
-  double _longitude;
-  bool _enabled;
+  double _latitude=0.0;
+  double _longitude=0.0;
+  bool _enabled=false;
 
   bool get getEnabled => _enabled;
 

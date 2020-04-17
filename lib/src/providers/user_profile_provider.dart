@@ -4,11 +4,6 @@ import 'package:hospitality/src/models/user.dart';
 class UserProfileProvider extends ChangeNotifier {
   User _user;
 
-
-  set isPatient(bool value) {
-    notifyListeners();
-  }
-
   User get getUser {
     return _user;
   }

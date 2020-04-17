@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/models/hospital.dart';
-import 'package:hospitality/src/providers/currrent_hospital_on_map_provider.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/models/user.dart';
@@ -200,6 +199,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   Map<dynamic, dynamic> res = json.decode(response.body);
                   String token = res["token"];
                   await _sharedPreferencesInstance.setString("token", token);
+                  await _sharedPreferencesInstance.setString(
+                      "email", _loginCredentials["email"]);
                   getNetworkRepository.token = token;
                   if (_isPatient) {
                     _sharedPreferencesInstance.setBool("isPatient", true);
@@ -351,7 +352,6 @@ class _AuthScreenState extends State<AuthScreen> {
           _isPatient = false;
           break;
       }
-      userProfileProvider.isPatient = _isPatient;
     });
   }
 

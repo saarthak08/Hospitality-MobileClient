@@ -8,6 +8,7 @@ import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
+import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:provider/provider.dart';
 
@@ -16,17 +17,25 @@ import 'map_screen.dart';
 class SearchHospitalScreen extends StatefulWidget {
   final ScrollController controller;
   final GlobalKey<FormState> formKey;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
-  SearchHospitalScreen({@required this.formKey, @required this.controller});
+  SearchHospitalScreen(
+      {@required this.formKey,
+      @required this.controller,
+      @required this.refreshIndicatorKey});
   @override
   State<StatefulWidget> createState() {
-    return _SearchHospitalScreenState(formKey: formKey, controller: controller);
+    return _SearchHospitalScreenState(
+        formKey: formKey,
+        controller: controller,
+        refreshIndicatorKey: refreshIndicatorKey);
   }
 }
 
 class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   double viewportHeight;
   double viewportWidth;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
   LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
@@ -37,11 +46,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
       TextStyle(color: Colors.black, fontSize: 18);
 
   _SearchHospitalScreenState(
-      {@required this.formKey, @required this.controller});
+      {@required this.formKey,
+      @required this.controller,
+      @required this.refreshIndicatorKey});
 
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
+    UserHomeScreen.tabIndex = 0;
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
@@ -207,6 +219,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
         ));
   }
 
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      refreshIndicatorKey.currentState.show();
+    });
+  }
+
   void _submitForm(BuildContext context) async {
     controller.animateTo(
       0,
@@ -217,11 +237,11 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
     setState(() {
       isButtonEnabled = false;
     });
+    showLoadingDialog(context: context);
     locationProvider.setHospitalDistance = distance;
     getLocation().then((value) {
       if (value != null) {
         locationProvider.setLocation = value;
-        showLoadingDialog(context: context);
         getNetworkRepository
             .sendCurrentLocationAndGetHospitalLists(
                 latitude: value.latitude,
@@ -232,6 +252,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
             hospitalListProvider.setHospitalLists = hospitals;
+            print(response);
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
               Hospital h = Hospital.fromJSON(data);
@@ -270,12 +291,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
           print("Get Hospitals List: " + error.toString());
         });
       } else {
+        Navigator.pop(context);
         Fluttertoast.showToast(
             msg: "Error in getting location",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM);
       }
     }).catchError((error) {
+      Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Error in getting location",
           toastLength: Toast.LENGTH_SHORT,
