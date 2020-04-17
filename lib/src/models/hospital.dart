@@ -1,18 +1,18 @@
 class Hospital {
-  String _name="";
-  double _distance=0.0;
-  double _latitude=0.0;
-  double _longitude=0.0;
-  String _email="";
-  String _address="";
-  String _website="";
-  String _contactNo="";
-  String _note="";
-  bool _availability=false;
-  int _totalBeds=0;
-  int _availableBeds=0;
-  int _totalDoctors=0;
-  int _availableDoctors=0;
+  String _name = "";
+  double _distance = 0.0;
+  double _latitude = 0.0;
+  double _longitude = 0.0;
+  String _email = "";
+  String _address = "";
+  String _website = "";
+  String _contactNo = "";
+  String _note = "";
+  bool _availability = false;
+  int _totalBeds = 0;
+  int _availableBeds = 0;
+  int _totalDoctors = 0;
+  int _availableDoctors = 0;
 
   String get getAddress => _address;
 
@@ -54,19 +54,37 @@ class Hospital {
     if (responseMap == null) {
       throw FormatException("Null JSON");
     }
-    this._email = responseMap["email"];
-    this._latitude = responseMap["latitude"];
-    this._longitude = responseMap["longitude"];
-    this._name = responseMap["name"];
-    this._distance = responseMap["distance"];
+    this._email =
+        responseMap["email"] != null ? responseMap["email"] : this._email;
+    this._latitude = responseMap["latitude"] != null
+        ? responseMap["latitude"]
+        : this._latitude;
+    this._longitude = responseMap["longitude"] != null
+        ? responseMap["longitude"]
+        : this._longitude;
+    this._name = responseMap["name"] != null ? responseMap["name"] : this._name;
+    this._distance = responseMap["distance"] != null
+        ? responseMap["distance"]
+        : this._distance;
     // this._address = responseMap["address"];
-    this._availability = responseMap["availability"];
-    this._availableBeds = responseMap["beds"];
-    this._note = responseMap["note"];
-    this._totalBeds = responseMap["totalBeds"];
-    this._availableDoctors = responseMap["doctors"];
-    this._totalDoctors = responseMap["totalDoctors"];
-    this._contactNo = responseMap["contact"].toString();
+    this._availability = responseMap["availability"] != null
+        ? responseMap["availability"]
+        : this._availability;
+    this._availableBeds =
+        responseMap["beds"] != null ? responseMap["beds"] : this._availableBeds;
+    this._note = responseMap["note"] != null ? responseMap["note"] : this._note;
+    this._totalBeds = responseMap["totalBeds"] != null
+        ? responseMap["totalBeds"]
+        : this._totalBeds;
+    this._availableDoctors = responseMap["doctors"] != null
+        ? responseMap["doctors"]
+        : this._availableDoctors;
+    this._totalDoctors = responseMap["totalDoctors"] != null
+        ? responseMap["totalDoctors"]
+        : this._totalDoctors;
+    this._contactNo = responseMap["contact"] != null
+        ? responseMap["contact"].toString()
+        : this._contactNo.toString();
   }
 
   Hospital();

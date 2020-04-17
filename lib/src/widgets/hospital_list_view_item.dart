@@ -14,8 +14,9 @@ class HospitalListViewItem extends StatelessWidget {
   final Completer<GoogleMapController> controller;
   static var viewportHeight;
   static var viewportWidth;
+  final int inputDistance;
 
-  HospitalListViewItem({this.hospital, this.controller, this.panelController});
+  HospitalListViewItem({this.hospital, this.controller, this.panelController, this.inputDistance});
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,7 @@ class HospitalListViewItem extends StatelessWidget {
                     Navigator.push(
                       context,
                       BouncyPageRoute(
-                        widget: HospitalInfo(hospital:hospital),
+                        widget: HospitalInfo(hospital:hospital,inputDistance:inputDistance),
                       ),
                     );
                   },

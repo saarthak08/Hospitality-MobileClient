@@ -15,9 +15,6 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   double viewportHeight;
   double viewportWidth;
 
-  Widget _hospital(BuildContext context) {
-    return HospitalInfo();
-  }
 
   @override
   Widget build(BuildContext context) {

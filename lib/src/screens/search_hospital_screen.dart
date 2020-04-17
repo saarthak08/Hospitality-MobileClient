@@ -267,7 +267,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
               Navigator.pop(context);
-              Navigator.push(context, BouncyPageRoute(widget: MapView()));
+              Navigator.push(context, BouncyPageRoute(widget: MapView(inputDistance: distance.toInt(),)));
             }
           } else if (value.statusCode == 404) {
             Navigator.pop(context);
