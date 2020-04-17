@@ -11,8 +11,12 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapView extends StatefulWidget {
+  final int inputDistance;
+
+  MapView({this.inputDistance});
+
   @override
-  State<MapView> createState() => MapViewState();
+  State<MapView> createState() => MapViewState(inputDistance: inputDistance);
 }
 
 class MapViewState extends State<MapView> {
@@ -27,11 +31,14 @@ class MapViewState extends State<MapView> {
   GlobalKey listViewKey = new GlobalKey();
   double viewportHeight;
   double viewportWidth;
+  int inputDistance;
 
   @override
   void initState() {
     super.initState();
   }
+
+  MapViewState({this.inputDistance});
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +93,7 @@ class MapViewState extends State<MapView> {
             child: InkWell(
                 borderRadius: BorderRadius.circular(35),
                 splashColor: Colors.blue,
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Container(
                     width: viewportWidth,
                     height: viewportHeight * 0.2,
@@ -139,11 +144,12 @@ class MapViewState extends State<MapView> {
     return ListView.builder(
       key: listViewKey,
       controller: sc,
-      padding: EdgeInsets.only(top:viewportHeight*0.03),
+      padding: EdgeInsets.only(top: viewportHeight * 0.03),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, int index) {
         return HospitalListViewItem(
+          inputDistance: inputDistance,
           panelController: controller,
           controller: _controller,
           hospital: hospitals[index],

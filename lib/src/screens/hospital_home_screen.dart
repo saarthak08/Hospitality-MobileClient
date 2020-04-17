@@ -13,7 +13,6 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   double viewportHeight;
   double viewportWidth;
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget _hospital(BuildContext context) {
     return HospitalInfo();

@@ -2,8 +2,12 @@ class Appointment {
   String date;
   String status;
   String hospitalName;
-  
-  Appointment({this.date,this.hospitalName,this.status});
+  String note;
+
+  String get getNote => note;
+
+  set setNote(String note) => this.note = note;
+  Appointment({this.date, this.hospitalName, this.status});
 
   String get getDate => date;
 
@@ -24,5 +28,6 @@ class Appointment {
     this.date = responseMap["date"];
     this.status = responseMap["status"];
     this.hospitalName = responseMap["hospitalName"];
+    this.note = responseMap["note"];
   }
 }
