@@ -54,6 +54,7 @@ class Hospital {
     if (responseMap == null) {
       throw FormatException("Null JSON");
     }
+    print(responseMap);
     this._email =
         responseMap["email"] != null ? responseMap["email"] : this._email;
     this._latitude = responseMap["latitude"] != null

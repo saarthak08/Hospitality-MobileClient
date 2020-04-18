@@ -44,7 +44,11 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500), () async {
-      refreshIndicatorKey.currentState.show();
+      if (mounted &&
+          refreshIndicatorKey.currentState.mounted &&
+          refreshIndicatorKey != null) {
+        await refreshIndicatorKey.currentState.show();
+      }
     });
   }
 
@@ -360,50 +364,69 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                           children: <Widget>[
                             RaisedButton(
                               onPressed: () async {
-                                showLoadingDialog(context: context);
-                                await getLocation().then(
-                                  (value) async {
-                                    if (value != null) {
-                                      locationProvider.setLocation = value;
-                                      Hospital hospital =
-                                          hospitalUserProvider.getHospital;
-                                      hospital.setLatitude = value.latitude;
-                                      hospital.setLongitude = value.longitude;
-                                      await getNetworkRepository
-                                          .updateLocation(
-                                        latitude: value.latitude,
-                                        longitude: value.longitude,
-                                      )
-                                          .then((value) {
-                                        if (value.statusCode == 200) {
-                                          Fluttertoast.showToast(
-                                            msg: "Location Updated",
-                                          );
-                                          hospitalUserProvider.setHospital =
-                                              hospital;
-                                          Navigator.pop(context);
-                                        } else {
-                                          Navigator.pop(context);
-                                          Fluttertoast.showToast(
-                                            msg: "Error in updating location",
-                                          );
-                                          print(
-                                              "Update Location: ${value.statusCode.toString() + value.body.toString()}");
-                                        }
-                                      }).catchError((error) {
-                                        Fluttertoast.showToast(
-                                          msg: "Error in updating location",
-                                        );
-                                        print(
-                                            "Update Location: ${error.toString()}");
-                                        Navigator.pop(context);
-                                      });
-                                    } else {
-                                      Fluttertoast.showToast(
-                                        msg: "Error in fetching location!",
-                                      );
-                                      Navigator.pop(context);
-                                    }
+                                showGeneralDialog(
+                                  context: context,
+                                  transitionDuration:
+                                      Duration(milliseconds: 200),
+                                  barrierDismissible: true,
+                                  barrierLabel: '',
+                                  pageBuilder:
+                                      (context, animation1, animation2) {
+                                    return null;
+                                  },
+                                  barrierColor: Colors.black.withOpacity(0.5),
+                                  transitionBuilder: (context, a1, a2, widget) {
+                                    return Transform.scale(
+                                        scale: a1.value,
+                                        child: Opacity(
+                                            opacity: a1.value,
+                                            child: StatefulBuilder(
+                                              builder: (BuildContext context,
+                                                  setState) {
+                                                return AlertDialog(
+                                                  shape: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0)),
+                                                  title: Text(
+                                                    'Confirm your decision!',
+                                                    style: TextStyle(
+                                                      fontFamily: "BalooTamma2",
+                                                    ),
+                                                  ),
+                                                  content: Text(
+                                                    'Are you sure you want to update your location?',
+                                                    style: TextStyle(
+                                                        fontFamily: "Manrope"),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: Text(
+                                                        'Cancel',
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                    FlatButton(
+                                                      child: Text(
+                                                        'OK',
+                                                        style: TextStyle(
+                                                          color: Colors.green,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        getLocationDialog();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            )));
                                   },
                                 );
                               },
@@ -499,5 +522,51 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                           ]),
                       SizedBox(height: viewportHeight * 0.05),
                     ])))));
+  }
+
+  void getLocationDialog() async {
+    showLoadingDialog(context: context);
+    await getLocation().then(
+      (value) async {
+        if (value != null) {
+          locationProvider.setLocation = value;
+          Hospital hospital = hospitalUserProvider.getHospital;
+          hospital.setLatitude = value.latitude;
+          hospital.setLongitude = value.longitude;
+          await getNetworkRepository
+              .updateLocation(
+            latitude: value.latitude,
+            longitude: value.longitude,
+          )
+              .then((value) {
+            if (value.statusCode == 200) {
+              Fluttertoast.showToast(
+                msg: "Location Updated",
+              );
+              hospitalUserProvider.setHospital = hospital;
+              Navigator.pop(context);
+            } else {
+              Navigator.pop(context);
+              Fluttertoast.showToast(
+                msg: "Error in updating location",
+              );
+              print(
+                  "Update Location: ${value.statusCode.toString() + value.body.toString()}");
+            }
+          }).catchError((error) {
+            Fluttertoast.showToast(
+              msg: "Error in updating location",
+            );
+            print("Update Location: ${error.toString()}");
+            Navigator.pop(context);
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error in fetching location!",
+          );
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 }

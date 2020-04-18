@@ -439,7 +439,9 @@ class UserProfilScreenState extends State<UserProfileScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500), () async {
-      _refreshIndicatorKey.currentState.show();
+      if (mounted&&_refreshIndicatorKey!=null&&_refreshIndicatorKey.currentState.mounted) {
+        _refreshIndicatorKey.currentState.show();
+      }
     });
   }
 

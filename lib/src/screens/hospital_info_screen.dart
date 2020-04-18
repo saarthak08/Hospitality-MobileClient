@@ -106,6 +106,9 @@ class _HospitalInfoState extends State<HospitalInfo> {
         context: context,
         note: noteAppointment,
         hospitalEmail: hospital.getEmail);
+    setState(() {
+      formVisible = false;
+    });
   }
 
   @override
@@ -114,7 +117,11 @@ class _HospitalInfoState extends State<HospitalInfo> {
     if (!isPatient) {
       hospital = Hospital();
       Future.delayed(Duration(milliseconds: 500), () async {
-        refreshIndicatorKey.currentState.show();
+        if (mounted &&
+            refreshIndicatorKey.currentState.mounted &&
+            refreshIndicatorKey != null) {
+          await refreshIndicatorKey.currentState.show();
+        }
       });
     }
   }
@@ -125,6 +132,8 @@ class _HospitalInfoState extends State<HospitalInfo> {
     viewportWidth = getViewportWidth(context);
     hospitalUserProvider =
         hospitalUserProvider = Provider.of<HospitalUserProvider>(context);
+    isPatient = SplashPage.isPatient;
+
 
     return Scaffold(
       appBar: isPatient
@@ -144,7 +153,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
             )
           : null,
       body: RefreshIndicator(
-        key:refreshIndicatorKey,
+        key: refreshIndicatorKey,
         onRefresh: () async {
           if (!isPatient) {
             await fetchHospitalUserData(
@@ -180,21 +189,19 @@ class _HospitalInfoState extends State<HospitalInfo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     RaisedButton(
-                      elevation: 5,
+                      elevation: 3,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
+                          borderRadius: BorderRadius.circular(20)),
                       splashColor: Colors.white,
                       color: Theme.of(context).primaryColor,
                       child: Container(
                         width: isPatient
                             ? viewportWidth * 0.4
-                            : viewportWidth * 0.6,
+                            : viewportWidth * 0.4,
                         height: viewportHeight * 0.06,
                         alignment: Alignment.center,
                         child: Text(
-                          isPatient
-                              ? 'Book Appointment'
-                              : 'Edit Profile & Availability',
+                          isPatient ? 'Book Appointment' : 'Edit Profile',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -224,8 +231,8 @@ class _HospitalInfoState extends State<HospitalInfo> {
                 _buildTitle("Stats"),
                 SizedBox(height: viewportHeight * 0.015),
                 isPatient
-                    ? hospital.getTotalBeds == 0 ||
-                            hospital.getAvailableBeds == 0
+                    ? (hospital.getTotalBeds == 0 ||
+                            hospital.getAvailableBeds == 0)
                         ? _buildSkillRow("Beds", 0, 0, 0)
                         : _buildSkillRow(
                             "Beds",

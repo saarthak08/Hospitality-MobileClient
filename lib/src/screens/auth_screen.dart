@@ -203,7 +203,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   await _sharedPreferencesInstance.setString(
                       "email", _loginCredentials["email"]);
                   getNetworkRepository.token = token;
-                  SplashPage.isPatient=_isPatient;
+                  setState(() {
+                    SplashPage.isPatient = _isPatient;
+                  });
                   if (_isPatient) {
                     _sharedPreferencesInstance.setBool("isPatient", true);
                     User user = userProfileProvider.getUser;
@@ -212,7 +214,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                     user.setEmail = _loginCredentials["email"];
                     userProfileProvider.setUser = user;
-                    getNetworkRepository
+                    await getNetworkRepository
                         .getPatientUserData(email: _loginCredentials["email"])
                         .then((value) {
                       if (value.statusCode == 200) {
@@ -244,18 +246,16 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                     hospital.setEmail = _loginCredentials["email"];
                     hospitalUserProvider.setHospital = hospital;
-                     getNetworkRepository
-                        .getHospitalData()
-                        .then((value) {
+                    await getNetworkRepository.getHospitalData().then((value) {
                       if (value.statusCode == 200) {
                         Map<String, dynamic> responseMap =
                             json.decode(value.body);
-                        Hospital hospital= Hospital.fromJSON(responseMap);
-                        hospitalUserProvider.setHospital=hospital;
-                         Navigator.pushAndRemoveUntil(
-                        context,
-                        BouncyPageRoute(widget: HospitalDashboard()),
-                        (Route<dynamic> route) => false);
+                        Hospital hospital = Hospital.fromJSON(responseMap);
+                        hospitalUserProvider.setHospital = hospital;
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            BouncyPageRoute(widget: HospitalDashboard()),
+                            (Route<dynamic> route) => false);
                       } else {
                         print("getUserProfileData: " +
                             value.statusCode.toString() +

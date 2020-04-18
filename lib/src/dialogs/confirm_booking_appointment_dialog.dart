@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/loading_dialog.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
 
 void confirmAppointment(
     {@required BuildContext context,
@@ -52,8 +55,32 @@ void confirmAppointment(
                             color: Colors.green,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          showLoadingDialog(context: context);
+                          await getNetworkRepository
+                              .bookAppointment(
+                                  hospitalEmail: hospitalEmail, note: note)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              Fluttertoast.showToast(
+                                  msg: "Appointment booked succesfully");
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            } else {
+                              print(
+                                  "Book Appointment: ${value.statusCode} ${value.body.toString()}");
+                              Fluttertoast.showToast(
+                                  msg: "Error in booking appointment.");
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            }
+                          }).catchError((error) {
+                            print("Book Appointment: ${error.toString()}");
+                            Fluttertoast.showToast(
+                                msg: "Error in booking appointment.");
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          });
                         },
                       ),
                     ],

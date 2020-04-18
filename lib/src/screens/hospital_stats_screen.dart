@@ -456,7 +456,11 @@ class _HospitalStatsState extends State<HospitalStats> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500), () async {
-      refreshIndicatorKey.currentState.show();
+      if (mounted &&
+          refreshIndicatorKey.currentState.mounted &&
+          refreshIndicatorKey != null) {
+        await refreshIndicatorKey.currentState.show();
+      }
     });
   }
 }

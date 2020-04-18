@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:hospitality/src/dialogs/appointment_list_view_item_dialogs.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/appointment.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
 
 class AppointmentsListViewItem extends StatelessWidget {
   final Appointment appointment;
   static double viewportHeight;
   static double viewportWidth;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
+  static bool isPatient;
 
-  AppointmentsListViewItem({@required this.appointment});
+  AppointmentsListViewItem(
+      {@required this.appointment, @required this.refreshIndicatorKey});
 
   @override
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
+    isPatient = SplashPage.isPatient;
     return Card(
         elevation: 3,
         margin: EdgeInsets.only(
@@ -29,35 +34,50 @@ class AppointmentsListViewItem extends StatelessWidget {
             child: ListTile(
                 trailing: Wrap(
                   children: <Widget>[
-                    IconButton(
-                      color: Colors.red,
-                      icon: Icon(
-                        Icons.cancel,
-                        size: viewportHeight * 0.04,
-                      ),
-                      onPressed: () {
-                        declineAppointment(context, appointment);
-                      },
-                    ),
-                    IconButton(
-                      icon:
-                          Icon(Icons.check_circle, size: viewportHeight * 0.04),
-                      color: Colors.green,
-                      onPressed: () {
-                        acceptAppointment(context, appointment);
-                      },
-                    ), //
+                    (appointment.getStatus == "Rejected" ||
+                            appointment.getStatus == "rejected"||appointment.getStatus=="Confirmed"||appointment.getStatus=="Confirmed")
+                        ? Container(height: 0, width: 0)
+                        : IconButton(
+                            color: Colors.red,
+                            icon: Icon(
+                              Icons.cancel,
+                              size: viewportHeight * 0.04,
+                            ),
+                            onPressed: () {
+                              declineAppointment(
+                                  context, appointment, refreshIndicatorKey);
+                            },
+                          ),
+                    isPatient
+                        ? Container(height: 0, width: 0)
+                        : (appointment.getStatus == "Confirmed" ||
+                                appointment.getStatus == "confirmed" ||
+                                appointment.getStatus == "rejected" ||
+                                appointment.getStatus == "Rejected")
+                            ? Container(height: 0, width: 0)
+                            : IconButton(
+                                icon: Icon(Icons.check_circle,
+                                    size: viewportHeight * 0.04),
+                                color: Colors.green,
+                                onPressed: () {
+                                  acceptAppointment(context, appointment,
+                                      refreshIndicatorKey);
+                                },
+                              ), //
                   ],
                 ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: viewportHeight * 0.01,horizontal: viewportWidth*0.01),
+                contentPadding: EdgeInsets.symmetric(
+                    vertical: viewportHeight * 0.01,
+                    horizontal: viewportWidth * 0.01),
                 leading: Icon(
                   Icons.assignment,
                   size: viewportHeight * 0.05,
                   color: Colors.blue,
                 ),
                 title: Text(
-                  appointment.getHospitalName,
+                  !isPatient
+                      ? appointment.getUser.getFullName
+                      : appointment.getHospital.getName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -68,13 +88,29 @@ class AppointmentsListViewItem extends StatelessWidget {
                 ),
                 subtitle: RichText(
                     text: TextSpan(
-                        text: "Date: ",
+                        text: "Time: ",
                         style: TextStyle(
                             fontSize: viewportHeight * 0.02,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontFamily: "BalooTamma2"),
                         children: <TextSpan>[
+                      TextSpan(
+                        text: appointment.getTime,
+                        style: TextStyle(
+                            fontSize: viewportHeight * 0.018,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Manrope"),
+                      ),
+                      TextSpan(
+                        text: "\nDate: ",
+                        style: TextStyle(
+                            fontSize: viewportHeight * 0.02,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "BalooTamma2"),
+                      ),
                       TextSpan(
                         text: appointment.getDate,
                         style: TextStyle(
@@ -95,7 +131,13 @@ class AppointmentsListViewItem extends StatelessWidget {
                         text: appointment.getStatus,
                         style: TextStyle(
                             fontSize: viewportHeight * 0.018,
-                            color: Colors.blue,
+                            color: appointment.getStatus == "confirmed" ||
+                                    appointment.getStatus == "Confirmed"
+                                ? Colors.green
+                                : appointment.getStatus == "Pending" ||
+                                        appointment.getStatus == "pending"
+                                    ? Colors.blue
+                                    : Colors.red,
                             fontWeight: FontWeight.bold,
                             fontFamily: "Manrope"),
                       )
