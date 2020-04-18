@@ -22,4 +22,12 @@ abstract class NetworkCalls {
 
   Future<Response> updateHospitalUserData({Hospital hospital});
 
+  Future<Response> getAppointmentsList();
+
+  Future<Response> bookAppointment({String hospitalEmail, String note});
+
+  Future<Response> changeAppointmentStatus({String email, String status,int timestamp});
+
+  Future<Response> deleteAppointmentStatus({String email,int timestamp});
+
 }

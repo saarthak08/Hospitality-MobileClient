@@ -242,10 +242,10 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
       isButtonEnabled = false;
     });
     showLoadingDialog(context: context);
-    getLocation().then((value) {
+    getLocation().then((value) async {
       if (value != null) {
         locationProvider.setLocation = value;
-        getNetworkRepository
+        await getNetworkRepository
             .sendCurrentLocationAndGetHospitalLists(
                 latitude: value.latitude,
                 longitude: value.longitude,

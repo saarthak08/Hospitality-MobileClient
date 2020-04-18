@@ -74,7 +74,7 @@ class _NetworkRepository implements NetworkCalls {
   Future<Response> getPatientUserData({String email}) async {
     final Response response = await _client
         .get(
-          "$baseURL/api/patient/?email=$email",
+          "$baseURL/api/patient?email=$email",
           headers: {
             HttpHeaders.authorizationHeader: token,
             HttpHeaders.contentTypeHeader: 'application/json'
@@ -147,13 +147,13 @@ class _NetworkRepository implements NetworkCalls {
     if (hospital.getPhoneNumber.toString().length != 0) {
       requestMap["phoneNumber"] = int.parse(hospital.getPhoneNumber);
     }
-    requestMap["note"]=hospital.getNote;
-    requestMap["availability"]=hospital.getAvailability;
-    requestMap["website"]=hospital.getWebsite;
-    requestMap["totalBeds"]=hospital.getTotalBeds;
-    requestMap["beds"]=hospital.getAvailableBeds;
-    requestMap["totalDoctors"]=hospital.getTotalDoctors;
-    requestMap["doctors"]=hospital.getAvailableDoctors;
+    requestMap["note"] = hospital.getNote;
+    requestMap["availability"] = hospital.getAvailability;
+    requestMap["website"] = hospital.getWebsite;
+    requestMap["totalBeds"] = hospital.getTotalBeds;
+    requestMap["beds"] = hospital.getAvailableBeds;
+    requestMap["totalDoctors"] = hospital.getTotalDoctors;
+    requestMap["doctors"] = hospital.getAvailableDoctors;
 
     print(requestMap);
     final Response response = await _client
@@ -168,7 +168,100 @@ class _NetworkRepository implements NetworkCalls {
       print("updateHospitalUserData: ${error.toString()}");
       throw (error);
     });
-   
+
+    return response;
+  }
+
+  Future<Response> getAppointmentsList() async {
+    String url = "";
+    if (SplashPage.isPatient) {
+      url = "$baseURL/api/patient/appointments/";
+    } else {
+      url = "$baseURL/api/hospital/appointments/";
+    }
+
+    final Response response = await _client
+        .get(
+          url,
+          headers: {
+            HttpHeaders.authorizationHeader: token,
+            HttpHeaders.contentTypeHeader: 'application/json'
+          },
+        )
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+          print("get Appointments List: ${error.toString()}");
+          throw (error);
+        });
+    return response;
+  }
+
+  @override
+  Future<Response> bookAppointment({String hospitalEmail, String note}) async {
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["email"] = hospitalEmail;
+    requestMap["note"] = note;
+    final Response response = await _client
+        .post("$baseURL/api/patient/hospital/appointment",
+            headers: {
+              HttpHeaders.authorizationHeader: token,
+              HttpHeaders.contentTypeHeader: 'application/json'
+            },
+            body: json.encode(requestMap))
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("Book Appointment: ${error.toString()}");
+      throw (error);
+    });
+    return response;
+  }
+
+  @override
+  Future<Response> changeAppointmentStatus(
+      {String email, String status, int timestamp}) async {
+    String url = "";
+
+    url = "$baseURL/api/hospital/appointments/appointment";
+
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["email"] = email;
+    requestMap["confirmation"] = status;
+    requestMap["date"] = timestamp;
+    print(requestMap);
+    final Response response = await _client
+        .post(url,
+            headers: {
+              HttpHeaders.authorizationHeader: token,
+              HttpHeaders.contentTypeHeader: 'application/json'
+            },
+            body: json.encode(requestMap))
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("Book Appointment: ${error.toString()}");
+      throw (error);
+    });
+    return response;
+  }
+
+  @override
+  Future<Response> deleteAppointmentStatus({
+    String email,int timestamp
+  }) async {
+    String url = "$baseURL/api/patient/appointments/appointment";
+
+    final Response response = await _client
+        .delete(
+          url + "?email=$email&date=$timestamp",
+          headers: {
+            HttpHeaders.authorizationHeader: token,
+            HttpHeaders.contentTypeHeader: 'application/json'
+          },
+        )
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+          print("Book Appointment: ${error.toString()}");
+          throw (error);
+        });
     return response;
   }
 }

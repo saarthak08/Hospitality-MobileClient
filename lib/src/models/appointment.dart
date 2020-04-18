@@ -1,33 +1,64 @@
+import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/models/user.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
+import 'package:intl/intl.dart';
+
 class Appointment {
-  String date;
-  String status;
-  String hospitalName;
-  String note;
+  String _date="";
+  String _time="";
+  String _status="";
+  String _note="";
+  int _timestamp=0;
+  User _user=User();
+  Hospital _hospital=Hospital();
 
-  String get getNote => note;
 
-  set setNote(String note) => this.note = note;
-  Appointment({this.date, this.hospitalName, this.status});
+  int get getTimestamp => _timestamp;
 
-  String get getDate => date;
+  set setTimestamp(int timestamp) => this._timestamp = timestamp; 
 
-  set setDate(String date) => this.date = date;
+  User get getUser => _user;
 
-  String get getStatus => status;
+  set setUser(User user) => this._user = user;
 
-  set setStatus(String status) => this.status = status;
+  Hospital get getHospital => _hospital;
 
-  String get getHospitalName => hospitalName;
+  set setHospital(Hospital hospital) => this._hospital = hospital;
 
-  set setHospitalName(String hospitalName) => this.hospitalName = hospitalName;
+  String get getTime => _time;
+
+  set setTime(String time) => this._time = time;
+
+  String get getNote => _note;
+
+  set setNote(String note) => this._note = note;
+
+  String get getDate => _date;
+
+  set setDate(String date) => this._date = date;
+
+  String get getStatus => _status;
+
+  set setStatus(String status) => this._status = status;
 
   Appointment.fromJSON(Map<String, dynamic> responseMap) {
     if (responseMap == null) {
       throw FormatException("Null JSON");
     }
-    this.date = responseMap["date"];
-    this.status = responseMap["status"];
-    this.hospitalName = responseMap["hospitalName"];
-    this.note = responseMap["note"];
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(responseMap["date"]);
+    this._timestamp=responseMap["date"];
+    this._time = DateFormat('hh:mm a').format(dateTime);
+    this._date = DateFormat("EEE, d MMM yyyy").format(dateTime);
+    this._status = responseMap["status"];
+    this._note = responseMap["note"];
+    if (SplashPage.isPatient) {
+      this._hospital = Hospital.fromJSON(responseMap);
+    } else {
+      this._user = User.fromJSON(responseMap: responseMap);
+      print(this._user.getFullName);
+      this._user.setFullName=responseMap["name"];
+      print(this._user.getFullName);
+    }
   }
 }

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/loading_dialog.dart';
 import 'package:hospitality/src/models/appointment.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
 
-void acceptAppointment(BuildContext context, Appointment appointment) {
+Future<void> acceptAppointment(BuildContext context, Appointment appointment,
+    GlobalKey<RefreshIndicatorState> refreshIndicatorKey) {
   showGeneralDialog(
     context: context,
     transitionDuration: Duration(milliseconds: 200),
@@ -50,8 +55,15 @@ void acceptAppointment(BuildContext context, Appointment appointment) {
                             color: Colors.green,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          String email = "";
+                          email = appointment.getUser.getEmail;
+                          await _changeStatus(
+                              context: context,
+                              email: email,
+                              timestamp: appointment.getTimestamp,
+                              status: "Confirmed");
+                          refreshIndicatorKey.currentState.show();
                         },
                       ),
                     ],
@@ -60,9 +72,42 @@ void acceptAppointment(BuildContext context, Appointment appointment) {
               )));
     },
   );
+  return null;
 }
 
-void declineAppointment(BuildContext context, Appointment appointment) {
+Future<void> _changeStatus(
+    {String email, String status, BuildContext context,@required int timestamp}) async {
+  showLoadingDialog(context: context);
+
+  await getNetworkRepository
+      .changeAppointmentStatus(
+    email: email,
+    status: status,
+    timestamp: timestamp
+  )
+      .then((value) {
+    Navigator.pop(context);
+    Navigator.pop(context);
+    if (value.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Appointment status changed to $status successfully.");
+    } else {
+      print(
+          "Change appointment status: ${value.statusCode} ${value.body.toString()}");
+      Fluttertoast.showToast(msg: "Error in changing appointment status");
+    }
+  }).catchError((error) {
+    Navigator.pop(context);
+    Navigator.pop(context);
+    print("Change appointment status: ${error.toString()}");
+    Fluttertoast.showToast(msg: "Error in changing appointment status");
+  });
+
+  return null;
+}
+
+Future<void> declineAppointment(BuildContext context, Appointment appointment,
+    GlobalKey<RefreshIndicatorState> refreshIndicatorKey) {
   showGeneralDialog(
     context: context,
     transitionDuration: Duration(milliseconds: 200),
@@ -89,7 +134,9 @@ void declineAppointment(BuildContext context, Appointment appointment) {
                       ),
                     ),
                     content: Text(
-                      'Are you sure you want to reject this appointment?',
+                      SplashPage.isPatient
+                          ? "Are you sure you want to delete this appointment?"
+                          : 'Are you sure you want to reject this appointment?',
                       style: TextStyle(fontFamily: "Manrope"),
                     ),
                     actions: <Widget>[
@@ -111,8 +158,43 @@ void declineAppointment(BuildContext context, Appointment appointment) {
                             color: Colors.red,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          if (SplashPage.isPatient) {
+                            showLoadingDialog(context: context);
+                            await getNetworkRepository
+                                .deleteAppointmentStatus(
+                                  timestamp: appointment.getTimestamp,
+                                    email: appointment.getHospital.getEmail)
+                                .then((value) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+
+                              if (value.statusCode == 200) {
+                                Fluttertoast.showToast(
+                                    msg: "Appointment deleted successfully");
+                              } else {
+                                print(
+                                    "Error in deleting appointment: ${value.statusCode} ${value.body.toString()}");
+                                Fluttertoast.showToast(
+                                    msg: "Error in deleting appointment");
+                              }
+                            }).catchError((error) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              print(
+                                  "Error in deleting appointment: ${error.toString()}");
+                              Fluttertoast.showToast(
+                                  msg: "Error in deleting appointment");
+                            });
+                            refreshIndicatorKey.currentState.show();
+                          } else {
+                            await _changeStatus(
+                                context: context,
+                                timestamp: appointment.getTimestamp,
+                                email: appointment.getUser.getEmail,
+                                status: "Rejected");
+                            refreshIndicatorKey.currentState.show();
+                          }
                         },
                       ),
                     ],
@@ -121,4 +203,5 @@ void declineAppointment(BuildContext context, Appointment appointment) {
               )));
     },
   );
+  return null;
 }
