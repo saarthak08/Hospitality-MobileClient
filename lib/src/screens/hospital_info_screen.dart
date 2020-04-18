@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/dialogs/confirm_booking_appointment_dialog.dart';
+import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
-import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -15,20 +15,18 @@ import 'hospital_profile_edit_screen.dart';
 class HospitalInfo extends StatefulWidget {
   final Hospital hospital;
   final int inputDistance;
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
-  HospitalInfo({this.hospital, this.inputDistance, this.refreshIndicatorKey});
+  HospitalInfo({this.hospital, this.inputDistance});
 
   @override
-  _HospitalInfoState createState() => _HospitalInfoState(
-      hospital: hospital,
-      inputDistance: this.inputDistance,
-      refreshIndicatorKey: this.refreshIndicatorKey);
+  _HospitalInfoState createState() =>
+      _HospitalInfoState(hospital: hospital, inputDistance: this.inputDistance);
 }
 
 class _HospitalInfoState extends State<HospitalInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   HospitalUserProvider hospitalUserProvider;
   bool formVisible = false;
   double viewportHeight;
@@ -38,8 +36,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
   Hospital hospital;
   String noteAppointment;
 
-  _HospitalInfoState(
-      {this.hospital, this.inputDistance, this.refreshIndicatorKey});
+  _HospitalInfoState({
+    this.hospital,
+    this.inputDistance,
+  });
 
   Widget _buildForm() {
     viewportHeight = getViewportHeight(context);
@@ -113,8 +113,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
     super.initState();
     if (!isPatient) {
       hospital = Hospital();
-      HospitalDashboard.tabIndex = 0;
-      Future.delayed(Duration.zero, () async {
+      Future.delayed(Duration(milliseconds: 500), () async {
         refreshIndicatorKey.currentState.show();
       });
     }
@@ -126,9 +125,6 @@ class _HospitalInfoState extends State<HospitalInfo> {
     viewportWidth = getViewportWidth(context);
     hospitalUserProvider =
         hospitalUserProvider = Provider.of<HospitalUserProvider>(context);
-    if (!isPatient) {
-      HospitalDashboard.tabIndex = 0;
-    }
 
     return Scaffold(
       appBar: isPatient
@@ -147,11 +143,18 @@ class _HospitalInfoState extends State<HospitalInfo> {
               automaticallyImplyLeading: false,
             )
           : null,
-      body: SingleChildScrollView(
+      body: RefreshIndicator(
+        key:refreshIndicatorKey,
+        onRefresh: () async {
+          if (!isPatient) {
+            await fetchHospitalUserData(
+                context: context, hospitalUserProvider: hospitalUserProvider);
+          }
+        },
         child: Stack(
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 SizedBox(
                   height: viewportHeight * 0.02,
@@ -468,6 +471,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
               animation: true,
               addAutomaticKeepAlive: true,
               percent: level,
+              animationDuration: 1500,
               lineHeight: viewportHeight * 0.015,
               linearStrokeCap: LinearStrokeCap.roundAll,
             ))),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/appointment.dart';
-import 'package:hospitality/src/screens/hospital_home_screen.dart';
-import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/appointments_list_view_item.dart';
 
 class AppointmentsListScreen extends StatefulWidget {
@@ -25,8 +23,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    HospitalDashboard.tabIndex = 2;
-    UserHomeScreen.tabIndex = 2;
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
     return Container(

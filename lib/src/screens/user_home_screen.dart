@@ -1,23 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
-import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
-import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/screens/appointments%20_list_screen.dart';
 import 'package:hospitality/src/screens/search_hospital_screen.dart';
 import 'package:hospitality/src/screens/user_profile_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/dimensions.dart';
 
 class UserHomeScreen extends StatefulWidget {
   UserHomeScreen({Key key, this.title}) : super(key: key);
-  static int tabIndex = 0;
 
   final String title;
 
@@ -33,9 +26,6 @@ class _UserHomeScreenState extends State<UserHomeScreen>
   bool isButtonEnabled = false;
   double viewportHeight;
   double viewportWidth;
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -50,26 +40,16 @@ class _UserHomeScreenState extends State<UserHomeScreen>
     return DefaultTabController(
         length: 3,
         child: Scaffold(
-          body: RefreshIndicator(
-              key: refreshIndicatorKey,
-              onRefresh: () async {
-                if (UserHomeScreen.tabIndex == 1) {
-                  await getUserData();
-                } else if (UserHomeScreen.tabIndex == 2) {
-                  print("abe");
-                }
-              },
-              child: TabBarView(
-                children: <Widget>[
-                  SearchHospitalScreen(
-                    controller: scrollController,
-                    formKey: _formKey,
-                    refreshIndicatorKey: refreshIndicatorKey,
-                  ),
-                  UserProfileScreen(refreshIndicatorKey: refreshIndicatorKey),
-                  AppointmentsListScreen(),
-                ],
-              )),
+          body: TabBarView(
+            children: <Widget>[
+              SearchHospitalScreen(
+                controller: scrollController,
+                formKey: _formKey,
+              ),
+              UserProfileScreen(),
+              AppointmentsListScreen(),
+            ],
+          ),
           appBar: AppBar(
             centerTitle: true,
             title: Text(
@@ -106,35 +86,4 @@ class _UserHomeScreenState extends State<UserHomeScreen>
         ));
   }
 
-  Future<void> getUserData() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String email = preferences.getString("email");
-    await getNetworkRepository.getPatientUserData(email: email).then((value) async{
-      if (value.statusCode == 200) {
-        Map<String, dynamic> responseMap = json.decode(value.body);
-        User user = User.fromJSON(responseMap: responseMap);
-        userProfileProvider.setUser = user;
-      } 
-      else if (value.statusCode == 401) {
-            print("Get Patient User Data: ${value.statusCode} Unauthorized access");
-            User user=User();
-            UserProfileProvider userProfileProvider=Provider.of<UserProfileProvider>(context);
-            userProfileProvider.setUser=user;
-            SharedPreferences preferences =
-                await SharedPreferences.getInstance();
-            await preferences.clear();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                "/auth", (Route<dynamic> route) => false);
-          } else {
-        print("getUserProfileData: " +
-            value.statusCode.toString() +
-            " ${value.body.toString()}");
-        Fluttertoast.showToast(msg: "Error in fetching user profile data");
-      }
-      
-    }).catchError((error) {
-      print("getUserProfileData: " + " ${error.toString()}");
-      Fluttertoast.showToast(msg: "Error in fetching user profile data");
-    });
-  }
 }

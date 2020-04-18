@@ -1,17 +1,15 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/dialogs/loading_dialog.dart';
 import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
+import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
-import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HospitalProfileEditScreen extends StatefulWidget {
   HospitalProfileEditScreen();
@@ -54,7 +52,6 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    HospitalDashboard.tabIndex = 0;
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
     locationProvider = Provider.of<LocationProvider>(context);
@@ -84,7 +81,8 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
         body: RefreshIndicator(
             key: refreshIndicatorKey,
             onRefresh: () async {
-              await getHospitalData();
+              await fetchHospitalUserData(
+                  context: context, hospitalUserProvider: hospitalUserProvider);
             },
             child: GestureDetector(
                 onTap: () {
@@ -501,33 +499,5 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                           ]),
                       SizedBox(height: viewportHeight * 0.05),
                     ])))));
-  }
-
-  Future<void> getHospitalData() async {
-    await getNetworkRepository.getHospitalData().then((value) async {
-      if (value.statusCode == 200) {
-        Map<String, dynamic> responseMap = json.decode(value.body);
-        Hospital hospital = Hospital.fromJSON(responseMap);
-        hospitalUserProvider.setHospital = hospital;
-      } else if (value.statusCode == 401) {
-            print("Get Hospital Data: ${value.statusCode} Unauthorized access");
-           Hospital hospital =Hospital();
-           hospitalUserProvider=Provider.of<HospitalUserProvider>(context);
-           hospitalUserProvider.setHospital=hospital;
-            SharedPreferences preferences =
-                await SharedPreferences.getInstance();
-            await preferences.clear();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                "/auth", (Route<dynamic> route) => false);
-          } else {
-        print("getUserProfileData: " +
-            value.statusCode.toString() +
-            " ${value.body.toString()}");
-        Fluttertoast.showToast(msg: "Error in fetching user profile data");
-      }
-    }).catchError((error) {
-      print("getUserProfileData: " + " ${error.toString()}");
-      Fluttertoast.showToast(msg: "Error in fetching user profile data");
-    });
   }
 }
