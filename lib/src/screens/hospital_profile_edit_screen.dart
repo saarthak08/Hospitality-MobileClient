@@ -317,10 +317,10 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       0.0,
                                       viewportWidth * 0.04,
                                       viewportWidth * 0.01),
-                                   child: RichText(
-                                       textAlign: TextAlign.start,
-                                       text: TextSpan(
-                                           text: "Availability: ",
+                                  child: RichText(
+                                      textAlign: TextAlign.start,
+                                      text: TextSpan(
+                                          text: "Availability: ",
                                           style: TextStyle(
                                               fontSize: viewportHeight * 0.022,
                                               color: Colors.black,
@@ -470,7 +470,32 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       ? hospital.getWebsite
                                       : website;
                                   hospital.setAvailability = this.availability;
-                                  print(phoneNumber);
+                                  await getNetworkRepository
+                                      .updateHospitalUserData(
+                                          hospital: hospital)
+                                      .then((value) {
+                                    if (value.statusCode == 200) {
+                                      Fluttertoast.showToast(
+                                        msg: "Profile Updated",
+                                      );
+                                      hospitalUserProvider.setHospital =
+                                          hospital;
+                                      Navigator.pop(context);
+                                    } else {
+                                      Navigator.pop(context);
+
+                                      Fluttertoast.showToast(
+                                        msg: "Error in updating profile",
+                                      );
+                                      print(
+                                          "Update Profile Hospital: ${value.statusCode.toString() + value.body.toString()}");
+                                    }
+                                  }).catchError((error) {
+                                    print(
+                                        "Update Profile Hospital: ${error.toString()}");
+                                    Navigator.pop(context);
+                                  });
+                                  refreshIndicatorKey.currentState.show();
                                 })
                           ]),
                       SizedBox(height: viewportHeight * 0.05),

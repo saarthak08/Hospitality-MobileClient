@@ -25,7 +25,7 @@ void showLoadingDialog({@required BuildContext context}) {
                     height: getViewportHeight(context) * 0.14,
                     child: Column(
                       children: <Widget>[
-                        Text("Loading..."),
+                        Text("Loading...",),
                         Padding(
                           child: CircularProgressIndicator(
                             valueColor:

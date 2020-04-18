@@ -1,3 +1,4 @@
+import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:http/http.dart' show Response;
 
@@ -18,4 +19,7 @@ abstract class NetworkCalls {
   Future<Response> updatePatientUserData({User user});
 
   Future<Response> updateLocation({double latitude, double longitude,String email});
+
+  Future<Response> updateHospitalUserData({Hospital hospital});
+
 }
