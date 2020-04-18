@@ -10,20 +10,17 @@ class _NetworkRepository implements NetworkCalls {
 
   String token = "";
 
-  Future<Response> getHospitalData({String email}) async {
-    final Map<String, String> reqBody = Map<String, String>();
-    reqBody["email"] = email;
+  Future<Response> getHospitalData() async {
     final Response response = await _client
-        .post("$baseURL/api/hospital/", body: json.encode(reqBody), headers: {
+        .get("$baseURL/api/hospital/", headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.authorizationHeader: token
         })
         .timeout(Duration(seconds: 10))
         .catchError((error) {
-          print("Launch: ${error.toString()}");
+          print("Get Hospital Data: $error");
           throw (error);
         });
-    print(response.body);
     return response;
   }
 
@@ -116,7 +113,9 @@ class _NetworkRepository implements NetworkCalls {
     final Map<String, dynamic> requestMap = Map<String, dynamic>();
     requestMap["address"] = user.getAddress;
     requestMap["name"] = user.getFullName;
-    requestMap["phoneNumber"] = int.parse(user.getPhoneNumber);
+    if(user.getPhoneNumber.toString().length!=0) {
+      requestMap["phoneNumber"] = int.parse(user.getPhoneNumber);
+    }
     print(requestMap);
     final Response response = await _client
         .post("$baseURL/api/patient/",

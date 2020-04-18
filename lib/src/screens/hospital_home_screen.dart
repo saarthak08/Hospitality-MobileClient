@@ -1,12 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
-import 'package:hospitality/src/screens/appointment%20_list.dart';
-import 'package:hospitality/src/screens/stats_screen.dart';
-import 'hospital_info_screen.dart';
+import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/providers/hospital_user_provider.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
+import 'package:hospitality/src/screens/appointments%20_list_screen.dart';
+import 'package:hospitality/src/screens/hospital_info_screen.dart';
+import 'package:hospitality/src/screens/hospital_stats_screen.dart';
+import 'package:provider/provider.dart';
 import '../helpers/dimensions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HospitalDashboard extends StatefulWidget {
+  static int tabIndex=0;
+
   @override
   _HospitalDashboardState createState() => _HospitalDashboardState();
 }
@@ -14,43 +23,45 @@ class HospitalDashboard extends StatefulWidget {
 class _HospitalDashboardState extends State<HospitalDashboard> {
   double viewportHeight;
   double viewportWidth;
+  HospitalUserProvider hospitalUserProvider;
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
+  @override
+  void initState() {
+    HospitalDashboard.tabIndex=0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    hospitalUserProvider=Provider.of<HospitalUserProvider>(context);
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: TabBarView(
-          children: <Widget>[
-            Container(
-              height: 200,
-              color: Colors.yellow,
-              child: RaisedButton(
-                onPressed: () => showLogoutDialog(context),
-                child: Text('logout'),
-              ),
-            ),
-            HospitalStats(),
-            AppointmentScreen(),
-          ],
-        ),
+        body: RefreshIndicator(
+            key: refreshIndicatorKey,
+            onRefresh: () async {
+              if(HospitalDashboard.tabIndex==0) {
+                await getHospitalData();
+              }
+            },
+            child: TabBarView(
+              children: <Widget>[
+                HospitalInfo(refreshIndicatorKey: refreshIndicatorKey,),
+                HospitalStats(),
+                AppointmentsListScreen(),
+              ],
+            )),
         appBar: AppBar(
           centerTitle: true,
-          leading: Hero(
-            tag: "ico",
-            child: Container(
-              margin: EdgeInsets.only(right: viewportWidth * 0.035),
-              child: Image.asset('assets/img/splash_bg.png'),
-            ),
-          ),
           title: Text(
             'Hospitality',
             style: TextStyle(
-                fontFamily: "BalooTamma2", fontSize: viewportHeight * 0.03),
+                fontFamily: "BalooTamma2", fontSize: viewportHeight * 0.045),
           ),
           bottom: TabBar(
             labelColor: Colors.white,
@@ -58,12 +69,18 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
             labelStyle: TextStyle(fontFamily: "Manrope"),
             tabs: <Widget>[
               Tab(
-                icon: Icon(Icons.account_circle),
+                icon: Hero(
+                  tag: "ico",
+                  child: Container(
+                    height: viewportHeight * 0.045,
+                    child: Image.asset('assets/img/splash_bg.png'),
+                  ),
+                ),
                 text: 'My Profile',
               ),
               Tab(
                 icon: Icon(Icons.event_available),
-                text: 'Availability Stats',
+                text: 'Stats',
               ),
               Tab(
                 icon: Icon(Icons.message),
@@ -76,58 +93,22 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
     );
   }
 
-  void showLogoutDialog(BuildContext context) {
-    showGeneralDialog(
-        context: context,
-        pageBuilder: (context, anim1, anim2) {
-          return null;
-        },
-        barrierDismissible: true,
-        barrierColor: Colors.black.withOpacity(0.5),
-        barrierLabel: '',
-        transitionBuilder: (context, a1, a2, child) {
-          return Transform.scale(
-              scale: a1.value,
-              child: Opacity(
-                  opacity: a1.value,
-                  child:
-                      StatefulBuilder(builder: (BuildContext build, setState) {
-                    return AlertDialog(
-                      shape: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16.0)),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text(
-                            "OK",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          onPressed: () async {
-                            SharedPreferences preferences =
-                                await SharedPreferences.getInstance();
-                            await preferences.clear();
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                "/auth", (Route<dynamic> route) => false);
-                          },
-                        ),
-                        FlatButton(
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.red, fontSize: 18),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                      title: Text("Sign Out"),
-                      content: Container(
-                        width: viewportWidth,
-                        child: Text("Are you sure want to sign out?"),
-                        padding: EdgeInsets.all(5),
-                      ),
-                    );
-                  })));
-        },
-        transitionDuration: Duration(milliseconds: 200));
+
+  Future<void> getHospitalData() async {
+    await getNetworkRepository.getHospitalData().then((value) {
+      if (value.statusCode == 200) {
+        Map<String, dynamic> responseMap = json.decode(value.body);
+        Hospital hospital=Hospital.fromJSON(responseMap);
+          hospitalUserProvider.setHospital=hospital;
+      } else {
+        print("getUserProfileData: " +
+            value.statusCode.toString() +
+            " ${value.body.toString()}");
+        Fluttertoast.showToast(msg: "Error in fetching user profile data");
+      }
+    }).catchError((error) {
+      print("getUserProfileData: " + " ${error.toString()}");
+      Fluttertoast.showToast(msg: "Error in fetching user profile data");
+    });
   }
 }

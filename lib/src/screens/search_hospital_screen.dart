@@ -219,14 +219,6 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
         ));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () async {
-      refreshIndicatorKey.currentState.show();
-    });
-  }
-
   void _submitForm(BuildContext context) async {
     controller.animateTo(
       0,

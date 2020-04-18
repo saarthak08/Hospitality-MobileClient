@@ -66,6 +66,7 @@ class MapViewState extends State<MapView> {
     );
     return new Scaffold(
       appBar: AppBar(
+        leading: BackButton(color: Colors.white),
         title: Text(
           "Hospitality",
           textAlign: TextAlign.center,

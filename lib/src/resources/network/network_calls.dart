@@ -11,7 +11,7 @@ abstract class NetworkCalls {
   Future<Response> sendCurrentLocationAndGetHospitalLists(
       {double latitude, double longitude, double range});
 
-  Future<Response> getHospitalData({String email});
+  Future<Response> getHospitalData();
 
   Future<Response> getPatientUserData({String email});
 

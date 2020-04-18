@@ -5,6 +5,7 @@ import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import "dart:convert";
@@ -202,6 +203,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   await _sharedPreferencesInstance.setString(
                       "email", _loginCredentials["email"]);
                   getNetworkRepository.token = token;
+                  SplashPage.isPatient=_isPatient;
                   if (_isPatient) {
                     _sharedPreferencesInstance.setBool("isPatient", true);
                     User user = userProfileProvider.getUser;
@@ -242,10 +244,30 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                     hospital.setEmail = _loginCredentials["email"];
                     hospitalUserProvider.setHospital = hospital;
-                    Navigator.pushAndRemoveUntil(
+                     getNetworkRepository
+                        .getHospitalData()
+                        .then((value) {
+                      if (value.statusCode == 200) {
+                        Map<String, dynamic> responseMap =
+                            json.decode(value.body);
+                        Hospital hospital= Hospital.fromJSON(responseMap);
+                        hospitalUserProvider.setHospital=hospital;
+                         Navigator.pushAndRemoveUntil(
                         context,
                         BouncyPageRoute(widget: HospitalDashboard()),
                         (Route<dynamic> route) => false);
+                      } else {
+                        print("getUserProfileData: " +
+                            value.statusCode.toString() +
+                            " ${value.body.toString()}");
+                        Fluttertoast.showToast(
+                            msg: "Error in fetching user profile data");
+                      }
+                    }).catchError((error) {
+                      print("getUserProfileData: " + " ${error.toString()}");
+                      Fluttertoast.showToast(
+                          msg: "Error in fetching user profile data");
+                    });
                   }
                 } else if (response.statusCode == 403) {
                   setState(() {
