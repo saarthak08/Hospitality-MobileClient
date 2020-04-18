@@ -11,6 +11,7 @@ import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HospitalProfileEditScreen extends StatefulWidget {
   HospitalProfileEditScreen();
@@ -503,12 +504,22 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   }
 
   Future<void> getHospitalData() async {
-    await getNetworkRepository.getHospitalData().then((value) {
+    await getNetworkRepository.getHospitalData().then((value) async {
       if (value.statusCode == 200) {
         Map<String, dynamic> responseMap = json.decode(value.body);
         Hospital hospital = Hospital.fromJSON(responseMap);
         hospitalUserProvider.setHospital = hospital;
-      } else {
+      } else if (value.statusCode == 401) {
+            print("Get Hospital Data: ${value.statusCode} Unauthorized access");
+           Hospital hospital =Hospital();
+           hospitalUserProvider=Provider.of<HospitalUserProvider>(context);
+           hospitalUserProvider.setHospital=hospital;
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            await preferences.clear();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                "/auth", (Route<dynamic> route) => false);
+          } else {
         print("getUserProfileData: " +
             value.statusCode.toString() +
             " ${value.body.toString()}");

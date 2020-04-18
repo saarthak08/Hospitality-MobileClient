@@ -109,17 +109,29 @@ class _UserHomeScreenState extends State<UserHomeScreen>
   Future<void> getUserData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String email = preferences.getString("email");
-    await getNetworkRepository.getPatientUserData(email: email).then((value) {
+    await getNetworkRepository.getPatientUserData(email: email).then((value) async{
       if (value.statusCode == 200) {
         Map<String, dynamic> responseMap = json.decode(value.body);
         User user = User.fromJSON(responseMap: responseMap);
         userProfileProvider.setUser = user;
-      } else {
+      } 
+      else if (value.statusCode == 401) {
+            print("Get Patient User Data: ${value.statusCode} Unauthorized access");
+            User user=User();
+            UserProfileProvider userProfileProvider=Provider.of<UserProfileProvider>(context);
+            userProfileProvider.setUser=user;
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            await preferences.clear();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                "/auth", (Route<dynamic> route) => false);
+          } else {
         print("getUserProfileData: " +
             value.statusCode.toString() +
             " ${value.body.toString()}");
         Fluttertoast.showToast(msg: "Error in fetching user profile data");
       }
+      
     }).catchError((error) {
       print("getUserProfileData: " + " ${error.toString()}");
       Fluttertoast.showToast(msg: "Error in fetching user profile data");

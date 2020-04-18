@@ -64,7 +64,7 @@ class Hospital {
         : this._longitude;
     this._name = responseMap["name"] != null ? responseMap["name"] : this._name;
     this._distance = responseMap["distance"] != null
-        ? responseMap["distance"]
+        ? double.parse((responseMap["distance"].toString()))
         : this._distance;
     // this._address = responseMap["address"];
     this._availability = responseMap["availability"] != null
