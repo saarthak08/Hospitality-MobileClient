@@ -286,7 +286,26 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      hospital.getEmail,
+                      isPatient
+                          ? hospital.getEmail
+                          : hospitalUserProvider.getHospital.getEmail,
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  children: <Widget>[
+                    SizedBox(width: viewportWidth * 0.04),
+                    Icon(
+                      Icons.web,
+                      color: Colors.black,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      isPatient
+                          ? hospital.getWebsite
+                          : hospitalUserProvider.getHospital.getWebsite,
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -301,7 +320,9 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      hospital.getContactNo,
+                      isPatient
+                          ? hospital.getPhoneNumber
+                          : hospitalUserProvider.getHospital.getPhoneNumber,
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -568,7 +589,12 @@ class _HospitalInfoState extends State<HospitalInfo> {
                             : "Not Available",
                         style: TextStyle(
                             fontSize: viewportHeight * 0.02,
-                            color: Colors.blue,
+                            color: (isPatient
+                                    ? hospital.getAvailability
+                                    : hospitalUserProvider
+                                        .getHospital.getAvailability)
+                                ? Colors.blue
+                                : Colors.red,
                             fontWeight: FontWeight.bold,
                             fontFamily: "Poppins"),
                       )

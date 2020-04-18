@@ -16,7 +16,11 @@ class HospitalListViewItem extends StatelessWidget {
   static var viewportWidth;
   final int inputDistance;
 
-  HospitalListViewItem({this.hospital, this.controller, this.panelController, this.inputDistance});
+  HospitalListViewItem(
+      {this.hospital,
+      this.controller,
+      this.panelController,
+      this.inputDistance});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,8 @@ class HospitalListViewItem extends StatelessWidget {
                         : "Not Available",
                     style: TextStyle(
                         fontSize: viewportHeight * 0.018,
-                        color: Colors.blue,
+                        color:
+                            hospital.getAvailability ? Colors.blue : Colors.red,
                         fontWeight: FontWeight.bold,
                         fontFamily: "Poppins"),
                   ),
@@ -121,7 +126,8 @@ class HospitalListViewItem extends StatelessWidget {
                     Navigator.push(
                       context,
                       BouncyPageRoute(
-                        widget: HospitalInfo(hospital:hospital,inputDistance:inputDistance),
+                        widget: HospitalInfo(
+                            hospital: hospital, inputDistance: inputDistance),
                       ),
                     );
                   },

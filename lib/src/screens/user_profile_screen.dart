@@ -292,9 +292,9 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                       },
                     );
                   },
-                  elevation: 5,
+                  elevation: 3,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   splashColor: Colors.white,
                   color: Colors.green,
                   child: Container(
@@ -313,9 +313,9 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                   textColor: Colors.white,
                 ),
                 RaisedButton(
-                    elevation: 5,
+                    elevation: 3,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(15)),
                     splashColor: Colors.white,
                     color: Colors.blue,
                     child: Container(
