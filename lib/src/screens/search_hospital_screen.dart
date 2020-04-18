@@ -5,12 +5,15 @@ import 'package:hospitality/src/dialogs/loading_dialog.dart';
 import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
+import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'map_screen.dart';
 
@@ -238,7 +241,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                 latitude: value.latitude,
                 longitude: value.longitude,
                 range: distance)
-            .then((value) {
+            .then((value) async {
           if (value.statusCode == 200) {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
@@ -258,7 +261,12 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             } else {
               hospitalListProvider.setHospitalLists = hospitals;
               Navigator.pop(context);
-              Navigator.push(context, BouncyPageRoute(widget: MapView(inputDistance: distance.toInt(),)));
+              Navigator.push(
+                  context,
+                  BouncyPageRoute(
+                      widget: MapView(
+                    inputDistance: distance.toInt(),
+                  )));
             }
           } else if (value.statusCode == 404) {
             Navigator.pop(context);
@@ -267,6 +275,16 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                     "No nearby hospitals found! Try again or change the distance limit!",
                 toastLength: Toast.LENGTH_SHORT);
             print("Get Hospitals List: " + value.statusCode.toString());
+          } else if (value.statusCode == 401) {
+            print("Get Hospitals List: ${value.statusCode} Unauthorized access");
+            User user=User();
+            UserProfileProvider userProfileProvider=Provider.of<UserProfileProvider>(context);
+            userProfileProvider.setUser=user;
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            await preferences.clear();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                "/auth", (Route<dynamic> route) => false);
           } else {
             Navigator.pop(context);
             Fluttertoast.showToast(

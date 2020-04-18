@@ -6,6 +6,7 @@ import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
 import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/dimensions.dart';
@@ -109,6 +110,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
 
   @override
   void initState() {
+    super.initState();
     if (!isPatient) {
       hospital = Hospital();
       HospitalDashboard.tabIndex = 0;
@@ -116,7 +118,6 @@ class _HospitalInfoState extends State<HospitalInfo> {
         refreshIndicatorKey.currentState.show();
       });
     }
-    super.initState();
   }
 
   @override
@@ -463,8 +464,12 @@ class _HospitalInfoState extends State<HospitalInfo> {
         Expanded(
             flex: 1,
             child: Container(
-                child: LinearProgressIndicator(
-              value: level,
+                child: LinearPercentIndicator(
+              animation: true,
+              addAutomaticKeepAlive: true,
+              percent: level,
+              lineHeight: viewportHeight * 0.015,
+              linearStrokeCap: LinearStrokeCap.roundAll,
             ))),
         SizedBox(width: viewportWidth * 0.02),
         Expanded(
