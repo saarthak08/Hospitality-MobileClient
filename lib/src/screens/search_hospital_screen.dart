@@ -230,7 +230,6 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
       isButtonEnabled = false;
     });
     showLoadingDialog(context: context);
-    locationProvider.setHospitalDistance = distance;
     getLocation().then((value) {
       if (value != null) {
         locationProvider.setLocation = value;
