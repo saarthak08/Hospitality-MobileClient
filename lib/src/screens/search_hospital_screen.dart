@@ -10,7 +10,7 @@ import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
-import 'package:hospitality/src/screens/user_home_screen.dart';
+import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,43 +20,44 @@ import 'map_screen.dart';
 class SearchHospitalScreen extends StatefulWidget {
   final ScrollController controller;
   final GlobalKey<FormState> formKey;
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
   SearchHospitalScreen(
       {@required this.formKey,
       @required this.controller,
-      @required this.refreshIndicatorKey});
+       });
+
   @override
   State<StatefulWidget> createState() {
     return _SearchHospitalScreenState(
         formKey: formKey,
         controller: controller,
-        refreshIndicatorKey: refreshIndicatorKey);
+        );
   }
 }
 
 class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   double viewportHeight;
   double viewportWidth;
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
   LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
   ScrollController controller;
   GlobalKey<FormState> formKey;
   double distance = 0;
+  UserProfileProvider userProfileProvider;
   final TextStyle dropdownMenuItem =
       TextStyle(color: Colors.black, fontSize: 18);
 
   _SearchHospitalScreenState(
       {@required this.formKey,
       @required this.controller,
-      @required this.refreshIndicatorKey});
+      });
+
 
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
-    UserHomeScreen.tabIndex = 0;
+    userProfileProvider=Provider.of<UserProfileProvider>(context);
     locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
@@ -220,6 +221,14 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             ),
           ),
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 500),() async{
+      await fetchPatientUserData(context: context,userProfileProvider: userProfileProvider);
+    });
   }
 
   void _submitForm(BuildContext context) async {
