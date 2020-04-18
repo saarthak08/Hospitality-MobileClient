@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/models/user.dart';
+import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:http/http.dart';
 import 'package:hospitality/src/resources/network/network_calls.dart';
 
@@ -92,9 +94,15 @@ class _NetworkRepository implements NetworkCalls {
     final Map<String, dynamic> requestMap = Map<String, dynamic>();
     requestMap["latitude"] = (latitude);
     requestMap["longitude"] = (longitude);
+    String url = "";
+    if (SplashPage.isPatient) {
+      url = "$baseURL/api/patient/";
+    } else {
+      url = "$baseURL/api/hospital/";
+    }
 
     final Response response = await _client
-        .post("$baseURL/api/patient/",
+        .post(url,
             headers: {
               HttpHeaders.authorizationHeader: token,
               HttpHeaders.contentTypeHeader: 'application/json'
@@ -113,7 +121,7 @@ class _NetworkRepository implements NetworkCalls {
     final Map<String, dynamic> requestMap = Map<String, dynamic>();
     requestMap["address"] = user.getAddress;
     requestMap["name"] = user.getFullName;
-    if(user.getPhoneNumber.toString().length!=0) {
+    if (user.getPhoneNumber.toString().length != 0) {
       requestMap["phoneNumber"] = int.parse(user.getPhoneNumber);
     }
     print(requestMap);
@@ -129,6 +137,38 @@ class _NetworkRepository implements NetworkCalls {
       print("updatePatientUserData: ${error.toString()}");
       throw (error);
     });
+    return response;
+  }
+
+  @override
+  Future<Response> updateHospitalUserData({Hospital hospital}) async {
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["name"] = hospital.getName;
+    if (hospital.getPhoneNumber.toString().length != 0) {
+      requestMap["phoneNumber"] = int.parse(hospital.getPhoneNumber);
+    }
+    requestMap["note"]=hospital.getNote;
+    requestMap["availability"]=hospital.getAvailability;
+    requestMap["website"]=hospital.getWebsite;
+    requestMap["totalBeds"]=hospital.getTotalBeds;
+    requestMap["beds"]=hospital.getAvailableBeds;
+    requestMap["totalDoctors"]=hospital.getTotalDoctors;
+    requestMap["doctors"]=hospital.getAvailableDoctors;
+
+    print(requestMap);
+    final Response response = await _client
+        .post("$baseURL/api/hospital/",
+            headers: {
+              HttpHeaders.authorizationHeader: token,
+              HttpHeaders.contentTypeHeader: 'application/json'
+            },
+            body: json.encode(requestMap))
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+      print("updateHospitalUserData: ${error.toString()}");
+      throw (error);
+    });
+   
     return response;
   }
 }
