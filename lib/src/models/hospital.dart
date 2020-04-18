@@ -6,7 +6,7 @@ class Hospital {
   String _email = "";
   String _address = "";
   String _website = "";
-  String _contactNo = "";
+  String _phoneNumber = "";
   String _note = "";
   bool _availability = false;
   int _totalBeds = 0;
@@ -22,9 +22,9 @@ class Hospital {
 
   set setWebsite(String value) => _website = value;
 
-  String get getContactNo => _contactNo;
+  String get getPhoneNumber => _phoneNumber;
 
-  set setContactNo(String value) => _contactNo = value;
+  set setPhoneNumber(String value) => _phoneNumber = value;
 
   String get getNote => _note;
 
@@ -82,9 +82,11 @@ class Hospital {
     this._totalDoctors = responseMap["totalDoctors"] != null
         ? responseMap["totalDoctors"]
         : this._totalDoctors;
-    this._contactNo = responseMap["contact"] != null
-        ? responseMap["contact"].toString()
-        : this._contactNo.toString();
+    this._phoneNumber = responseMap["phoneNumber"] != null
+        ? responseMap["phoneNumber"].toString()
+        : this._phoneNumber.toString();
+    this._website =
+        responseMap["website"] != null ? responseMap["website"] : this._website;
   }
 
   Hospital();

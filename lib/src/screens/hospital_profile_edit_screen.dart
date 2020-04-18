@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/dialogs/loading_dialog.dart';
@@ -29,11 +30,14 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   HospitalUserProvider hospitalUserProvider;
   String fullName = "";
   String phoneNumber = "";
-  String address = "";
+  String website = "";
   String email = "";
+  String note = "";
+  bool availability = false;
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  TextEditingController websiteController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -57,8 +61,10 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
     hospitalUserProvider.addListener(() {
       fullNameController.text = hospitalUserProvider.getHospital.getName;
       phoneNumberController.text =
-          hospitalUserProvider.getHospital.getContactNo;
-      addressController.text = hospitalUserProvider.getHospital.getAddress;
+          hospitalUserProvider.getHospital.getPhoneNumber;
+      websiteController.text = hospitalUserProvider.getHospital.getWebsite;
+      noteController.text = hospitalUserProvider.getHospital.getNote;
+      this.availability = hospitalUserProvider.getHospital.getAvailability;
     });
 
     return Scaffold(
@@ -185,17 +191,17 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                         child: TextFormField(
                           onChanged: (String value) {
                             setState(() {
-                              this.address = value;
+                              this.website = value;
                             });
                           },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(
                                 top: viewportHeight * 0.01,
                                 bottom: viewportHeight * 0.01),
-                            icon: Icon(Icons.home,
+                            icon: Icon(Icons.web,
                                 color: Colors.blue,
                                 size: viewportHeight * 0.03),
-                            labelText: "Address",
+                            labelText: "Website",
                             labelStyle: TextStyle(
                                 fontFamily: "Poppins",
                                 fontSize: viewportHeight * 0.022),
@@ -204,7 +210,37 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                           style: TextStyle(
                               fontFamily: "Manrope",
                               fontSize: viewportHeight * 0.024),
-                          controller: addressController,
+                          controller: websiteController,
+                        ),
+                      ),
+                      SizedBox(height: viewportHeight * 0.02),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0,
+                            viewportWidth * 0.04, viewportWidth * 0.01),
+                        child: TextFormField(
+                          onChanged: (String value) {
+                            setState(() {
+                              this.note = value;
+                            });
+                          },
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                top: viewportHeight * 0.01,
+                                bottom: viewportHeight * 0.01),
+                            icon: Icon(Icons.note,
+                                color: Colors.blue,
+                                size: viewportHeight * 0.03),
+                            labelText: "Note",
+                            labelStyle: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: viewportHeight * 0.022),
+                          ),
+                          keyboardType: TextInputType.text,
+                          style: TextStyle(
+                              fontFamily: "Manrope",
+                              fontSize: viewportHeight * 0.024),
+                          controller: noteController,
                         ),
                       ),
                       SizedBox(height: viewportHeight * 0.02),
@@ -270,6 +306,55 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                               ),
                             ))
                           ]),
+                      SizedBox(height: viewportHeight * 0.03),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                              child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                      0.0,
+                                      0.0,
+                                      viewportWidth * 0.04,
+                                      viewportWidth * 0.01),
+                                   child: RichText(
+                                       textAlign: TextAlign.start,
+                                       text: TextSpan(
+                                           text: "Availability: ",
+                                          style: TextStyle(
+                                              fontSize: viewportHeight * 0.022,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: "Manrope"),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: (this.availability)
+                                                  ? "Available"
+                                                  : "Not Available",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      viewportHeight * 0.022,
+                                                  color: (this.availability)
+                                                      ? Colors.blue
+                                                      : Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: "Poppins"),
+                                            )
+                                          ])))),
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(0.0, 0.0,
+                                  viewportWidth * 0.2, viewportWidth * 0.01),
+                              child: CupertinoSwitch(
+                                value: this.availability,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    this.availability = value;
+                                  });
+                                },
+                                activeColor: Colors.blue,
+                              )),
+                        ],
+                      ),
                       SizedBox(height: viewportHeight * 0.07),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -323,9 +408,9 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                   },
                                 );
                               },
-                              elevation: 5,
+                              elevation: 3,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(15)),
                               splashColor: Colors.white,
                               color: Colors.green,
                               child: Container(
@@ -344,9 +429,9 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                               textColor: Colors.white,
                             ),
                             RaisedButton(
-                                elevation: 5,
+                                elevation: 3,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
+                                    borderRadius: BorderRadius.circular(15)),
                                 splashColor: Colors.white,
                                 color: Colors.blue,
                                 child: Container(
@@ -368,16 +453,23 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                   showLoadingDialog(context: context);
                                   Hospital hospital =
                                       hospitalUserProvider.getHospital;
-                                  hospital.setAddress = address.length == 0
+                                  hospital.setAddress = website.length == 0
                                       ? hospital.getAddress
-                                      : address;
+                                      : website;
                                   hospital.setName = fullName.length == 0
                                       ? hospital.getName
                                       : fullName;
-                                  hospital.setContactNo =
+                                  hospital.setPhoneNumber =
                                       phoneNumber.length == 0
-                                          ? hospital.getContactNo
+                                          ? hospital.getPhoneNumber
                                           : phoneNumber;
+                                  hospital.setNote = note.length == 0
+                                      ? hospital.getNote
+                                      : note;
+                                  hospital.setWebsite = website.length == 0
+                                      ? hospital.getWebsite
+                                      : website;
+                                  hospital.setAvailability = this.availability;
                                   print(phoneNumber);
                                 })
                           ]),
