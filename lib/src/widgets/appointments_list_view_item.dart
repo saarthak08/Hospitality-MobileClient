@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hospitality/src/dialogs/appointment_info_dialog.dart';
 import 'package:hospitality/src/dialogs/appointment_list_view_item_dialogs.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/appointment.dart';
@@ -30,12 +31,16 @@ class AppointmentsListViewItem extends StatelessWidget {
         child: InkWell(
             borderRadius: BorderRadius.circular(10),
             splashColor: Colors.blue,
-            onTap: () {},
+            onTap: () {
+              showAppointmentInfo(context: context, appointment: appointment);
+            },
             child: ListTile(
                 trailing: Wrap(
                   children: <Widget>[
                     (appointment.getStatus == "Rejected" ||
-                            appointment.getStatus == "rejected"||appointment.getStatus=="Confirmed"||appointment.getStatus=="Confirmed")
+                            appointment.getStatus == "rejected" ||
+                            appointment.getStatus == "Confirmed" ||
+                            appointment.getStatus == "Confirmed")
                         ? Container(height: 0, width: 0)
                         : IconButton(
                             color: Colors.red,

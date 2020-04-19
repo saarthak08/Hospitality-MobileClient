@@ -303,6 +303,7 @@ class _HospitalStatsState extends State<HospitalStats> {
         LinearPercentIndicator(
           animation: true,
           percent: result,
+          progressColor: Colors.blue,
           lineHeight: viewportHeight * 0.018,
           animateFromLastPercent: true,
           animationDuration: 1500,

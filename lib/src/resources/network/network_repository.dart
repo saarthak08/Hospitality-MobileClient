@@ -244,9 +244,8 @@ class _NetworkRepository implements NetworkCalls {
   }
 
   @override
-  Future<Response> deleteAppointmentStatus({
-    String email,int timestamp
-  }) async {
+  Future<Response> deleteAppointmentStatus(
+      {String email, int timestamp}) async {
     String url = "$baseURL/api/patient/appointments/appointment";
 
     final Response response = await _client
@@ -257,6 +256,28 @@ class _NetworkRepository implements NetworkCalls {
             HttpHeaders.contentTypeHeader: 'application/json'
           },
         )
+        .timeout(Duration(seconds: 10))
+        .catchError((error) {
+          print("Book Appointment: ${error.toString()}");
+          throw (error);
+        });
+    return response;
+  }
+
+  Future<Response> signUp(
+      {Map<String, dynamic> requestMap, bool isPatient}) async {
+    String url = "";
+    if (isPatient) {
+      url = "$baseURL/api/patient/register";
+    } else {
+      url = "$baseURL/api/hospital/register";
+    }
+    print(json.encode(requestMap));
+    final Response response = await _client
+        .post(url, body: json.encode(requestMap), headers: {
+          HttpHeaders.authorizationHeader: token,
+          HttpHeaders.contentTypeHeader: 'application/json'
+        })
         .timeout(Duration(seconds: 10))
         .catchError((error) {
           print("Book Appointment: ${error.toString()}");
