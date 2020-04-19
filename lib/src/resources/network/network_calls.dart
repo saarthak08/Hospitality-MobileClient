@@ -32,4 +32,8 @@ abstract class NetworkCalls {
 
   Future<Response> signUp({Map<String,dynamic> requestMap, bool isPatient});
 
+  Future<Response> sendConfirmationLinkAgain({String userType, String email});
+
+  Future<Response> checkConfirmationLinkCode({String code, String email});
+
 }

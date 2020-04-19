@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/confirmation_link_dialog.dart';
 import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
@@ -207,7 +208,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                   fontFamily: "Manrope", fontSize: viewportHeight * 0.022),
               keyboardType: TextInputType.visiblePassword,
               obscureText: _obscureText,
-              autovalidate: true,
             ),
           ),
           SizedBox(height: viewportHeight * 0.02),
@@ -662,13 +662,15 @@ class SignUpScreenState extends State<SignUpScreen> {
 
     await getNetworkRepository
         .signUp(isPatient: _isPatient, requestMap: requestMap)
-        .then((value) {
+        .then((value) async {
       if (value.statusCode == 200) {
         Fluttertoast.showToast(msg: "Signed up successfully!");
         setState(() {
           isLoading = false;
         });
-        Navigator.pop(context);
+        await showConfirmationDialog(email, context, _isPatient);
+          Navigator.pop(context);
+
       } else if (value.statusCode == 400) {
         Fluttertoast.showToast(msg: "Email already exists!");
         setState(() {

@@ -267,13 +267,41 @@ class _NetworkRepository implements NetworkCalls {
       url = "$baseURL/api/hospital/register";
     }
     final Response response = await _client
-        .post(url, body: json.encode(requestMap), headers: {
-          HttpHeaders.authorizationHeader: token,
-          HttpHeaders.contentTypeHeader: 'application/json'
-        })
+        .post(url,
+            body: json.encode(requestMap),
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'})
         .timeout(Duration(seconds: 20))
         .catchError((error) {
           print("Book Appointment: ${error.toString()}");
+          throw (error);
+        });
+    return response;
+  }
+
+  @override
+  Future<Response> checkConfirmationLinkCode(
+      {String code, String email}) async {
+    final Response response = await _client
+        .get("$baseURL/api/user/verification/check?email=$email&code=$code",
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'})
+        .timeout(Duration(seconds: 20))
+        .catchError((error) {
+          print("Check Verification Code: ${error.toString()}");
+          throw (error);
+        });
+    return response;
+  }
+
+  @override
+  Future<Response> sendConfirmationLinkAgain(
+      {String userType, String email}) async {
+    final Response response = await _client
+        .get(
+            "$baseURL/api/user/verification/sent?email=$email&userType=$userType",
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'})
+        .timeout(Duration(seconds: 20))
+        .catchError((error) {
+          print("Send Confirmation Code Again: ${error.toString()}");
           throw (error);
         });
     return response;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/confirmation_link_dialog.dart';
+import 'package:hospitality/src/dialogs/forgot_password.dialog.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
@@ -216,7 +218,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     userProfileProvider.setUser = user;
                     await getNetworkRepository
                         .getPatientUserData(email: _loginCredentials["email"])
-                        .then((value) {
+                        .then((value) async {
                       if (value.statusCode == 200) {
                         Map<String, dynamic> responseMap =
                             json.decode(value.body);
@@ -246,7 +248,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                     hospital.setEmail = _loginCredentials["email"];
                     hospitalUserProvider.setHospital = hospital;
-                    await getNetworkRepository.getHospitalData().then((value) {
+                    await getNetworkRepository
+                        .getHospitalData()
+                        .then((value) async {
                       if (value.statusCode == 200) {
                         Map<String, dynamic> responseMap =
                             json.decode(value.body);
@@ -269,6 +273,15 @@ class _AuthScreenState extends State<AuthScreen> {
                           msg: "Error in fetching user profile data");
                     });
                   }
+                } else if (response.statusCode == 401) {
+                  setState(() {
+                    errorMsg = "";
+                    isLoading = false;
+                  });
+                  await sendConfirmationLink(
+                      _loginCredentials["email"], context, _isPatient);
+                  await showConfirmationDialog(
+                      _loginCredentials["email"], context, _isPatient);
                 } else if (response.statusCode == 403) {
                   setState(() {
                     isLoading = false;
@@ -298,7 +311,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     isLoading = false;
                     errorMsg = "Wrong login!";
                     Map<dynamic, dynamic> errorMap = json.decode(response.body);
-
                     if (errorMap.containsKey("email")) {
                       _errorEmail = errorMap["email"];
                     }
@@ -481,11 +493,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
-
                           height: viewportHeight * 0.06,
                           padding: EdgeInsets.only(
                               top: viewportHeight * 0.015,
-                              right: viewportWidth*0.1,
+                              right: viewportWidth * 0.1,
                               left: viewportWidth * 0.1),
                           child: Text(
                             _errorPassword,
@@ -498,54 +509,60 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 0.02,),
+                        SizedBox(
+                          height: 0.02,
+                        ),
                         Container(
-                          height: viewportHeight*0.04,
-                        child:Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontFamily: "Manrope",
-                              fontWeight: FontWeight.bold,
-                              fontSize: viewportHeight * 0.022),
-                        )),
-                        SizedBox(height:viewportHeight*0.015),
+                            height: viewportHeight * 0.04,
+                            child: GestureDetector(
+                                onTap: () {
+                                  showForgotPasswordDialog(context);
+                                },
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontFamily: "Manrope",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: viewportHeight * 0.022),
+                                ))),
+                        SizedBox(height: viewportHeight * 0.015),
                         Container(
-                          height: viewportHeight*0.045,
+                            height: viewportHeight * 0.045,
                             child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Radio(
-                              value: 0,
-                              groupValue: _radioValue,
-                              onChanged: _handleRadioValueChange,
-                            ),
-                            Text(
-                              "Patient",
-                              style: TextStyle(
-                                  fontFamily: "BalooTamma2",
-                                  fontSize: viewportWidth * 0.045),
-                            ),
-                            Radio(
-                              value: 1,
-                              groupValue: _radioValue,
-                              onChanged: _handleRadioValueChange,
-                            ),
-                            Text("Hospital",
-                                style: TextStyle(
-                                    fontFamily: "BalooTamma2",
-                                    fontSize: viewportWidth * 0.045))
-                          ],
-                        )),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Radio(
+                                  value: 0,
+                                  groupValue: _radioValue,
+                                  onChanged: _handleRadioValueChange,
+                                ),
+                                Text(
+                                  "Patient",
+                                  style: TextStyle(
+                                      fontFamily: "BalooTamma2",
+                                      fontSize: viewportWidth * 0.045),
+                                ),
+                                Radio(
+                                  value: 1,
+                                  groupValue: _radioValue,
+                                  onChanged: _handleRadioValueChange,
+                                ),
+                                Text("Hospital",
+                                    style: TextStyle(
+                                        fontFamily: "BalooTamma2",
+                                        fontSize: viewportWidth * 0.045))
+                              ],
+                            )),
                         SizedBox(
                           height: viewportHeight * 0.03,
                         ),
-                        Container(child:
-                        _signInButtonBuilder(viewportHeight, viewportWidth),
-                        height: viewportHeight*0.075,
-                        width: viewportWidth*0.24,
+                        Container(
+                          child: _signInButtonBuilder(
+                              viewportHeight, viewportWidth),
+                          height: viewportHeight * 0.075,
+                          width: viewportWidth * 0.24,
                         )
-
                       ]))
                     ],
                   )
