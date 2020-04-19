@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>io.flutter.embedded_views_preview</key>
-	<string>YES</string>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -26,6 +26,15 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	  <!-- for iOS 11 + -->
+  	<key>NSLocationWhenInUseUsageDescription</key>
+  	<string>Location is required to show nearest hospital.</string>
+  	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  	<string>Location is required to show nearest hospital.</string>
+
+  	<!-- additionally for iOS 9/10, if you need always permission -->
+  	<key>NSLocationAlwaysUsageDescription</key>
+  	<string>Location is required to show nearest hospital.</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
