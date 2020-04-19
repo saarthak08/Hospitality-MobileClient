@@ -319,7 +319,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   });
                 }
               })
-              .timeout(Duration(seconds: 10))
+              .timeout(Duration(seconds: 20))
               .catchError((error) {
                 print("hello" + error.toString());
                 isLoading = false;
