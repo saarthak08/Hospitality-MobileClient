@@ -350,7 +350,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                         children: <Widget>[
                             RaisedButton(
                               color: Colors.white,
-                              elevation: 5,
+                              elevation: 3,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   side: BorderSide(

@@ -5,6 +5,7 @@ import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/auth_screen.dart';
+import 'package:hospitality/src/screens/signup_screen.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:hospitality/src/screens/map_screen.dart';
@@ -22,12 +23,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => HospitalListProvider(),
         ),
-         ChangeNotifierProvider(
+        ChangeNotifierProvider(
           create: (ctx) => UserProfileProvider(),
         ),
-         ChangeNotifierProvider(
+        ChangeNotifierProvider(
           create: (ctx) => HospitalUserProvider(),
-        ),       
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           '/home': (BuildContext context) => UserHomeScreen(),
           '/auth': (BuildContext context) => AuthScreen(),
           '/map': (BuildContext context) => MapView(),
+          '/signup': (BuildContext context) => SignUpScreen(),
         },
       ),
     );

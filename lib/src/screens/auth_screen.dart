@@ -155,7 +155,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _signInButtonBuilder(double viewportHeight, double viewportWidth) {
     return RaisedButton(
-      elevation: 5,
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       color: Colors.blue,
       splashColor: Colors.white,
@@ -386,149 +386,171 @@ class _AuthScreenState extends State<AuthScreen> {
 
     return Scaffold(
         body: GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: SingleChildScrollView(
-          child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: SingleChildScrollView(
+              child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF00CCFF),
+                    const Color(0xFF3366FF),
+                  ],
+                  begin: const FractionalOffset(0.0, 0.0),
+                  end: const FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
+            height: getDeviceHeight(context),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: 3.0,
+                                spreadRadius: 1.0,
+                                // shadow direction: bottom right
+                              )
+                            ],
+                          ),
+                          height: viewportHeight * 0.75,
+                          margin: EdgeInsets.only(
+                              top: viewportHeight * 0.13,
+                              left: viewportWidth * 0.03,
+                              right: viewportWidth * 0.03)),
+                      Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Hospitality',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Satisfy",
+                              fontSize: viewportHeight * 0.06,
+                            ),
+                            textAlign: TextAlign.center,
+                          )),
+                      Container(
+                          child: Column(children: <Widget>[
+                        Hero(
+                          tag: "ico",
+                          child: Container(
+                            margin: EdgeInsets.only(top: viewportHeight * 0.15),
+                            height: viewportHeight * 0.15,
+                            width: viewportWidth,
+                            child: Image.asset('assets/img/splash_bg.png'),
+                          ),
+                        ),
+                        _errorMsgContainer(viewportHeight, viewportWidth),
+                        Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: viewportWidth * 0.1),
+                            alignment: Alignment.center,
+                            child: Column(children: <Widget>[
+                              _emailInputFieldBuilder(viewportHeight),
+                              Container(
+                                width: viewportWidth,
+                                height: viewportHeight * 0.04,
+                                padding: EdgeInsets.only(
+                                    top: viewportHeight * 0.015,
+                                    left: viewportWidth * 0.05),
+                                child: Text(
+                                  _errorEmail,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: viewportWidth * 0.04,
+                                    color: Colors.red,
+                                    height: viewportWidth * 0.002,
+                                    fontFamily: 'BalooTamma2',
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: viewportHeight * 0.02,
+                              ),
+                              _passwordInputFieldBuilder(viewportHeight),
+                              Container(
+                                width: viewportWidth,
+                                height: viewportHeight * 0.04,
+                                padding: EdgeInsets.only(
+                                    top: viewportHeight * 0.015,
+                                    left: viewportWidth * 0.05),
+                                child: Text(
+                                  _errorPassword,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: viewportWidth * 0.04,
+                                    color: Colors.red,
+                                    fontFamily: 'BalooTamma2',
+                                    height: viewportWidth * 0.002,
+                                  ),
+                                ),
+                              ),
+                            ])),
+                        Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Radio(
+                              value: 0,
+                              groupValue: _radioValue,
+                              onChanged: _handleRadioValueChange,
+                            ),
+                            Text(
+                              "Patient",
+                              style: TextStyle(
+                                  fontFamily: "BalooTamma2",
+                                  fontSize: viewportWidth * 0.045),
+                            ),
+                            Radio(
+                              value: 1,
+                              groupValue: _radioValue,
+                              onChanged: _handleRadioValueChange,
+                            ),
+                            Text("Hospital",
+                                style: TextStyle(
+                                    fontFamily: "BalooTamma2",
+                                    fontSize: viewportWidth * 0.045))
+                          ],
+                        )),
+                        SizedBox(
+                          height: viewportHeight * 0.01,
+                        ),
+                        _signInButtonBuilder(viewportHeight, viewportWidth),
+                      ]))
+                    ],
+                  )
+                ]),
+          )),
+        ),
+        bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
               colors: [
                 const Color(0xFF00CCFF),
                 const Color(0xFF3366FF),
               ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(1.0, 0.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp),
-        ),
-        height: getDeviceHeight(context),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black54,
-                            blurRadius: 3.0,
-                            spreadRadius: 1.0,
-                            // shadow direction: bottom right
-                          )
-                        ],
-                      ),
-                      height: viewportHeight * 0.75,
-                      margin: EdgeInsets.only(
-                          top: viewportHeight * 0.13,
-                          left: viewportWidth * 0.03,
-                          right: viewportWidth * 0.03)),
-                  Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Hospitality',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "Satisfy",
-                          fontSize: viewportHeight * 0.06,
-                        ),
-                        textAlign: TextAlign.center,
-                      )),
-                  Container(
-                      child: Column(children: <Widget>[
-                    Hero(
-                      tag: "ico",
-                      child: Container(
-                        margin: EdgeInsets.only(top: viewportHeight * 0.15),
-                        height: viewportHeight * 0.15,
-                        width: viewportWidth,
-                        child: Image.asset('assets/img/splash_bg.png'),
-                      ),
-                    ),
-                    _errorMsgContainer(viewportHeight, viewportWidth),
-                    Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: viewportWidth * 0.1),
-                        alignment: Alignment.center,
-                        child: Column(children: <Widget>[
-                          _emailInputFieldBuilder(viewportHeight),
-                          Container(
-                            width: viewportWidth,
-                            height: viewportHeight * 0.04,
-                            padding: EdgeInsets.only(
-                                top: viewportHeight * 0.015,
-                                left: viewportWidth * 0.05),
-                            child: Text(
-                              _errorEmail,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: viewportWidth * 0.04,
-                                color: Colors.red,
-                                height: viewportWidth * 0.002,
-                                fontFamily: 'BalooTamma2',
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: viewportHeight * 0.02,
-                          ),
-                          _passwordInputFieldBuilder(viewportHeight),
-                          Container(
-                            width: viewportWidth,
-                            height: viewportHeight * 0.04,
-                            padding: EdgeInsets.only(
-                                top: viewportHeight * 0.015,
-                                left: viewportWidth * 0.05),
-                            child: Text(
-                              _errorPassword,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: viewportWidth * 0.04,
-                                color: Colors.red,
-                                fontFamily: 'BalooTamma2',
-                                height: viewportWidth * 0.002,
-                              ),
-                            ),
-                          ),
-                        ])),
-                    Container(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Radio(
-                          value: 0,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioValueChange,
-                        ),
-                        Text(
-                          "Patient",
-                          style: TextStyle(
-                              fontFamily: "BalooTamma2",
-                              fontSize: viewportWidth * 0.045),
-                        ),
-                        Radio(
-                          value: 1,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioValueChange,
-                        ),
-                        Text("Hospital",
-                            style: TextStyle(
-                                fontFamily: "BalooTamma2",
-                                fontSize: viewportWidth * 0.045))
-                      ],
-                    )),
-                    SizedBox(
-                      height: viewportHeight * 0.01,
-                    ),
-                    _signInButtonBuilder(viewportHeight, viewportWidth),
-                  ]))
-                ],
-              )
-            ]),
-      )),
-    ));
+            )),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, "/signup");
+              },
+              child: Text(
+                "Not registered? Sign Up!",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "BalooTamma2",
+                    fontSize: viewportHeight * 0.026,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            )));
   }
 }
