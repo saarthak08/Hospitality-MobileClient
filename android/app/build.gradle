@@ -41,6 +41,7 @@ android {
         applicationId "com.rbs.hospitality"
         minSdkVersion 16
         targetSdkVersion 28
+        manifestPlaceholders = [mapsApiKey: "$System.env.HOSPITALITY_MAPS_API_KEY"]
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

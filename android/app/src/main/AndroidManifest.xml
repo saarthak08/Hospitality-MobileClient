@@ -16,7 +16,7 @@
         android:label="Hospitality"
         android:icon="@mipmap/icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="YOUR_OWN_API_KEY"/>
+               android:value="${mapsApiKey}"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
