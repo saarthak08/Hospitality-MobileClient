@@ -30,4 +30,6 @@ abstract class NetworkCalls {
 
   Future<Response> deleteAppointmentStatus({String email,int timestamp});
 
+  Future<Response> signUp({Map<String,dynamic> requestMap, bool isPatient});
+
 }

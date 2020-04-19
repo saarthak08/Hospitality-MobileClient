@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -18,6 +21,8 @@ class SignUpScreenState extends State<SignUpScreen> {
   String phoneNumber = "";
   String email = "";
   String password = "";
+  double latitude = 0;
+  double longitude = 0;
   TextEditingController emailController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -80,7 +85,6 @@ class SignUpScreenState extends State<SignUpScreen> {
     return Form(
         key: _formKeyPageTwo,
         child: Column(children: <Widget>[
-          SizedBox(height: viewportHeight * 0.05),
           Hero(
             tag: "ico",
             child: Container(
@@ -207,31 +211,147 @@ class SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
           SizedBox(height: viewportHeight * 0.02),
-          RaisedButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            color: Colors.white,
-            splashColor: Colors.blue,
-            onPressed: () {
-              _pageController.animateToPage(0,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeInOut);
-            },
-            child: Container(
-              alignment: Alignment.centerRight,
-              width: viewportWidth * 0.2,
-              height: viewportHeight * 0.065,
+          Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Center(
-                  child: Icon(
-                Icons.arrow_back,
-                color: Colors.blue,
-                size: viewportHeight * 0.03,
-              )),
-            ),
-          ),
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              padding: EdgeInsets.fromLTRB(viewportWidth * 0.02, 0,
+                  viewportWidth * 0.04, viewportWidth * 0.04),
+              child: (Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          0.0, 0.0, viewportWidth * 0.04, viewportWidth * 0.01),
+                      child: TextFormField(
+                        controller: TextEditingController()
+                          ..text = this.latitude.toString(),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              top: viewportHeight * 0.01,
+                              bottom: viewportHeight * 0.01),
+                          icon: Icon(Icons.my_location,
+                              color: Colors.blue, size: viewportHeight * 0.03),
+                          labelText: "Latitude*",
+                          errorBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2)),
+                          labelStyle: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: viewportHeight * 0.022),
+                        ),
+                        readOnly: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                        style: TextStyle(
+                            fontFamily: "Manrope",
+                            fontSize: viewportHeight * 0.024),
+                        validator: (String value) {
+                          if (double.parse(value) == 0) {
+                            return "Can't be empty";
+                          }
+                          return null;
+                        },
+                      ),
+                    )),
+                    Expanded(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          0.0, 0.0, viewportWidth * 0.04, viewportWidth * 0.01),
+                      child: TextFormField(
+                        controller: TextEditingController()
+                          ..text = this.longitude.toString(),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                              top: viewportHeight * 0.01,
+                              bottom: viewportHeight * 0.01),
+                          icon: Icon(Icons.my_location,
+                              color: Colors.blue, size: viewportHeight * 0.03),
+                          errorBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2)),
+                          labelText: "Longitude*",
+                          labelStyle: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: viewportHeight * 0.022),
+                        ),
+                        readOnly: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                        style: TextStyle(
+                            fontFamily: "Manrope",
+                            fontSize: viewportHeight * 0.024),
+                        validator: (String value) {
+                          if (double.parse(value) == 0) {
+                            return "Can't be empty";
+                          }
+                          return null;
+                        },
+                      ),
+                    ))
+                  ]))),
+          SizedBox(height: viewportHeight * 0.02),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () async {
+                    await getLocationDialog();
+                  },
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  splashColor: Colors.blue,
+                  color: Colors.white,
+                  child: Container(
+                      width: viewportWidth * 0.35,
+                      height: viewportHeight * 0.06,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Update Location',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontFamily: "Manrope",
+                          fontSize: viewportHeight * 0.020,
+                        ),
+                      )),
+                  textColor: Colors.blue,
+                ),
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  color: Colors.white,
+                  splashColor: Colors.blue,
+                  onPressed: () {
+                    _pageController.animateToPage(0,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut);
+                  },
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    width: viewportWidth * 0.2,
+                    height: viewportHeight * 0.065,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Center(
+                        child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.blue,
+                      size: viewportHeight * 0.03,
+                    )),
+                  ),
+                )
+              ]),
           SizedBox(height: viewportHeight * 0.02),
           RaisedButton(
             elevation: 3,
@@ -246,6 +366,7 @@ class SignUpScreenState extends State<SignUpScreen> {
               _formKeyPageTwo.currentState.save();
               passwordController.text = this.password;
               confirmPasswordController.text = this.confirmPassword;
+              await signup();
             },
             child: Container(
               alignment: Alignment.centerRight,
@@ -515,7 +636,6 @@ class SignUpScreenState extends State<SignUpScreen> {
   void _handleRadioValueChange(int value) {
     setState(() {
       _radioValue = value;
-
       switch (_radioValue) {
         case 0:
           _isPatient = true;
@@ -524,6 +644,72 @@ class SignUpScreenState extends State<SignUpScreen> {
           _isPatient = false;
           break;
       }
+    });
+  }
+
+  Future<void> signup() async {
+    setState(() {
+      isLoading = true;
+    });
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["email"] = this.email;
+    requestMap["name"] = this.fullName;
+    requestMap["phoneNumber"] = int.parse(this.phoneNumber);
+    requestMap["latitude"] = this.latitude;
+    requestMap["longitude"] = this.longitude;
+    requestMap["password"] = this.password;
+    requestMap["password2"] = this.confirmPassword;
+
+    await getNetworkRepository
+        .signUp(isPatient: _isPatient, requestMap: requestMap)
+        .then((value) {
+      print(value.body.toString() + value.statusCode.toString());
+      if (value.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Signed up successfully!");
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pop(context);
+      } else if (value.statusCode == 400) {
+        Fluttertoast.showToast(msg: "Email already exists!");
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        Fluttertoast.showToast(msg: "Error in sign up. Please try again!");
+        print("Sign up error: ${value.statusCode} ${value.body.toString()}");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: "Error in sign up. Please try again!");
+      print("Sign up error:  ${error.toString()}");
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  Future<void> getLocationDialog() async {
+    await getLocation().then(
+      (value) async {
+        if (value != null) {
+          setState(() {
+            this.latitude = value.latitude;
+            this.longitude = value.longitude;
+          });
+        } else {
+          Fluttertoast.showToast(
+            msg: "Error in fetching location!",
+          );
+        }
+      },
+    ).catchError((error) {
+      print("Error in fetching locatio: ${error.toString()}");
+      Fluttertoast.showToast(
+        msg: "Error in fetching location!",
+      );
     });
   }
 }
