@@ -663,7 +663,6 @@ class SignUpScreenState extends State<SignUpScreen> {
     await getNetworkRepository
         .signUp(isPatient: _isPatient, requestMap: requestMap)
         .then((value) {
-      print(value.body.toString() + value.statusCode.toString());
       if (value.statusCode == 200) {
         Fluttertoast.showToast(msg: "Signed up successfully!");
         setState(() {

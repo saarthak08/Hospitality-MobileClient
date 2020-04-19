@@ -41,7 +41,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   Future<void> getAppointmentsList() async {
     await getNetworkRepository.getAppointmentsList().then((value) async {
       if (value.statusCode == 200) {
-        print(value.body.toString());
         setState(() {
           List<dynamic> responseList = json.decode(value.body);
           Map<String, dynamic> temp;

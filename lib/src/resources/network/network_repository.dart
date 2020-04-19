@@ -36,8 +36,6 @@ class _NetworkRepository implements NetworkCalls {
       url = "$baseURL/api/hospital/login";
     }
 
-    print(json.encode(loginCredentials));
-
     final Response response = await _client
         .post(url, body: json.encode(loginCredentials), headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
@@ -47,7 +45,6 @@ class _NetworkRepository implements NetworkCalls {
           print("Login: ${error.toString()}");
           throw (error);
         });
-    print(response.body);
     return response;
   }
 
@@ -124,7 +121,6 @@ class _NetworkRepository implements NetworkCalls {
     if (user.getPhoneNumber.toString().length != 0) {
       requestMap["phoneNumber"] = int.parse(user.getPhoneNumber);
     }
-    print(requestMap);
     final Response response = await _client
         .post("$baseURL/api/patient/",
             headers: {
@@ -155,7 +151,6 @@ class _NetworkRepository implements NetworkCalls {
     requestMap["totalDoctors"] = hospital.getTotalDoctors;
     requestMap["doctors"] = hospital.getAvailableDoctors;
 
-    print(requestMap);
     final Response response = await _client
         .post("$baseURL/api/hospital/",
             headers: {
@@ -227,7 +222,6 @@ class _NetworkRepository implements NetworkCalls {
     requestMap["email"] = email;
     requestMap["confirmation"] = status;
     requestMap["date"] = timestamp;
-    print(requestMap);
     final Response response = await _client
         .post(url,
             headers: {
@@ -272,7 +266,6 @@ class _NetworkRepository implements NetworkCalls {
     } else {
       url = "$baseURL/api/hospital/register";
     }
-    print(json.encode(requestMap));
     final Response response = await _client
         .post(url, body: json.encode(requestMap), headers: {
           HttpHeaders.authorizationHeader: token,

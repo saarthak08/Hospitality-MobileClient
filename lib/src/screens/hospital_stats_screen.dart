@@ -1,14 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hospitality/src/dialogs/loading_dialog.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
+import 'package:hospitality/src/models/appointment.dart';
 import 'package:hospitality/src/models/hospital.dart';
+import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
+import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HospitalStats extends StatefulWidget {
   HospitalStats();
@@ -24,11 +29,15 @@ class _HospitalStatsState extends State<HospitalStats> {
   final TextStyle whiteText = TextStyle(color: Colors.white);
   double viewportHeight;
   double viewportWidth;
+  int confirmedAppointments = 0;
+  int rejectedAppointments = 0;
+  int waitingAppointments = 0;
   bool availability = false;
   TextEditingController totalBedsController = TextEditingController();
   TextEditingController availableBedsController = TextEditingController();
   TextEditingController totalDoctorsController = TextEditingController();
   TextEditingController availableDoctorsController = TextEditingController();
+  List<Appointment> appointmentsList = List<Appointment>();
 
   _HospitalStatsState();
 
@@ -55,6 +64,7 @@ class _HospitalStatsState extends State<HospitalStats> {
           onRefresh: () async {
             await fetchHospitalUserData(
                 context: context, hospitalUserProvider: hospitalUserProvider);
+            await fetchAppointmentsList();
           },
           key: refreshIndicatorKey,
           child: _buildBody(context),
@@ -93,7 +103,7 @@ class _HospitalStatsState extends State<HospitalStats> {
                     color: Colors.green,
                     icon: Icons.portrait,
                     title: "Confirmed",
-                    data: "125",
+                    data: this.confirmedAppointments.toString(),
                   ),
                 ),
                 SizedBox(width: viewportWidth * 0.025),
@@ -102,7 +112,7 @@ class _HospitalStatsState extends State<HospitalStats> {
                     color: Colors.red,
                     icon: Icons.portrait,
                     title: "Waiting",
-                    data: "4",
+                    data: this.waitingAppointments.toString(),
                   ),
                 ),
                 SizedBox(width: viewportWidth * 0.025),
@@ -111,7 +121,7 @@ class _HospitalStatsState extends State<HospitalStats> {
                     color: Colors.pink,
                     icon: Icons.portrait,
                     title: "Rejected",
-                    data: "125",
+                    data: this.rejectedAppointments.toString(),
                   ),
                 ),
               ],
@@ -451,6 +461,56 @@ class _HospitalStatsState extends State<HospitalStats> {
         ),
       ),
     );
+  }
+
+  Future<void> fetchAppointmentsList() async {
+    await getNetworkRepository.getAppointmentsList().then((value) async {
+      if (value.statusCode == 200) {
+        setState(() {
+          List<dynamic> responseList = json.decode(value.body);
+          Map<String, dynamic> temp;
+          appointmentsList = List<Appointment>();
+          for (temp in responseList) {
+            Appointment appointment = Appointment.fromJSON(temp);
+            appointmentsList.add(appointment);
+            setState(() {
+              if (appointment.getStatus == "Confirmed" ||
+                  appointment.getStatus == "confirmed") {
+                confirmedAppointments++;
+              } else if (appointment.getStatus == "Pending" ||
+                  appointment.getStatus == "pending") {
+                waitingAppointments++;
+              } else if (appointment.getStatus == "Rejected" ||
+                  appointment.getStatus == "rejected") {
+                rejectedAppointments++;
+              }
+            });
+          }
+        });
+      } else if (value.statusCode == 401) {
+        print("Get Hospital Data: ${value.statusCode} Unauthorized access");
+        Hospital hospital = Hospital();
+        HospitalUserProvider hospitalUserProvider =
+            Provider.of<HospitalUserProvider>(context);
+        hospitalUserProvider.setHospital = hospital;
+        UserProfileProvider userProfileProvider =
+            Provider.of<UserProfileProvider>(context);
+        User user = User();
+        userProfileProvider.setUser = user;
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        await preferences.clear();
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/auth", (Route<dynamic> route) => false);
+      } else {
+        print(
+            "Get Appointments List: ${value.statusCode.toString()} ${value.body.toString()}");
+        Fluttertoast.showToast(msg: "Error in fetching appointments list");
+      }
+    }).catchError((error) {
+      print("Get Appointments List: ${error.toString()}");
+      Fluttertoast.showToast(msg: "Error in fetching appointments list");
+    });
+    return null;
   }
 
   @override

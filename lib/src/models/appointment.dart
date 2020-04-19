@@ -56,9 +56,7 @@ class Appointment {
       this._hospital = Hospital.fromJSON(responseMap);
     } else {
       this._user = User.fromJSON(responseMap: responseMap);
-      print(this._user.getFullName);
       this._user.setFullName=responseMap["name"];
-      print(this._user.getFullName);
     }
   }
 }

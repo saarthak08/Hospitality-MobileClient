@@ -354,7 +354,6 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                   user.setPhoneNumber = phoneNumber.length == 0
                                       ? user.getPhoneNumber
                                       : phoneNumber;
-                                  print(phoneNumber);
                                   await getNetworkRepository
                                       .updatePatientUserData(user: user)
                                       .then((value) {

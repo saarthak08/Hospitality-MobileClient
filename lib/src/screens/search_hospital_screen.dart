@@ -255,7 +255,6 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             List<dynamic> response = json.decode(value.body);
             List<Hospital> hospitals = new List<Hospital>();
             hospitalListProvider.setHospitalLists = hospitals;
-            print(response);
             for (int i = 0; i < response.length; i++) {
               Map<String, dynamic> data = response[i].cast<String, dynamic>();
               Hospital h = Hospital.fromJSON(data);

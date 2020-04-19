@@ -47,8 +47,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _errorMsgContainer(double viewportHeight, double viewportWidth) {
     return Container(
-      margin: EdgeInsets.only(top: viewportHeight * 0.01),
-      height: viewportHeight * 0.05,
+      margin: EdgeInsets.only(top: viewportHeight * 0.015),
+      height: viewportHeight * 0.035,
       width: viewportWidth,
       alignment: Alignment.center,
       child: Text(
@@ -321,7 +321,7 @@ class _AuthScreenState extends State<AuthScreen> {
               })
               .timeout(Duration(seconds: 20))
               .catchError((error) {
-                print("hello" + error.toString());
+                print("Login Error: " + error.toString());
                 isLoading = false;
                 errorMsg = "an error occurred";
               });
@@ -423,7 +423,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           height: viewportHeight * 0.75,
                           margin: EdgeInsets.only(
-                              top: viewportHeight * 0.13,
+                              top: viewportHeight * 0.12,
                               left: viewportWidth * 0.03,
                               right: viewportWidth * 0.03)),
                       Container(
@@ -442,7 +442,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         Hero(
                           tag: "ico",
                           child: Container(
-                            margin: EdgeInsets.only(top: viewportHeight * 0.15),
+                            margin: EdgeInsets.only(top: viewportHeight * 0.13),
                             height: viewportHeight * 0.15,
                             width: viewportWidth,
                             child: Image.asset('assets/img/splash_bg.png'),
@@ -450,51 +450,68 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         _errorMsgContainer(viewportHeight, viewportWidth),
                         Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: viewportWidth * 0.1),
-                            alignment: Alignment.center,
-                            child: Column(children: <Widget>[
-                              _emailInputFieldBuilder(viewportHeight),
-                              Container(
-                                width: viewportWidth,
-                                height: viewportHeight * 0.04,
-                                padding: EdgeInsets.only(
-                                    top: viewportHeight * 0.015,
-                                    left: viewportWidth * 0.05),
-                                child: Text(
-                                  _errorEmail,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    fontSize: viewportWidth * 0.04,
-                                    color: Colors.red,
-                                    height: viewportWidth * 0.002,
-                                    fontFamily: 'BalooTamma2',
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: viewportHeight * 0.02,
-                              ),
-                              _passwordInputFieldBuilder(viewportHeight),
-                              Container(
-                                width: viewportWidth,
-                                height: viewportHeight * 0.04,
-                                padding: EdgeInsets.only(
-                                    top: viewportHeight * 0.015,
-                                    left: viewportWidth * 0.05),
-                                child: Text(
-                                  _errorPassword,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    fontSize: viewportWidth * 0.04,
-                                    color: Colors.red,
-                                    fontFamily: 'BalooTamma2',
-                                    height: viewportWidth * 0.002,
-                                  ),
-                                ),
-                              ),
-                            ])),
+                          child: _emailInputFieldBuilder(viewportHeight),
+                          height: viewportHeight * 0.1,
+                          width: viewportWidth * 0.85,
+                        ),
                         Container(
+                          width: viewportWidth,
+                          height: viewportHeight * 0.035,
+                          padding: EdgeInsets.only(
+                              top: viewportHeight * 0.015,
+                              left: viewportWidth * 0.1),
+                          child: Text(
+                            _errorEmail,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: viewportWidth * 0.04,
+                              color: Colors.red,
+                              height: viewportWidth * 0.002,
+                              fontFamily: 'BalooTamma2',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: viewportHeight * 0.02,
+                        ),
+                        Container(
+                          child: _passwordInputFieldBuilder(viewportHeight),
+                          height: viewportHeight * 0.1,
+                          width: viewportWidth * 0.85,
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+
+                          height: viewportHeight * 0.06,
+                          padding: EdgeInsets.only(
+                              top: viewportHeight * 0.015,
+                              right: viewportWidth*0.1,
+                              left: viewportWidth * 0.1),
+                          child: Text(
+                            _errorPassword,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: viewportWidth * 0.04,
+                              color: Colors.red,
+                              fontFamily: 'BalooTamma2',
+                              height: viewportWidth * 0.002,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 0.02,),
+                        Container(
+                          height: viewportHeight*0.04,
+                        child:Text(
+                          "Forgot Password?",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontFamily: "Manrope",
+                              fontWeight: FontWeight.bold,
+                              fontSize: viewportHeight * 0.022),
+                        )),
+                        SizedBox(height:viewportHeight*0.015),
+                        Container(
+                          height: viewportHeight*0.045,
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -521,9 +538,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           ],
                         )),
                         SizedBox(
-                          height: viewportHeight * 0.01,
+                          height: viewportHeight * 0.03,
                         ),
+                        Container(child:
                         _signInButtonBuilder(viewportHeight, viewportWidth),
+                        height: viewportHeight*0.075,
+                        width: viewportWidth*0.24,
+                        )
+
                       ]))
                     ],
                   )

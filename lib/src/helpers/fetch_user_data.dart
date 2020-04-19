@@ -25,8 +25,6 @@ Future<void> fetchPatientUserData(
     } else if (value.statusCode == 401) {
       print("Get Patient User Data: ${value.statusCode} Unauthorized access");
       User user = User();
-      UserProfileProvider userProfileProvider =
-          Provider.of<UserProfileProvider>(context);
       userProfileProvider.setUser = user;
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.clear();
