@@ -17,7 +17,7 @@ void showLoadingDialog({@required BuildContext context}) {
                 opacity: a1.value,
                 child: AlertDialog(
                   shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0)),
+                      borderRadius: BorderRadius.circular(10.0)),
                   title: Text("Please Wait!"),
                   content: Container(
                     alignment: Alignment.center,

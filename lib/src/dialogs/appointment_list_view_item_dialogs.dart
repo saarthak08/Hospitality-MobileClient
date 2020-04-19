@@ -25,7 +25,7 @@ Future<void> acceptAppointment(BuildContext context, Appointment appointment,
                 builder: (BuildContext context, setState) {
                   return AlertDialog(
                     shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.0)),
+                        borderRadius: BorderRadius.circular(10.0)),
                     title: Text(
                       'Confirm your decision!',
                       style: TextStyle(
@@ -126,7 +126,7 @@ Future<void> declineAppointment(BuildContext context, Appointment appointment,
                 builder: (BuildContext context, setState) {
                   return AlertDialog(
                     shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.0)),
+                        borderRadius: BorderRadius.circular(10.0)),
                     title: Text(
                       'Confirm your decision!',
                       style: TextStyle(
