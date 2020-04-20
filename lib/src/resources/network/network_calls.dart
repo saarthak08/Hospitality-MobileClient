@@ -4,7 +4,6 @@ import 'package:http/http.dart' show Response;
 
 final String baseURL = "http://192.168.43.193:5000";
 
-
 abstract class NetworkCalls {
   Future<Response> login(
       {Map<String, String> loginCredentials, bool isPatient});
@@ -18,7 +17,8 @@ abstract class NetworkCalls {
 
   Future<Response> updatePatientUserData({User user});
 
-  Future<Response> updateLocation({double latitude, double longitude,String email});
+  Future<Response> updateLocation(
+      {double latitude, double longitude, String email});
 
   Future<Response> updateHospitalUserData({Hospital hospital});
 
@@ -26,14 +26,19 @@ abstract class NetworkCalls {
 
   Future<Response> bookAppointment({String hospitalEmail, String note});
 
-  Future<Response> changeAppointmentStatus({String email, String status,int timestamp});
+  Future<Response> changeAppointmentStatus(
+      {String email, String status, int timestamp});
 
-  Future<Response> deleteAppointmentStatus({String email,int timestamp});
+  Future<Response> deleteAppointmentStatus({String email, int timestamp});
 
-  Future<Response> signUp({Map<String,dynamic> requestMap, bool isPatient});
+  Future<Response> signUp({Map<String, dynamic> requestMap, bool isPatient});
 
   Future<Response> sendConfirmationLinkAgain({String userType, String email});
 
   Future<Response> checkConfirmationLinkCode({String code, String email});
 
+  Future<Response> sendForgotPasswordLink({String email, String userType});
+
+  Future<Response> setPasswordForgotPassword(
+      {String code, String email, String password});
 }

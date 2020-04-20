@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hospitality/src/dialogs/loading_dialog.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
+import 'package:hospitality/src/resources/network/network_repository.dart';
 
-void setPasswordDialog(String email, BuildContext context) async {
+Future<void> setPasswordDialog(String email, BuildContext context) async {
   bool _obscureText = true;
   String password = "";
   String confirmPassword = "";
@@ -10,7 +13,7 @@ void setPasswordDialog(String email, BuildContext context) async {
   double viewportHeight = getViewportHeight(context);
   double viewportWidth = getViewportWidth(context);
 
-  showGeneralDialog(
+  await showGeneralDialog(
       context: context,
       pageBuilder: (context, anim1, anim2) {
         return null;
@@ -47,15 +50,14 @@ void setPasswordDialog(String email, BuildContext context) async {
                         FlatButton(
                           child: Text(
                             "Done",
-                            style: TextStyle(
-                              color:Colors.blue
-                            ),
+                            style: TextStyle(color: Colors.blue),
                           ),
-                          onPressed: () {
-                            if(!_formKey.currentState.validate()) {
+                          onPressed: () async {
+                            if (!_formKey.currentState.validate()) {
                               return null;
                             }
-                            
+                            await setPassword(
+                                email, password, verificationCode, context);
                           },
                         ),
                       ],
@@ -71,15 +73,12 @@ void setPasswordDialog(String email, BuildContext context) async {
                                     addAutomaticKeepAlives: true,
                                     shrinkWrap: true,
                                     children: <Widget>[
-                                      Container(
-                                          width: viewportWidth,
-                                          height: viewportHeight * 0.1,
-                                          child: Text(
-                                            "An email has been sent to $email with a verification code.\nEnter the verification code:",
-                                            style: TextStyle(
-                                              fontFamily: "Manrope",
-                                            ),
-                                          )),
+                                      Text(
+                                        "An email has been sent to $email with a verification code.\nEnter the verification code:",
+                                        style: TextStyle(
+                                          fontFamily: "Manrope",
+                                        ),
+                                      ),
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
@@ -133,7 +132,7 @@ void setPasswordDialog(String email, BuildContext context) async {
                                                 fontFamily: "Manrope",
                                                 fontSize:
                                                     viewportHeight * 0.022),
-                                            keyboardType: TextInputType.text),
+                                            keyboardType: TextInputType.number),
                                       ),
                                       SizedBox(height: viewportHeight * 0.02),
                                       Container(
@@ -274,9 +273,34 @@ void setPasswordDialog(String email, BuildContext context) async {
                                                   : true,
                                         ),
                                       ),
-                                      SizedBox(height: viewportHeight * 0.01),
+                                      SizedBox(height: viewportHeight * 0.015),
                                     ]),
                               ))));
                 })));
       });
+}
+
+Future<void> setPassword(
+    String email, String password, String code, BuildContext context) async {
+  showLoadingDialog(context: context);
+  await getNetworkRepository
+      .setPasswordForgotPassword(code: code, email: email, password: password)
+      .then((value) {
+    if (value.statusCode == 200) {
+      Fluttertoast.showToast(msg: "Password reset successfully");
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } else if (value.statusCode == 401) {
+      Fluttertoast.showToast(msg: "Incorrect verification code");
+      Navigator.pop(context);
+    } else {
+      Fluttertoast.showToast(msg: "Error in changing password");
+      print("Change password: ${value.statusCode} ${value.body.toString()}");
+      Navigator.pop(context);
+    }
+  }).catchError((error) {
+    Fluttertoast.showToast(msg: "Error in changing password");
+    print("Change password: ${error.toString()}");
+    Navigator.pop(context);
+  });
 }

@@ -281,14 +281,18 @@ class _NetworkRepository implements NetworkCalls {
   @override
   Future<Response> checkConfirmationLinkCode(
       {String code, String email}) async {
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["email"] = email;
+    requestMap["code"] = int.parse(code);
     final Response response = await _client
-        .get("$baseURL/api/user/verification/check?email=$email&code=$code",
-            headers: {HttpHeaders.contentTypeHeader: 'application/json'})
+        .post("$baseURL/api/user/verification/check",
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+            body: json.encode(requestMap))
         .timeout(Duration(seconds: 20))
         .catchError((error) {
-          print("Check Verification Code: ${error.toString()}");
-          throw (error);
-        });
+      print("Check Verification Code: ${error.toString()}");
+      throw (error);
+    });
     return response;
   }
 
@@ -304,6 +308,39 @@ class _NetworkRepository implements NetworkCalls {
           print("Send Confirmation Code Again: ${error.toString()}");
           throw (error);
         });
+    return response;
+  }
+
+  @override
+  Future<Response> sendForgotPasswordLink(
+      {String email, String userType}) async {
+    final Response response = await _client
+        .get("$baseURL/api/user/forgot/sent?email=$email&userType=$userType",
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'})
+        .timeout(Duration(seconds: 20))
+        .catchError((error) {
+          print("Send Forgot Password Link: ${error.toString()}");
+          throw (error);
+        });
+    return response;
+  }
+
+  @override
+  Future<Response> setPasswordForgotPassword(
+      {String code, String email, String password}) async {
+    final Map<String, dynamic> requestMap = Map<String, dynamic>();
+    requestMap["email"] = email;
+    requestMap["code"] = int.parse(code);
+    requestMap["passwordNew"] = password;
+    final Response response = await _client
+        .post("$baseURL/api/user/forgot/check",
+            headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+            body: json.encode(requestMap))
+        .timeout(Duration(seconds: 20))
+        .catchError((error) {
+      print("Check Forgot Password Code: ${error.toString()}");
+      throw (error);
+    });
     return response;
   }
 }

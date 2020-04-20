@@ -161,9 +161,10 @@ Future<void> showConfirmationDialog(
                                     style: TextStyle(
                                         fontFamily: "Manrope",
                                         fontSize: viewportHeight * 0.022),
-                                    keyboardType: TextInputType.text,
+                                    keyboardType: TextInputType.number,
                                   ),
                                 ),
+                                SizedBox(height: viewportHeight * 0.015),
                               ],
                             ))),
                     actions: <Widget>[
