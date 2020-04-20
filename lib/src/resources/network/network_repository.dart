@@ -119,6 +119,8 @@ class _NetworkRepository implements NetworkCalls {
     final Map<String, dynamic> requestMap = Map<String, dynamic>();
     requestMap["address"] = user.getAddress;
     requestMap["name"] = user.getFullName;
+    requestMap["latitude"]=user.getLatitude;
+    requestMap["longitude"]=user.getLongitude;
     if (user.getPhoneNumber.toString().length != 0) {
       requestMap["phoneNumber"] = int.parse(user.getPhoneNumber);
     }
@@ -151,6 +153,8 @@ class _NetworkRepository implements NetworkCalls {
     requestMap["beds"] = hospital.getAvailableBeds;
     requestMap["totalDoctors"] = hospital.getTotalDoctors;
     requestMap["doctors"] = hospital.getAvailableDoctors;
+    requestMap["latitude"] = hospital.getLatitude;
+    requestMap["longitude"] = hospital.getLongitude;
 
     final Response response = await _client
         .post("$baseURL/api/hospital/",

@@ -7,13 +7,12 @@ import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'map_screen.dart';
 
@@ -21,24 +20,23 @@ class SearchHospitalScreen extends StatefulWidget {
   final ScrollController controller;
   final GlobalKey<FormState> formKey;
 
-  SearchHospitalScreen(
-      {@required this.formKey,
-      @required this.controller,
-       });
+  SearchHospitalScreen({
+    @required this.formKey,
+    @required this.controller,
+  });
 
   @override
   State<StatefulWidget> createState() {
     return _SearchHospitalScreenState(
-        formKey: formKey,
-        controller: controller,
-        );
+      formKey: formKey,
+      controller: controller,
+    );
   }
 }
 
 class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   double viewportHeight;
   double viewportWidth;
-  LocationProvider locationProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
   ScrollController controller;
@@ -48,17 +46,15 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   final TextStyle dropdownMenuItem =
       TextStyle(color: Colors.black, fontSize: 18);
 
-  _SearchHospitalScreenState(
-      {@required this.formKey,
-      @required this.controller,
-      });
-
+  _SearchHospitalScreenState({
+    @required this.formKey,
+    @required this.controller,
+  });
 
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
-    userProfileProvider=Provider.of<UserProfileProvider>(context);
-    locationProvider = Provider.of<LocationProvider>(context);
+    userProfileProvider = Provider.of<UserProfileProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
 
     return GestureDetector(
@@ -226,12 +222,15 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 500),() async{
-      await fetchPatientUserData(context: context,userProfileProvider: userProfileProvider);
+    Future.delayed(Duration(milliseconds: 500), () async {
+      await fetchPatientUserData(
+          context: context, userProfileProvider: userProfileProvider);
     });
   }
 
   void _submitForm(BuildContext context) async {
+    User user;
+    LocationData locationData;
     controller.animateTo(
       0,
       curve: Curves.easeOut,
@@ -244,68 +243,85 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
     showLoadingDialog(context: context);
     getLocation().then((value) async {
       if (value != null) {
-        locationProvider.setLocation = value;
+        user = userProfileProvider.getUser;
+        user.setLatitude = value.latitude;
+        user.setLongitude = value.longitude;
+        locationData = value;
         await getNetworkRepository
-            .sendCurrentLocationAndGetHospitalLists(
-                latitude: value.latitude,
-                longitude: value.longitude,
-                range: distance)
+            .updateLocation(
+          latitude: value.latitude,
+          longitude: value.longitude,
+        )
             .then((value) async {
           if (value.statusCode == 200) {
-            List<dynamic> response = json.decode(value.body);
-            List<Hospital> hospitals = new List<Hospital>();
-            hospitalListProvider.setHospitalLists = hospitals;
-            for (int i = 0; i < response.length; i++) {
-              Map<String, dynamic> data = response[i].cast<String, dynamic>();
-              Hospital h = Hospital.fromJSON(data);
-              hospitals.add(h);
-            }
-            if (hospitals.length == 0) {
+            userProfileProvider.setUser = user;
+            await getNetworkRepository
+                .sendCurrentLocationAndGetHospitalLists(
+                    latitude: user.getLatitude,
+                    longitude: user.getLongitude,
+                    range: distance)
+                .then((value) async {
+              if (value.statusCode == 200) {
+                List<dynamic> response = json.decode(value.body);
+                List<Hospital> hospitals = new List<Hospital>();
+                hospitalListProvider.setHospitalLists = hospitals;
+                for (int i = 0; i < response.length; i++) {
+                  Map<String, dynamic> data =
+                      response[i].cast<String, dynamic>();
+                  Hospital h = Hospital.fromJSON(data);
+                  hospitals.add(h);
+                }
+                if (hospitals.length == 0) {
+                  Fluttertoast.showToast(
+                      msg:
+                          "No nearby hospitals found! Try again or change the distance limit!",
+                      toastLength: Toast.LENGTH_SHORT);
+                  Navigator.pop(context);
+                } else {
+                  hospitalListProvider.setHospitalLists = hospitals;
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      BouncyPageRoute(
+                          widget: MapView(
+                        inputDistance: distance.toInt(),
+                        locationData: locationData,
+                      )));
+                }
+              } else if (value.statusCode == 404) {
+                Navigator.pop(context);
+                Fluttertoast.showToast(
+                    msg:
+                        "No nearby hospitals found! Try again or change the distance limit!",
+                    toastLength: Toast.LENGTH_SHORT);
+                print("Get Hospitals List: " + value.statusCode.toString());
+              } else {
+                Navigator.pop(context);
+                Fluttertoast.showToast(
+                    msg: "Error fetching hospitals! Try again!",
+                    toastLength: Toast.LENGTH_SHORT);
+                print("Get Hospitals List: " + value.statusCode.toString());
+              }
+            }).catchError((error) {
+              Navigator.pop(context);
               Fluttertoast.showToast(
-                  msg:
-                      "No nearby hospitals found! Try again or change the distance limit!",
+                  msg: "Error fetching hospitals! Try again!",
                   toastLength: Toast.LENGTH_SHORT);
-              Navigator.pop(context);
-            } else {
-              hospitalListProvider.setHospitalLists = hospitals;
-              Navigator.pop(context);
-              Navigator.push(
-                  context,
-                  BouncyPageRoute(
-                      widget: MapView(
-                    inputDistance: distance.toInt(),
-                  )));
-            }
-          } else if (value.statusCode == 404) {
-            Navigator.pop(context);
-            Fluttertoast.showToast(
-                msg:
-                    "No nearby hospitals found! Try again or change the distance limit!",
-                toastLength: Toast.LENGTH_SHORT);
-            print("Get Hospitals List: " + value.statusCode.toString());
-          } else if (value.statusCode == 401) {
-            print("Get Hospitals List: ${value.statusCode} Unauthorized access");
-            User user=User();
-            UserProfileProvider userProfileProvider=Provider.of<UserProfileProvider>(context);
-            userProfileProvider.setUser=user;
-            SharedPreferences preferences =
-                await SharedPreferences.getInstance();
-            await preferences.clear();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                "/auth", (Route<dynamic> route) => false);
+              print("Get Hospitals List: " + error.toString());
+            });
           } else {
-            Navigator.pop(context);
             Fluttertoast.showToast(
-                msg: "Error fetching hospitals! Try again!",
-                toastLength: Toast.LENGTH_SHORT);
-            print("Get Hospitals List: " + value.statusCode.toString());
+              msg: "Error in updating location",
+            );
+            print(
+                "Update Location: ${value.statusCode.toString() + value.body.toString()}");
+            Navigator.pop(context);
           }
         }).catchError((error) {
           Navigator.pop(context);
           Fluttertoast.showToast(
-              msg: "Error fetching hospitals! Try again!",
-              toastLength: Toast.LENGTH_SHORT);
-          print("Get Hospitals List: " + error.toString());
+            msg: "Error in updating location",
+          );
         });
       } else {
         Navigator.pop(context);

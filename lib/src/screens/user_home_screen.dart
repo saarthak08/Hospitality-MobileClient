@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/appointments%20_list_screen.dart';
 import 'package:hospitality/src/screens/search_hospital_screen.dart';
@@ -20,7 +19,6 @@ class UserHomeScreen extends StatefulWidget {
 
 class _UserHomeScreenState extends State<UserHomeScreen>
     with TickerProviderStateMixin {
-  LocationProvider locationProvider;
   UserProfileProvider userProfileProvider;
   HospitalListProvider hospitalListProvider;
   bool isButtonEnabled = false;
@@ -30,7 +28,6 @@ class _UserHomeScreenState extends State<UserHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    locationProvider = Provider.of<LocationProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     ScrollController scrollController = ScrollController();
     userProfileProvider = Provider.of<UserProfileProvider>(context);

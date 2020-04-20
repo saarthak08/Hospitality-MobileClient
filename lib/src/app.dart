@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/screens/hospital_info_screen.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/auth_screen.dart';
 import 'package:hospitality/src/screens/signup_screen.dart';
@@ -17,9 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => LocationProvider(),
-        ),
         ChangeNotifierProvider(
           create: (ctx) => HospitalListProvider(),
         ),

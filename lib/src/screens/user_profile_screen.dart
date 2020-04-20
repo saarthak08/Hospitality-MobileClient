@@ -5,7 +5,6 @@ import 'package:hospitality/src/helpers/current_location.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/models/user.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +24,6 @@ class UserProfilScreenState extends State<UserProfileScreen> {
   double viewportWidth;
   GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  LocationProvider locationProvider;
   UserProfileProvider userProfileProvider;
   String fullName = "";
   String phoneNumber = "";
@@ -34,6 +32,8 @@ class UserProfilScreenState extends State<UserProfileScreen> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
+  TextEditingController latitudeController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -41,12 +41,15 @@ class UserProfilScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
-    locationProvider = Provider.of<LocationProvider>(context);
     userProfileProvider = Provider.of<UserProfileProvider>(context);
     userProfileProvider.addListener(() {
       fullNameController.text = userProfileProvider.getUser.getFullName;
       phoneNumberController.text = userProfileProvider.getUser.getPhoneNumber;
       addressController.text = userProfileProvider.getUser.getAddress;
+      latitudeController.text =
+          userProfileProvider.getUser.getLatitude.toString();
+      longitudeController.text =
+          userProfileProvider.getUser.getLongitude.toString();
     });
 
     return RefreshIndicator(
@@ -195,10 +198,14 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
-                                controller: TextEditingController()
-                                  ..text = userProfileProvider
-                                      .getUser.getLatitude
-                                      .toString(),
+                                controller: latitudeController,
+                                onChanged: (String value) {
+                                  if (value.length != 0) {
+                                    setState(() {
+                                      this.latitude = double.parse(value);
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -211,7 +218,6 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
                                 style: TextStyle(
@@ -224,10 +230,14 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
-                                controller: TextEditingController()
-                                  ..text = userProfileProvider
-                                      .getUser.getLongitude
-                                      .toString(),
+                                controller: longitudeController,
+                                onChanged: (String value) {
+                                  if (value.length != 0) {
+                                    setState(() {
+                                      this.longitude = double.parse(value);
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -240,7 +250,6 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
                                 style: TextStyle(
@@ -259,7 +268,6 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                 await getLocation().then(
                                   (value) async {
                                     if (value != null) {
-                                      locationProvider.setLocation = value;
                                       User user = userProfileProvider.getUser;
                                       user.setLatitude = value.latitude;
                                       user.setLongitude = value.longitude;
@@ -311,7 +319,7 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                   height: viewportHeight * 0.06,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Update Location',
+                                    'Auto Update Location',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white,
@@ -354,6 +362,12 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                   user.setPhoneNumber = phoneNumber.length == 0
                                       ? user.getPhoneNumber
                                       : phoneNumber;
+                                  user.setLatitude = latitude == 0
+                                      ? user.getLatitude
+                                      : latitude;
+                                  user.setLongitude = longitude == 0
+                                      ? user.getLongitude
+                                      : longitude;
                                   await getNetworkRepository
                                       .updatePatientUserData(user: user)
                                       .then((value) {
@@ -438,7 +452,9 @@ class UserProfilScreenState extends State<UserProfileScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500), () async {
-      if (mounted&&_refreshIndicatorKey!=null&&_refreshIndicatorKey.currentState.mounted) {
+      if (mounted &&
+          _refreshIndicatorKey != null &&
+          _refreshIndicatorKey.currentState.mounted) {
         _refreshIndicatorKey.currentState.show();
       }
     });

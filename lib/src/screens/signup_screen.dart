@@ -28,6 +28,8 @@ class SignUpScreenState extends State<SignUpScreen> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController latitudeController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   String confirmPassword = "";
   PageController _pageController = PageController();
@@ -224,8 +226,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                       padding: EdgeInsets.fromLTRB(
                           0.0, 0.0, viewportWidth * 0.04, viewportWidth * 0.01),
                       child: TextFormField(
-                        controller: TextEditingController()
-                          ..text = this.latitude.toString(),
+                        controller: latitudeController,
+                        onChanged: (String value) {
+                          if (value.length != 0) {
+                            setState(() {
+                              this.latitude = double.parse(value);
+                            });
+                          }
+                        },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
                               top: viewportHeight * 0.01,
@@ -244,7 +252,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                               fontFamily: "Poppins",
                               fontSize: viewportHeight * 0.022),
                         ),
-                        readOnly: true,
                         keyboardType: TextInputType.numberWithOptions(
                             decimal: true, signed: true),
                         style: TextStyle(
@@ -263,8 +270,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                       padding: EdgeInsets.fromLTRB(
                           0.0, 0.0, viewportWidth * 0.04, viewportWidth * 0.01),
                       child: TextFormField(
-                        controller: TextEditingController()
-                          ..text = this.longitude.toString(),
+                        controller: longitudeController,
+                        onChanged: (String value) {
+                          if (value.length != 0) {
+                            setState(() {
+                              this.longitude = double.parse(value);
+                            });
+                          }
+                        },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
                               top: viewportHeight * 0.01,
@@ -283,7 +296,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                               fontFamily: "Poppins",
                               fontSize: viewportHeight * 0.022),
                         ),
-                        readOnly: true,
                         keyboardType: TextInputType.numberWithOptions(
                             decimal: true, signed: true),
                         style: TextStyle(
@@ -316,7 +328,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       height: viewportHeight * 0.06,
                       alignment: Alignment.center,
                       child: Text(
-                        'Update Location',
+                        'Fetch Location',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.blue,
@@ -609,6 +621,8 @@ class SignUpScreenState extends State<SignUpScreen> {
               emailController.text = this.email;
               phoneNumberController.text = this.phoneNumber;
               fullNameController.text = this.fullName;
+              longitudeController.text = this.longitude.toString();
+              latitudeController.text = this.latitude.toString();
               _pageController.animateToPage(1,
                   duration: Duration(milliseconds: 500),
                   curve: Curves.easeInOut);
@@ -669,8 +683,7 @@ class SignUpScreenState extends State<SignUpScreen> {
           isLoading = false;
         });
         await showConfirmationDialog(email, context, _isPatient);
-          Navigator.pop(context);
-
+        Navigator.pop(context);
       } else if (value.statusCode == 400) {
         Fluttertoast.showToast(msg: "Email already exists!");
         setState(() {
@@ -699,6 +712,8 @@ class SignUpScreenState extends State<SignUpScreen> {
           setState(() {
             this.latitude = value.latitude;
             this.longitude = value.longitude;
+            longitudeController.text=value.longitude.toString();
+            latitudeController.text=value.latitude.toString();
           });
         } else {
           Fluttertoast.showToast(

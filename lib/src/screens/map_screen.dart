@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_list_provider.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
+import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/widgets/hospital_list_view_item.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +12,12 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapView extends StatefulWidget {
   final int inputDistance;
+  final LocationData locationData;
 
-  MapView({this.inputDistance});
+  MapView({this.inputDistance,this.locationData});
 
   @override
-  State<MapView> createState() => MapViewState(inputDistance: inputDistance);
+  State<MapView> createState() => MapViewState(inputDistance: inputDistance,myLocationData: locationData);
 }
 
 class MapViewState extends State<MapView> {
@@ -24,7 +25,7 @@ class MapViewState extends State<MapView> {
   HospitalListProvider hospitalListProvider;
   Completer<GoogleMapController> _controller = Completer();
   LocationData myLocationData;
-  LocationProvider locationProvider;
+  UserProfileProvider userProfileProvider;
   CameraPosition myPosition;
   PanelController controller = new PanelController();
   Set<Marker> markers = Set<Marker>();
@@ -38,13 +39,13 @@ class MapViewState extends State<MapView> {
     super.initState();
   }
 
-  MapViewState({this.inputDistance});
+  MapViewState({this.inputDistance,@required this.myLocationData});
 
   @override
   Widget build(BuildContext context) {
-    locationProvider = Provider.of<LocationProvider>(context);
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
+    userProfileProvider=Provider.of<UserProfileProvider>(context);
     hospitalListProvider = Provider.of<HospitalListProvider>(context);
     hospitals = hospitalListProvider.getHospitalsList;
     for (Hospital hospital in hospitals) {
@@ -57,7 +58,6 @@ class MapViewState extends State<MapView> {
         ),
       );
     }
-    myLocationData = locationProvider.getLocation;
     myPosition = CameraPosition(
       bearing: 192,
       target: LatLng(myLocationData.latitude, myLocationData.longitude),

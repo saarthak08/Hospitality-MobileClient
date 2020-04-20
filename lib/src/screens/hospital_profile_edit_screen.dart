@@ -7,7 +7,6 @@ import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
-import 'package:hospitality/src/providers/location_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +24,6 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   double viewportWidth;
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  LocationProvider locationProvider;
   HospitalUserProvider hospitalUserProvider;
   String fullName = "";
   String phoneNumber = "";
@@ -37,6 +35,8 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
   TextEditingController noteController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
+  TextEditingController latitudeController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -58,7 +58,6 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
   Widget build(BuildContext context) {
     viewportHeight = getViewportHeight(context);
     viewportWidth = getViewportWidth(context);
-    locationProvider = Provider.of<LocationProvider>(context);
     hospitalUserProvider = Provider.of<HospitalUserProvider>(context);
     hospitalUserProvider.addListener(() {
       fullNameController.text = hospitalUserProvider.getHospital.getName;
@@ -67,6 +66,10 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
       websiteController.text = hospitalUserProvider.getHospital.getWebsite;
       noteController.text = hospitalUserProvider.getHospital.getNote;
       this.availability = hospitalUserProvider.getHospital.getAvailability;
+      latitudeController.text =
+          hospitalUserProvider.getHospital.getLatitude.toString();
+      longitudeController.text =
+          hospitalUserProvider.getHospital.getLongitude.toString();
     });
 
     return Scaffold(
@@ -255,10 +258,14 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
-                                controller: TextEditingController()
-                                  ..text = hospitalUserProvider
-                                      .getHospital.getLatitude
-                                      .toString(),
+                                controller: latitudeController,
+                                onChanged: (String value) {
+                                  if (value.length != 0) {
+                                    setState(() {
+                                      this.latitude = double.parse(value);
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -271,7 +278,6 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
                                 style: TextStyle(
@@ -284,10 +290,14 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                               padding: EdgeInsets.fromLTRB(0.0, 0.0,
                                   viewportWidth * 0.04, viewportWidth * 0.01),
                               child: TextFormField(
-                                controller: TextEditingController()
-                                  ..text = hospitalUserProvider
-                                      .getHospital.getLongitude
-                                      .toString(),
+                                controller: longitudeController,
+                                onChanged: (String value) {
+                                  if (value.length != 0) {
+                                    setState(() {
+                                      this.longitude = double.parse(value);
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(
                                       top: viewportHeight * 0.01,
@@ -300,7 +310,6 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       fontFamily: "Poppins",
                                       fontSize: viewportHeight * 0.022),
                                 ),
-                                readOnly: true,
                                 keyboardType: TextInputType.numberWithOptions(
                                     decimal: true, signed: true),
                                 style: TextStyle(
@@ -419,8 +428,9 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                                           color: Colors.green,
                                                         ),
                                                       ),
-                                                      onPressed: () {
-                                                        getLocationDialog();
+                                                      onPressed: () async {
+                                                        await getLocationDialog();
+                                                        Navigator.pop(context);
                                                       },
                                                     ),
                                                   ],
@@ -437,10 +447,10 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                               color: Colors.green,
                               child: Container(
                                   width: viewportWidth * 0.35,
-                                  height: viewportHeight * 0.06,
+                                  height: viewportHeight * 0.07,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Update Location',
+                                    'Auto Update Location',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white,
@@ -492,6 +502,12 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       ? hospital.getWebsite
                                       : website;
                                   hospital.setAvailability = this.availability;
+                                  hospital.setLatitude = this.latitude == 0
+                                      ? hospital.getLatitude
+                                      : this.latitude;
+                                  hospital.setLongitude = this.longitude == 0
+                                      ? hospital.getLongitude
+                                      : this.longitude;
                                   await getNetworkRepository
                                       .updateHospitalUserData(
                                           hospital: hospital)
@@ -524,12 +540,11 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                     ])))));
   }
 
-  void getLocationDialog() async {
+  Future<void> getLocationDialog() async {
     showLoadingDialog(context: context);
     await getLocation().then(
       (value) async {
         if (value != null) {
-          locationProvider.setLocation = value;
           Hospital hospital = hospitalUserProvider.getHospital;
           hospital.setLatitude = value.latitude;
           hospital.setLongitude = value.longitude;
