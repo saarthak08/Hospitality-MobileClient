@@ -331,11 +331,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   });
                 }
               })
-              .timeout(Duration(seconds: 20))
+              .timeout(Duration(seconds: 30))
               .catchError((error) {
-                print("Login Error: " + error.toString());
-                isLoading = false;
-                errorMsg = "an error occurred";
+                setState(() {
+                  print("Login Error: " + error.toString());
+                  isLoading = false;
+                  errorMsg = "an error occurred";
+                });
               });
         }
       },

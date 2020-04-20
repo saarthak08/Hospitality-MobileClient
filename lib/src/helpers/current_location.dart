@@ -44,7 +44,7 @@ Future<void> _locationSettings() async {
           }).catchError((error) {
             print(error);
             return null;
-          }).timeout(Duration(seconds: 20));
+          }).timeout(Duration(seconds: 30));
         } else {
           Fluttertoast.showToast(
               msg: "Location Settings or GPS not enabled!",
@@ -54,7 +54,7 @@ Future<void> _locationSettings() async {
       }).catchError((error) {
         print(error);
         return null;
-      }).timeout(Duration(seconds: 20));
+      }).timeout(Duration(seconds: 30));
     } else {
       await location.getLocation().then((value) {
         locationData = value;
@@ -63,7 +63,7 @@ Future<void> _locationSettings() async {
       }).catchError((error) {
         print(error);
         return null;
-      }).timeout(Duration(seconds: 20));
+      }).timeout(Duration(seconds: 30));
     }
   });
 }

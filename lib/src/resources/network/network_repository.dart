@@ -18,7 +18,7 @@ class _NetworkRepository implements NetworkCalls {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.authorizationHeader: token
         })
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Get Hospital Data: $error");
           throw (error);
@@ -40,7 +40,7 @@ class _NetworkRepository implements NetworkCalls {
         .post(url, body: json.encode(loginCredentials), headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
         })
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Login: ${error.toString()}");
           throw (error);
@@ -58,7 +58,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.authorizationHeader: token,
               HttpHeaders.contentTypeHeader: 'application/json'
             })
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print(
               "Send Current Location And Get Hospital Lists: ${error.toString()}");
@@ -77,7 +77,7 @@ class _NetworkRepository implements NetworkCalls {
             HttpHeaders.contentTypeHeader: 'application/json'
           },
         )
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("getPatientUserData: ${error.toString()}");
           throw (error);
@@ -105,7 +105,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.contentTypeHeader: 'application/json'
             },
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("updateLocation: ${error.toString()}");
       throw (error);
@@ -128,7 +128,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.contentTypeHeader: 'application/json'
             },
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("updatePatientUserData: ${error.toString()}");
       throw (error);
@@ -158,7 +158,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.contentTypeHeader: 'application/json'
             },
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("updateHospitalUserData: ${error.toString()}");
       throw (error);
@@ -183,7 +183,7 @@ class _NetworkRepository implements NetworkCalls {
             HttpHeaders.contentTypeHeader: 'application/json'
           },
         )
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("get Appointments List: ${error.toString()}");
           throw (error);
@@ -203,7 +203,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.contentTypeHeader: 'application/json'
             },
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("Book Appointment: ${error.toString()}");
       throw (error);
@@ -229,7 +229,7 @@ class _NetworkRepository implements NetworkCalls {
               HttpHeaders.contentTypeHeader: 'application/json'
             },
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("Book Appointment: ${error.toString()}");
       throw (error);
@@ -250,7 +250,7 @@ class _NetworkRepository implements NetworkCalls {
             HttpHeaders.contentTypeHeader: 'application/json'
           },
         )
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Book Appointment: ${error.toString()}");
           throw (error);
@@ -270,7 +270,7 @@ class _NetworkRepository implements NetworkCalls {
         .post(url,
             body: json.encode(requestMap),
             headers: {HttpHeaders.contentTypeHeader: 'application/json'})
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Book Appointment: ${error.toString()}");
           throw (error);
@@ -288,7 +288,7 @@ class _NetworkRepository implements NetworkCalls {
         .post("$baseURL/api/user/verification/check",
             headers: {HttpHeaders.contentTypeHeader: 'application/json'},
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("Check Verification Code: ${error.toString()}");
       throw (error);
@@ -303,7 +303,7 @@ class _NetworkRepository implements NetworkCalls {
         .get(
             "$baseURL/api/user/verification/sent?email=$email&userType=$userType",
             headers: {HttpHeaders.contentTypeHeader: 'application/json'})
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Send Confirmation Code Again: ${error.toString()}");
           throw (error);
@@ -317,7 +317,7 @@ class _NetworkRepository implements NetworkCalls {
     final Response response = await _client
         .get("$baseURL/api/user/forgot/sent?email=$email&userType=$userType",
             headers: {HttpHeaders.contentTypeHeader: 'application/json'})
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
           print("Send Forgot Password Link: ${error.toString()}");
           throw (error);
@@ -336,7 +336,7 @@ class _NetworkRepository implements NetworkCalls {
         .post("$baseURL/api/user/forgot/check",
             headers: {HttpHeaders.contentTypeHeader: 'application/json'},
             body: json.encode(requestMap))
-        .timeout(Duration(seconds: 20))
+        .timeout(Duration(seconds: 30))
         .catchError((error) {
       print("Check Forgot Password Code: ${error.toString()}");
       throw (error);
