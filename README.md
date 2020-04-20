@@ -28,13 +28,14 @@ A mobile application backed by [Hospitality-Backend](https://github.com/saarthak
 - [Node.js](https://nodejs.org/en/) for backend development.
 - [Google Maps API](https://developers.google.com/maps/documentation) for showing the hospitals' search result on Google Maps.
 - [Docker](https://www.docker.com/) for development and deployment purposes.
+- [SendGrid](https://app.sendgrid.com) for SMTP purposes.
 
 
 ## Note:
 - To build this mobile application, follow the steps below:
 - - Create a system environment variable with name `HOSPITALITY_MAPS_API_KEY` and with value `YOUR OWN GOOGLE MAPS API KEY`.
 - - Create a file named `network_config.dart` and place it in `lib/src/resources/network/` directory. Then, create a String variable with name `baseURL` and value `http://`YOUR_IP_ADDRESS`:`PORT_ON_WHICH_SERVER_IS_RUNNING(DEFAULT:5000)
-- - So, your `network_config.dart` will look something like: `final String baseURL="http://192.168.43.193:5000"`.
+- - So, your `network_config.dart` will look something like: `final String baseURL="http://192.168.43.193:5000;"`.
 
 
 ### Debug-APK Link:
