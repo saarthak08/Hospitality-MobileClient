@@ -331,7 +331,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   });
                 }
               })
-              .timeout(Duration(seconds: 30))
               .catchError((error) {
                 setState(() {
                   print("Login Error: " + error.toString());
