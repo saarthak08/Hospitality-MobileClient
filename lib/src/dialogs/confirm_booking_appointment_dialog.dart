@@ -64,22 +64,22 @@ void confirmAppointment(
                             if (value.statusCode == 200) {
                               Fluttertoast.showToast(
                                   msg: "Appointment booked succesfully");
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             } else {
                               print(
                                   "Book Appointment: ${value.statusCode} ${value.body.toString()}");
                               Fluttertoast.showToast(
                                   msg: "Error in booking appointment.");
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                             }
                           }).catchError((error) {
                             print("Book Appointment: ${error.toString()}");
                             Fluttertoast.showToast(
                                 msg: "Error in booking appointment.");
-                            Navigator.pop(context);
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop('dialog');
+                            Navigator.of(context, rootNavigator: true).pop('dialog');
                           });
                         },
                       ),

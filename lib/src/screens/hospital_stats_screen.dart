@@ -282,9 +282,9 @@ class _HospitalStatsState extends State<HospitalStats> {
                   msg: "Profile Updated",
                 );
                 hospitalUserProvider.setHospital = hospital;
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
               } else {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
 
                 Fluttertoast.showToast(
                   msg: "Error in updating profile",
@@ -294,7 +294,7 @@ class _HospitalStatsState extends State<HospitalStats> {
               }
             }).catchError((error) {
               print("Update Profile Hospital: ${error.toString()}");
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop('dialog');
             });
             refreshIndicatorKey.currentState.show();
           }),

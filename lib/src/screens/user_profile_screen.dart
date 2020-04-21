@@ -282,14 +282,14 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                             msg: "Location Updated",
                                           );
                                           userProfileProvider.setUser = user;
-                                          Navigator.pop(context);
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
                                         } else {
                                           Fluttertoast.showToast(
                                             msg: "Error in updating location",
                                           );
                                           print(
                                               "Update Location: ${value.statusCode.toString() + value.body.toString()}");
-                                          Navigator.pop(context);
+                                          Navigator.of(context, rootNavigator: true).pop('dialog');
                                         }
                                       }).catchError((error) {
                                         Fluttertoast.showToast(
@@ -297,13 +297,13 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                         );
                                         print(
                                             "Update Location: ${error.toString()}");
-                                        Navigator.pop(context);
+                                        Navigator.of(context, rootNavigator: true).pop('dialog');
                                       });
                                     } else {
                                       Fluttertoast.showToast(
                                         msg: "Error in fetching location!",
                                       );
-                                      Navigator.pop(context);
+                                      Navigator.of(context, rootNavigator: true).pop('dialog');
                                     }
                                     _refreshIndicatorKey.currentState.show();
                                   },
@@ -324,7 +324,7 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: "Manrope",
-                                      fontSize: viewportHeight * 0.020,
+                                      fontSize: viewportHeight * 0.019,
                                     ),
                                   )),
                               textColor: Colors.white,
@@ -376,9 +376,9 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                         msg: "Profile Updated",
                                       );
                                       userProfileProvider.setUser = user;
-                                      Navigator.pop(context);
+                                      Navigator.of(context, rootNavigator: true).pop('dialog');
                                     } else {
-                                      Navigator.pop(context);
+                                      Navigator.of(context, rootNavigator: true).pop('dialog');
 
                                       Fluttertoast.showToast(
                                         msg: "Error in updating profile",
@@ -389,7 +389,7 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                                   }).catchError((error) {
                                     print(
                                         "Update Profile Patient: ${error.toString()}");
-                                    Navigator.pop(context);
+                                    Navigator.of(context, rootNavigator: true).pop('dialog');
                                   });
                                   _refreshIndicatorKey.currentState.show();
                                 })
@@ -501,7 +501,7 @@ class UserProfilScreenState extends State<UserProfileScreen> {
                             style: TextStyle(color: Colors.red, fontSize: 18),
                           ),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop('dialog');
                           },
                         ),
                       ],

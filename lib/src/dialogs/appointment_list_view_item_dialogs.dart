@@ -86,8 +86,8 @@ Future<void> _changeStatus(
     timestamp: timestamp
   )
       .then((value) {
-    Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop('dialog');
+    Navigator.of(context, rootNavigator: true).pop('dialog');
     if (value.statusCode == 200) {
       Fluttertoast.showToast(
           msg: "Appointment status changed to $status successfully.");
@@ -97,8 +97,8 @@ Future<void> _changeStatus(
       Fluttertoast.showToast(msg: "Error in changing appointment status");
     }
   }).catchError((error) {
-    Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop('dialog');
+    Navigator.of(context, rootNavigator: true).pop('dialog');
     print("Change appointment status: ${error.toString()}");
     Fluttertoast.showToast(msg: "Error in changing appointment status");
   });
@@ -166,8 +166,8 @@ Future<void> declineAppointment(BuildContext context, Appointment appointment,
                                   timestamp: appointment.getTimestamp,
                                     email: appointment.getHospital.getEmail)
                                 .then((value) {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
 
                               if (value.statusCode == 200) {
                                 Fluttertoast.showToast(
@@ -179,8 +179,8 @@ Future<void> declineAppointment(BuildContext context, Appointment appointment,
                                     msg: "Error in deleting appointment");
                               }
                             }).catchError((error) {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                               print(
                                   "Error in deleting appointment: ${error.toString()}");
                               Fluttertoast.showToast(

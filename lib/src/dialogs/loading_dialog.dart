@@ -15,29 +15,25 @@ void showLoadingDialog({@required BuildContext context}) {
             scale: a1.value,
             child: Opacity(
                 opacity: a1.value,
-                child: AlertDialog(
-                  shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  title: Text("Please Wait!"),
-                  content: Container(
-                    alignment: Alignment.center,
-                    width: getViewportWidth(context),
-                    height: getViewportHeight(context) * 0.14,
-                    child: Column(
-                      children: <Widget>[
-                        Text("Loading...",),
-                        Padding(
+                  child: AlertDialog(
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      title: Text(
+                        "Loading...",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: Padding(
                           child: CircularProgressIndicator(
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.blue),
                           ),
-                          padding: EdgeInsets.all(16.0),
-                        )
-                      ],
-                    ),
-                  ),
-                  elevation: 8.0,
-                )));
+                          padding: EdgeInsets.symmetric(
+                              horizontal: getViewportWidth(context) * 0.25,
+                              vertical: getViewportHeight(context) * 0.02))),
+                ));
       },
       transitionDuration: Duration(milliseconds: 200));
 }

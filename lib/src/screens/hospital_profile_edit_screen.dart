@@ -430,7 +430,7 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                                       ),
                                                       onPressed: () async {
                                                         await getLocationDialog();
-                                                        Navigator.pop(context);
+                                                        Navigator.of(context, rootNavigator: true).pop('dialog');
                                                       },
                                                     ),
                                                   ],
@@ -455,7 +455,7 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: "Manrope",
-                                      fontSize: viewportHeight * 0.020,
+                                      fontSize: viewportHeight * 0.019,
                                     ),
                                   )),
                               textColor: Colors.white,
@@ -518,9 +518,9 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                       );
                                       hospitalUserProvider.setHospital =
                                           hospital;
-                                      Navigator.pop(context);
+                                      Navigator.of(context, rootNavigator: true).pop('dialog');
                                     } else {
-                                      Navigator.pop(context);
+                                      Navigator.of(context, rootNavigator: true).pop('dialog');
 
                                       Fluttertoast.showToast(
                                         msg: "Error in updating profile",
@@ -531,7 +531,7 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                                   }).catchError((error) {
                                     print(
                                         "Update Profile Hospital: ${error.toString()}");
-                                    Navigator.pop(context);
+                                    Navigator.of(context, rootNavigator: true).pop('dialog');
                                   });
                                   refreshIndicatorKey.currentState.show();
                                 })
@@ -559,9 +559,9 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                 msg: "Location Updated",
               );
               hospitalUserProvider.setHospital = hospital;
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop('dialog');
             } else {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop('dialog');
               Fluttertoast.showToast(
                 msg: "Error in updating location",
               );
@@ -573,13 +573,13 @@ class HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
               msg: "Error in updating location",
             );
             print("Update Location: ${error.toString()}");
-            Navigator.pop(context);
+            Navigator.of(context, rootNavigator: true).pop('dialog');
           });
         } else {
           Fluttertoast.showToast(
             msg: "Error in fetching location!",
           );
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop('dialog');
         }
       },
     );

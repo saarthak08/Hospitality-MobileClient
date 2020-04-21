@@ -5,7 +5,7 @@ import 'package:hospitality/src/providers/hospital_user_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
 import 'package:hospitality/src/screens/hospital_home_screen.dart';
-import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/widgets/scale_page_route.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
@@ -15,7 +15,7 @@ import '../helpers/dimensions.dart';
 import 'auth_screen.dart';
 
 class SplashPage extends StatefulWidget {
-    static bool isPatient;
+  static bool isPatient;
 
   @override
   State<StatefulWidget> createState() {
@@ -57,22 +57,20 @@ class _SplashPageState extends State<SplashPage>
               _controller.stop();
               setUser();
               Navigator.pushReplacement(
-                  context, BouncyPageRoute(widget: UserHomeScreen()));
+                  context, ScalePageRoute(page: UserHomeScreen()));
             } else {
               setHospital();
               _controller.stop();
               Navigator.pushReplacement(
-                  context, BouncyPageRoute(widget: HospitalDashboard()));
+                  context, ScalePageRoute(page: HospitalDashboard()));
             }
           } else {
             _controller.stop();
-            Navigator.pushReplacement(
-                context, BouncyPageRoute(widget: AuthScreen()));
+            Navigator.pushReplacementNamed(context, "/auth");
           }
         } else {
           _controller.stop();
-          Navigator.pushReplacement(
-              context, BouncyPageRoute(widget: AuthScreen()));
+          Navigator.pushReplacementNamed(context, "/auth");
         }
       });
     });

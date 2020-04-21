@@ -9,7 +9,7 @@ import 'package:hospitality/src/models/user.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/screens/splash_screen.dart';
 import 'package:hospitality/src/screens/user_home_screen.dart';
-import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/widgets/scale_page_route.dart';
 import "dart:convert";
 import 'package:http/http.dart' show Response;
 import 'package:flutter/services.dart';
@@ -226,7 +226,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         userProfileProvider.setUser = user;
                         Navigator.pushAndRemoveUntil(
                             context,
-                            BouncyPageRoute(widget: UserHomeScreen()),
+                            ScalePageRoute(page: UserHomeScreen()),
                             (Route<dynamic> route) => false);
                       } else {
                         print("getUserProfileData: " +
@@ -258,7 +258,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         hospitalUserProvider.setHospital = hospital;
                         Navigator.pushAndRemoveUntil(
                             context,
-                            BouncyPageRoute(widget: HospitalDashboard()),
+                            ScalePageRoute(page: HospitalDashboard()),
                             (Route<dynamic> route) => false);
                       } else {
                         print("getUserProfileData: " +

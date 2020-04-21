@@ -45,7 +45,7 @@ Future<void> showForgotPasswordDialog(BuildContext mainContext) async {
                         ),
                         onPressed: () {
                           email = "";
-                          Navigator.pop(context);
+                          Navigator.of(context, rootNavigator: true).pop('dialog');
                         },
                       ),
                       FlatButton(
@@ -61,7 +61,7 @@ Future<void> showForgotPasswordDialog(BuildContext mainContext) async {
                               email.endsWith(".com")) {
                             await sendPasswordResetLink(
                                 email, mainContext, _isPatient);
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop('dialog');
                           } else {
                             Fluttertoast.showToast(
                                 msg: "Invalid email address");
@@ -189,7 +189,7 @@ Future<void> sendPasswordResetLink(
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
       await setPasswordDialog(email, context);
     } else if (value.statusCode == 404) {
       Fluttertoast.showToast(

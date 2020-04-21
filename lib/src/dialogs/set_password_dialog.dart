@@ -44,7 +44,7 @@ Future<void> setPasswordDialog(String email, BuildContext context) async {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop('dialog');
                           },
                         ),
                         FlatButton(
@@ -288,19 +288,19 @@ Future<void> setPassword(
       .then((value) {
     if (value.statusCode == 200) {
       Fluttertoast.showToast(msg: "Password reset successfully");
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     } else if (value.statusCode == 401) {
       Fluttertoast.showToast(msg: "Incorrect verification code");
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     } else {
       Fluttertoast.showToast(msg: "Error in changing password");
       print("Change password: ${value.statusCode} ${value.body.toString()}");
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     }
   }).catchError((error) {
     Fluttertoast.showToast(msg: "Error in changing password");
     print("Change password: ${error.toString()}");
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop('dialog');
   });
 }

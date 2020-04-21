@@ -4,13 +4,13 @@ import 'package:hospitality/src/dialogs/confirm_booking_appointment_dialog.dart'
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/providers/hospital_user_provider.dart';
+import 'package:hospitality/src/screens/hospital_profile_edit_screen.dart';
 import 'package:hospitality/src/screens/splash_screen.dart';
-import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/widgets/slide_page_route.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/dimensions.dart';
-import 'hospital_profile_edit_screen.dart';
 
 class HospitalInfo extends StatefulWidget {
   final Hospital hospital;
@@ -134,14 +134,13 @@ class _HospitalInfoState extends State<HospitalInfo> {
         hospitalUserProvider = Provider.of<HospitalUserProvider>(context);
     isPatient = SplashPage.isPatient;
 
-
     return Scaffold(
       appBar: isPatient
           ? AppBar(
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
                   }),
               title: Text(
                 'Hospital Info',
@@ -219,9 +218,8 @@ class _HospitalInfoState extends State<HospitalInfo> {
                         } else {
                           Navigator.push(
                               context,
-                              BouncyPageRoute(
-                                widget: HospitalProfileEditScreen(),
-                              ));
+                              SlidePageRoute(
+                                  page: HospitalProfileEditScreen()));
                         }
                       },
                     ),
@@ -663,7 +661,8 @@ class _HospitalInfoState extends State<HospitalInfo> {
                             style: TextStyle(color: Colors.red, fontSize: 18),
                           ),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true)
+                                .pop('dialog');
                           },
                         ),
                       ],

@@ -712,8 +712,8 @@ class SignUpScreenState extends State<SignUpScreen> {
           setState(() {
             this.latitude = value.latitude;
             this.longitude = value.longitude;
-            longitudeController.text=value.longitude.toString();
-            latitudeController.text=value.latitude.toString();
+            longitudeController.text = value.longitude.toString();
+            latitudeController.text = value.latitude.toString();
           });
         } else {
           Fluttertoast.showToast(

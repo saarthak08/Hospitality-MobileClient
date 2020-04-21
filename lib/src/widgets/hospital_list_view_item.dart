@@ -4,9 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hospitality/src/helpers/dimensions.dart';
 import 'package:hospitality/src/models/hospital.dart';
 import 'package:hospitality/src/screens/hospital_info_screen.dart';
+import 'package:hospitality/src/widgets/slide_page_route.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import 'bouncy_page_animation.dart';
 
 class HospitalListViewItem extends StatelessWidget {
   final Hospital hospital;
@@ -124,12 +123,12 @@ class HospitalListViewItem extends StatelessWidget {
                   elevation: 1,
                   onPressed: () async {
                     Navigator.push(
-                      context,
-                      BouncyPageRoute(
-                        widget: HospitalInfo(
-                            hospital: hospital, inputDistance: inputDistance),
-                      ),
-                    );
+                        context,
+                        SlidePageRoute(
+                            page: HospitalInfo(
+                          hospital: hospital,
+                          inputDistance: inputDistance,
+                        )));
                   },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),

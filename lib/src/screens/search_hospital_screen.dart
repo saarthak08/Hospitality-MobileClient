@@ -10,7 +10,7 @@ import 'package:hospitality/src/providers/hospital_list_provider.dart';
 import 'package:hospitality/src/providers/user_profile_provider.dart';
 import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'package:hospitality/src/helpers/fetch_user_data.dart';
-import 'package:hospitality/src/widgets/bouncy_page_animation.dart';
+import 'package:hospitality/src/widgets/scale_page_route.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
@@ -228,7 +228,7 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
     });
   }
 
-  void _submitForm(BuildContext context) async {
+ void _submitForm(BuildContext context) async {
     User user;
     LocationData locationData;
     controller.animateTo(
@@ -276,34 +276,34 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
                       msg:
                           "No nearby hospitals found! Try again or change the distance limit!",
                       toastLength: Toast.LENGTH_SHORT);
-                  Navigator.pop(context);
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
                 } else {
                   hospitalListProvider.setHospitalLists = hospitals;
-                  Navigator.pop(context);
+                  Navigator.of(context, rootNavigator: true).pop('dialog');
                   Navigator.push(
                       context,
-                      BouncyPageRoute(
-                          widget: MapView(
+                      ScalePageRoute(
+                          page: MapView(
                         inputDistance: distance.toInt(),
                         locationData: locationData,
                       )));
                 }
               } else if (value.statusCode == 404) {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
                 Fluttertoast.showToast(
                     msg:
                         "No nearby hospitals found! Try again or change the distance limit!",
                     toastLength: Toast.LENGTH_SHORT);
                 print("Get Hospitals List: " + value.statusCode.toString());
               } else {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
                 Fluttertoast.showToast(
                     msg: "Error fetching hospitals! Try again!",
                     toastLength: Toast.LENGTH_SHORT);
                 print("Get Hospitals List: " + value.statusCode.toString());
               }
             }).catchError((error) {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop('dialog');
               Fluttertoast.showToast(
                   msg: "Error fetching hospitals! Try again!",
                   toastLength: Toast.LENGTH_SHORT);
@@ -315,23 +315,23 @@ class _SearchHospitalScreenState extends State<SearchHospitalScreen> {
             );
             print(
                 "Update Location: ${value.statusCode.toString() + value.body.toString()}");
-            Navigator.pop(context);
+            Navigator.of(context, rootNavigator: true).pop('dialog');
           }
         }).catchError((error) {
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop('dialog');
           Fluttertoast.showToast(
             msg: "Error in updating location",
           );
         });
       } else {
-        Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop('dialog');
         Fluttertoast.showToast(
             msg: "Error in getting location",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM);
       }
     }).catchError((error) {
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
       Fluttertoast.showToast(
           msg: "Error in getting location",
           toastLength: Toast.LENGTH_SHORT,

@@ -24,14 +24,14 @@ Future<void> sendConfirmationLink(
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     } else {
       Fluttertoast.showToast(
         msg: "Error! Confirmation link not sent",
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     }
   }).catchError((error) {
     print(error);
@@ -40,7 +40,7 @@ Future<void> sendConfirmationLink(
       gravity: ToastGravity.BOTTOM,
       toastLength: Toast.LENGTH_SHORT,
     );
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop('dialog');
   });
 }
 
@@ -56,22 +56,22 @@ Future<void> checkConfirmationLinkCode(
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     } else if (value.statusCode == 401) {
       Fluttertoast.showToast(
         msg: "Incorrect confirmation code.",
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     } else {
       Fluttertoast.showToast(
         msg: "Error in activating account.",
         gravity: ToastGravity.BOTTOM,
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     }
   }).catchError((error) {
     print(error);
@@ -80,7 +80,7 @@ Future<void> checkConfirmationLinkCode(
       gravity: ToastGravity.BOTTOM,
       toastLength: Toast.LENGTH_SHORT,
     );
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop('dialog');
   });
 }
 
@@ -174,7 +174,7 @@ Future<void> showConfirmationDialog(
                               color: Colors.red,
                             )),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.of(context, rootNavigator: true).pop('dialog');
                         },
                       ),
                       FlatButton(
