@@ -18,7 +18,7 @@ A mobile application backed by [Hospitality-Backend](https://github.com/Bhanups1
 
 ## Features:
 - Search hospitals near you with the help of our custom algorithm.
-- Get the location of the hospitals on Google Maps.
+- Get the location of nearby hospitals on Google Maps.
 - JWT-Token-based authentication system.
 - Request for appointment booking and track the appointment status.
 
