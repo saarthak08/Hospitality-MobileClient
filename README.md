@@ -36,6 +36,7 @@ A mobile application backed by [Hospitality-Backend](https://github.com/saarthak
 - - Create a system environment variable with name `HOSPITALITY_MAPS_API_KEY` and with value `YOUR OWN GOOGLE MAPS API KEY`.
 - - Create a file named `network_config.dart` and place it in `lib/src/resources/network/` directory. Then, create a String variable with name `baseURL` and value `http://`YOUR_IP_ADDRESS`:`PORT_ON_WHICH_SERVER_IS_RUNNING(DEFAULT:5000)
 - - So, your `network_config.dart` will look something like: `final String baseURL="http://192.168.43.193:5000;"`.
+- - For iOS, replace `API_KEY` with your own Google Maps API key on line number `12` in `ios/Runner/AppDelegate.swift` file.
 
 
 ### Debug-APK Link:
