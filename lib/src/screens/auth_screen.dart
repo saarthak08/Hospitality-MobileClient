@@ -68,9 +68,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _emailInputFieldBuilder(double viewportWidth) {
     return TextFormField(
       onChanged: (String value) {
+        value = value.trim();
         _loginCredentials["email"] = value;
       },
       onSaved: (String value) {
+        value = value.trim();
         _loginCredentials["email"] = value;
       },
       keyboardType: TextInputType.emailAddress,
@@ -109,9 +111,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _passwordInputFieldBuilder(double viewportWidth) {
     return TextFormField(
       onChanged: (String value) {
+        value = value.trim();
         _loginCredentials["password"] = value;
       },
       onSaved: (String value) {
+        value = value.trim();
         _loginCredentials["password"] = value;
       },
       obscureText: _obscureText,
@@ -193,151 +197,148 @@ class _AuthScreenState extends State<AuthScreen> {
           await getNetworkRepository
               .login(loginCredentials: _loginCredentials, isPatient: _isPatient)
               .then((Response response) async {
-                print(response.statusCode);
-                if (response.statusCode == 200) {
-                  setState(() {
-                    isLoading = false;
-                    errorMsg = "";
-                  });
-                  Map<dynamic, dynamic> res = json.decode(response.body);
-                  String token = res["token"];
-                  await _sharedPreferencesInstance.setString("token", token);
-                  await _sharedPreferencesInstance.setString(
-                      "email", _loginCredentials["email"]);
-                  getNetworkRepository.token = token;
-                  setState(() {
-                    SplashPage.isPatient = _isPatient;
-                  });
-                  if (_isPatient) {
-                    _sharedPreferencesInstance.setBool("isPatient", true);
-                    User user = userProfileProvider.getUser;
-                    if (user == null) {
-                      user = User();
-                    }
-                    user.setEmail = _loginCredentials["email"];
-                    userProfileProvider.setUser = user;
-                    await getNetworkRepository
-                        .getPatientUserData(email: _loginCredentials["email"])
-                        .then((value) async {
-                      if (value.statusCode == 200) {
-                        Map<String, dynamic> responseMap =
-                            json.decode(value.body);
-                        User user = User.fromJSON(responseMap: responseMap);
-                        userProfileProvider.setUser = user;
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            ScalePageRoute(page: UserHomeScreen()),
-                            (Route<dynamic> route) => false);
-                      } else {
-                        print("getUserProfileData: " +
-                            value.statusCode.toString() +
-                            " ${value.body.toString()}");
-                        Fluttertoast.showToast(
-                            msg: "Error in fetching user profile data");
-                      }
-                    }).catchError((error) {
-                      print("getUserProfileData: " + " ${error.toString()}");
-                      Fluttertoast.showToast(
-                          msg: "Error in fetching user profile data");
-                    });
-                  } else {
-                    _sharedPreferencesInstance.setBool("isPatient", false);
-                    Hospital hospital = hospitalUserProvider.getHospital;
-                    if (hospital == null) {
-                      hospital = Hospital();
-                    }
-                    hospital.setEmail = _loginCredentials["email"];
-                    hospitalUserProvider.setHospital = hospital;
-                    await getNetworkRepository
-                        .getHospitalData()
-                        .then((value) async {
-                      if (value.statusCode == 200) {
-                        Map<String, dynamic> responseMap =
-                            json.decode(value.body);
-                        Hospital hospital = Hospital.fromJSON(responseMap);
-                        hospitalUserProvider.setHospital = hospital;
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            ScalePageRoute(page: HospitalDashboard()),
-                            (Route<dynamic> route) => false);
-                      } else {
-                        print("getUserProfileData: " +
-                            value.statusCode.toString() +
-                            " ${value.body.toString()}");
-                        Fluttertoast.showToast(
-                            msg: "Error in fetching user profile data");
-                      }
-                    }).catchError((error) {
-                      print("getUserProfileData: " + " ${error.toString()}");
-                      Fluttertoast.showToast(
-                          msg: "Error in fetching user profile data");
-                    });
-                  }
-                } else if (response.statusCode == 401) {
-                  setState(() {
-                    errorMsg = "";
-                    isLoading = false;
-                  });
-                  await sendConfirmationLink(
-                      _loginCredentials["email"], context, _isPatient);
-                  await showConfirmationDialog(
-                      _loginCredentials["email"], context, _isPatient);
-                } else if (response.statusCode == 403) {
-                  setState(() {
-                    isLoading = false;
-                    errorMsg = "Couldn't sign in";
-                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
-                    if (errorMap.containsKey("email")) {
-                      _errorEmail = errorMap["email"];
-                    }
-                    if (errorMap.containsKey("password")) {
-                      _errorPassword = errorMap["password"];
-                    }
-                  });
-                } else if (response.statusCode == 400) {
-                  Map<dynamic, dynamic> errorMap = json.decode(response.body);
-                  setState(() {
-                    isLoading = false;
-                    errorMsg = "Couldn't sign in";
-                    if (errorMap.containsKey("email")) {
-                      _errorEmail = errorMap["email"];
-                    }
-                    if (errorMap.containsKey("password")) {
-                      _errorPassword = errorMap["password"];
-                    }
-                  });
-                } else if (response.statusCode == 404) {
-                  setState(() {
-                    isLoading = false;
-                    errorMsg = "Wrong login!";
-                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
-                    if (errorMap.containsKey("email")) {
-                      _errorEmail = errorMap["email"];
-                    }
-                    if (errorMap.containsKey("password")) {
-                      _errorPassword = errorMap["password"];
-                    }
-                  });
-                } else {
-                  setState(() {
-                    isLoading = false;
-                    Map<dynamic, dynamic> errorMap = json.decode(response.body);
-                    if (errorMap.containsKey("email")) {
-                      _errorEmail = errorMap["email"];
-                    }
-                    if (errorMap.containsKey("password")) {
-                      _errorPassword = errorMap["password"];
-                    }
-                  });
-                }
-              })
-              .catchError((error) {
-                setState(() {
-                  print("Login Error: " + error.toString());
-                  isLoading = false;
-                  errorMsg = "an error occurred";
-                });
+            print(response.statusCode);
+            if (response.statusCode == 200) {
+              setState(() {
+                isLoading = false;
+                errorMsg = "";
               });
+              Map<dynamic, dynamic> res = json.decode(response.body);
+              String token = res["token"];
+              await _sharedPreferencesInstance.setString("token", token);
+              await _sharedPreferencesInstance.setString(
+                  "email", _loginCredentials["email"]);
+              getNetworkRepository.token = token;
+              setState(() {
+                SplashPage.isPatient = _isPatient;
+              });
+              if (_isPatient) {
+                _sharedPreferencesInstance.setBool("isPatient", true);
+                User user = userProfileProvider.getUser;
+                if (user == null) {
+                  user = User();
+                }
+                user.setEmail = _loginCredentials["email"];
+                userProfileProvider.setUser = user;
+                await getNetworkRepository
+                    .getPatientUserData(email: _loginCredentials["email"])
+                    .then((value) async {
+                  if (value.statusCode == 200) {
+                    Map<String, dynamic> responseMap = json.decode(value.body);
+                    User user = User.fromJSON(responseMap: responseMap);
+                    userProfileProvider.setUser = user;
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        ScalePageRoute(page: UserHomeScreen()),
+                        (Route<dynamic> route) => false);
+                  } else {
+                    print("getUserProfileData: " +
+                        value.statusCode.toString() +
+                        " ${value.body.toString()}");
+                    Fluttertoast.showToast(
+                        msg: "Error in fetching user profile data");
+                  }
+                }).catchError((error) {
+                  print("getUserProfileData: " + " ${error.toString()}");
+                  Fluttertoast.showToast(
+                      msg: "Error in fetching user profile data");
+                });
+              } else {
+                _sharedPreferencesInstance.setBool("isPatient", false);
+                Hospital hospital = hospitalUserProvider.getHospital;
+                if (hospital == null) {
+                  hospital = Hospital();
+                }
+                hospital.setEmail = _loginCredentials["email"];
+                hospitalUserProvider.setHospital = hospital;
+                await getNetworkRepository
+                    .getHospitalData()
+                    .then((value) async {
+                  if (value.statusCode == 200) {
+                    Map<String, dynamic> responseMap = json.decode(value.body);
+                    Hospital hospital = Hospital.fromJSON(responseMap);
+                    hospitalUserProvider.setHospital = hospital;
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        ScalePageRoute(page: HospitalDashboard()),
+                        (Route<dynamic> route) => false);
+                  } else {
+                    print("getUserProfileData: " +
+                        value.statusCode.toString() +
+                        " ${value.body.toString()}");
+                    Fluttertoast.showToast(
+                        msg: "Error in fetching user profile data");
+                  }
+                }).catchError((error) {
+                  print("getUserProfileData: " + " ${error.toString()}");
+                  Fluttertoast.showToast(
+                      msg: "Error in fetching user profile data");
+                });
+              }
+            } else if (response.statusCode == 401) {
+              setState(() {
+                errorMsg = "";
+                isLoading = false;
+              });
+              await sendConfirmationLink(
+                  _loginCredentials["email"], context, _isPatient);
+              await showConfirmationDialog(
+                  _loginCredentials["email"], context, _isPatient);
+            } else if (response.statusCode == 403) {
+              setState(() {
+                isLoading = false;
+                errorMsg = "Couldn't sign in";
+                Map<dynamic, dynamic> errorMap = json.decode(response.body);
+                if (errorMap.containsKey("email")) {
+                  _errorEmail = errorMap["email"];
+                }
+                if (errorMap.containsKey("password")) {
+                  _errorPassword = errorMap["password"];
+                }
+              });
+            } else if (response.statusCode == 400) {
+              Map<dynamic, dynamic> errorMap = json.decode(response.body);
+              setState(() {
+                isLoading = false;
+                errorMsg = "Couldn't sign in";
+                if (errorMap.containsKey("email")) {
+                  _errorEmail = errorMap["email"];
+                }
+                if (errorMap.containsKey("password")) {
+                  _errorPassword = errorMap["password"];
+                }
+              });
+            } else if (response.statusCode == 404) {
+              setState(() {
+                isLoading = false;
+                errorMsg = "Wrong login!";
+                Map<dynamic, dynamic> errorMap = json.decode(response.body);
+                if (errorMap.containsKey("email")) {
+                  _errorEmail = errorMap["email"];
+                }
+                if (errorMap.containsKey("password")) {
+                  _errorPassword = errorMap["password"];
+                }
+              });
+            } else {
+              setState(() {
+                isLoading = false;
+                Map<dynamic, dynamic> errorMap = json.decode(response.body);
+                if (errorMap.containsKey("email")) {
+                  _errorEmail = errorMap["email"];
+                }
+                if (errorMap.containsKey("password")) {
+                  _errorPassword = errorMap["password"];
+                }
+              });
+            }
+          }).catchError((error) {
+            setState(() {
+              print("Login Error: " + error.toString());
+              isLoading = false;
+              errorMsg = "an error occurred";
+            });
+          });
         }
       },
       child: Container(

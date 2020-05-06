@@ -12,7 +12,6 @@ import 'package:hospitality/src/resources/network/network_repository.dart';
 import 'dart:async';
 
 import '../helpers/dimensions.dart';
-import 'auth_screen.dart';
 
 class SplashPage extends StatefulWidget {
   static bool isPatient;

@@ -466,6 +466,9 @@ class _HospitalStatsState extends State<HospitalStats> {
   Future<void> fetchAppointmentsList() async {
     await getNetworkRepository.getAppointmentsList().then((value) async {
       if (value.statusCode == 200) {
+        rejectedAppointments=0;
+        waitingAppointments=0;
+        confirmedAppointments=0;
         setState(() {
           List<dynamic> responseList = json.decode(value.body);
           Map<String, dynamic> temp;
